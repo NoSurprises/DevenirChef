@@ -1,5 +1,6 @@
 package antitelegram.devenirchef;
 
+import android.content.Intent;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
             ((ImageView) view.findViewById(R.id.recipe_image)).setImageDrawable(ResourcesCompat.getDrawable(
                     getResources(), tempDrawables[i], null)
             );
+
+
         }
 
     }
