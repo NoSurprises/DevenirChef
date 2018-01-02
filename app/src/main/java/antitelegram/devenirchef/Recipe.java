@@ -11,6 +11,7 @@ public class Recipe {
     private String title;
     private String ingredients;
     private String description;
+    private String photoUrl;
     private List<RecipeStep> cookingSteps;
 
     public Recipe() {
@@ -37,5 +38,9 @@ public class Recipe {
 
     public List<RecipeStep> getCookingSteps() {
         return cookingSteps;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
     }
 }
