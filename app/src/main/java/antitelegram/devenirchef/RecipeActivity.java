@@ -4,6 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 /**
  * Created by Nick on 11/27/2017.
@@ -11,23 +15,24 @@ import android.support.v7.app.AppCompatActivity;
 
 public class RecipeActivity extends AppCompatActivity {
 
-    public final static String NAME_KEY = "name";
-    public final static String DESCRIPTION_KEY = "description";
-    public final static String ID_KEY = "id";
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setContentView(R.layout.recipe_activity);
         Intent fromIntent = getIntent();
         if (fromIntent == null) {
             return;
         }
-        String name = fromIntent.getStringExtra(NAME_KEY);
-        String description = fromIntent.getStringExtra(DESCRIPTION_KEY);
-        int id = fromIntent.getIntExtra(ID_KEY, -1);
+        Recipe recipe = fromIntent.getExtras().getParcelable("recipe");
 
-        // todo get recipe from db based on the id provided
+        ((TextView) findViewById(R.id.recipe_name)).setText(recipe.getTitle());
+        // TODO: 1/2/2018 bind other fields
+
+        ImageView image = (ImageView) findViewById(R.id.recipe_image);
+        Glide.with(this)
+                .load(recipe.getPhotoUrl())
+                .into(image);
+
 
     }
 }

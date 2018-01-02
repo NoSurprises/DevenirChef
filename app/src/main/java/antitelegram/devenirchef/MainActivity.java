@@ -1,5 +1,6 @@
 package antitelegram.devenirchef;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -25,8 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseDatabase database;
     private FirebaseStorage storage;
     private LinearLayout recipesLayout;
-    private int tmpCount = 0; // TODO: 12/30/2017 keeps track of the current
-    // added child. remove, when have stored images in cloud
+
 
     private List<Recipe> recipes;
 
@@ -40,23 +40,47 @@ public class MainActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         storage = FirebaseStorage.getInstance();
 
+
         database.getReference("recipes").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(final DataSnapshot dataSnapshot, String s) {
                 View recipeView = createNewRecipeCard();
 
                 Recipe newRecipe = dataSnapshot.getValue(Recipe.class);
+
                 recipes.add(newRecipe);
 
                 bindDataToViewFromRecipe(recipeView, newRecipe);
             }
 
-            private void bindDataToViewFromRecipe(View view, Recipe newRecipe) {
-                ((TextView) view.findViewById(R.id.recipe_name)).setText(newRecipe.getTitle());
-                // TODO: 12/30/2017 bind description, steps..
+            private void bindDataToViewFromRecipe(View view, final Recipe newRecipe) {
 
+                View.OnClickListener listener = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(MainActivity.this, RecipeActivity.class);
+                        intent.putExtra("recipe", newRecipe);
+                        startActivity(intent);
+                    }
+                };
+
+                // TODO: 1/2/2018 decompose
+
+                // get data
+                TextView text = view.findViewById(R.id.recipe_name);
                 ImageView imageView = view.findViewById(R.id.recipe_image);
+
+
+                // bind data
+                text.setText(newRecipe.getTitle());
+                // TODO: 12/30/2017 bind description, steps..
                 setImageToView(imageView, newRecipe.getPhotoUrl());
+
+
+                // bind listeners
+                text.setOnClickListener(listener);
+                imageView.setOnClickListener(listener);
+
 
             }
 
@@ -77,8 +101,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-
 
 
     private View createNewRecipeCard() {
