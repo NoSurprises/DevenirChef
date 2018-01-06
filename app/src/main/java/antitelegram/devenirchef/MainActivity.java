@@ -37,19 +37,26 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         recipesLayout = (LinearLayout) findViewById(R.id.recipes_linear_layout);
         recipes = new ArrayList<>();
-        database = FirebaseDatabase.getInstance();
-        storage = FirebaseStorage.getInstance();
 
+        initializeDatabase();
+        initializeStorage();
+
+
+    }
+
+    private void initializeStorage() {
+        storage = FirebaseStorage.getInstance();
+    }
+
+    private void initializeDatabase() {
+        database = FirebaseDatabase.getInstance();
 
         database.getReference("recipes").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(final DataSnapshot dataSnapshot, String s) {
                 View recipeView = createNewRecipeCard();
-
                 Recipe newRecipe = dataSnapshot.getValue(Recipe.class);
-
                 recipes.add(newRecipe);
-
                 bindDataToViewFromRecipe(recipeView, newRecipe);
             }
 
