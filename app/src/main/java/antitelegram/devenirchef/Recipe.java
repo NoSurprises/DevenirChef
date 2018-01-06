@@ -43,6 +43,8 @@ public class Recipe implements Parcelable {
         ingredients = in.readString();
         description = in.readString();
         photoUrl = in.readString();
+        cookingSteps = in.readArrayList(RecipeStep.class.getClassLoader());
+
     }
 
     public String getTitle() {
@@ -76,5 +78,6 @@ public class Recipe implements Parcelable {
         dest.writeString(ingredients);
         dest.writeString(description);
         dest.writeString(photoUrl);
+        dest.writeList(cookingSteps);
     }
 }

@@ -1,16 +1,35 @@
 package antitelegram.devenirchef;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Nick on 12/30/2017.
  */
 
-public class RecipeStep {
+public class RecipeStep implements Parcelable {
+    public static final Creator<RecipeStep> CREATOR = new Creator<RecipeStep>() {
+        @Override
+        public RecipeStep createFromParcel(Parcel in) {
+            return new RecipeStep(in);
+        }
+
+        @Override
+        public RecipeStep[] newArray(int size) {
+            return new RecipeStep[size];
+        }
+    };
     private int stepNumber;
     private String descriptionOfStep;
 
     public RecipeStep() {
         this.stepNumber = 4;
         this.descriptionOfStep = "Sample";
+    }
+
+    protected RecipeStep(Parcel in) {
+        stepNumber = in.readInt();
+        descriptionOfStep = in.readString();
     }
 
     public int getStepNumber() {
@@ -20,5 +39,16 @@ public class RecipeStep {
 
     public String getDescriptionOfStep() {
         return descriptionOfStep;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(stepNumber);
+        dest.writeString(descriptionOfStep);
     }
 }

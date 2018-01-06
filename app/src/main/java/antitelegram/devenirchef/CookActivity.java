@@ -12,35 +12,38 @@ import android.support.v4.view.ViewPager;
 public class CookActivity extends FragmentActivity {
 
 
-    private static final int NUM_STEPS = 5;
-    private ViewPager viewPager;
+    private int numSteps;
+    private ViewPager allStepsViewPager;
     private PagerAdapter pagerAdapter;
-
-
     private Intent fromIntent;
     private Recipe recipe;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cook);
 
+
         setUpViewPager();
         setUpRecipe();
+
+        // to update count info
+        pagerAdapter.notifyDataSetChanged();
 
     }
 
     private void setUpRecipe() {
         fromIntent = getIntent();
         recipe = getRecipe();
-
+        numSteps = recipe.getCookingSteps().size();
 
     }
 
     private void setUpViewPager() {
-        viewPager = findViewById(R.id.view_pager);
+        allStepsViewPager = findViewById(R.id.view_pager);
         pagerAdapter = new CookingPagerAdapter(getSupportFragmentManager());
-        viewPager.setAdapter(pagerAdapter);
+        allStepsViewPager.setAdapter(pagerAdapter);
     }
 
 
@@ -51,27 +54,38 @@ public class CookActivity extends FragmentActivity {
 
     @Override
     public void onBackPressed() {
-        if (viewPager.getCurrentItem() == 0)
+        if (allStepsViewPager.getCurrentItem() == 0)
             super.onBackPressed();
         else {
-            viewPager.setCurrentItem(viewPager.getCurrentItem() - 1);
+            allStepsViewPager.setCurrentItem(allStepsViewPager.getCurrentItem() - 1);
         }
     }
 
     private class CookingPagerAdapter extends FragmentStatePagerAdapter {
 
+        private static final String TAG = "daywint";
+
         public CookingPagerAdapter(FragmentManager fm) {
             super(fm);
+
         }
 
         @Override
         public Fragment getItem(int position) {
-            return new RecipeCookingStepFragment();
+            RecipeCookingStepFragment cookingStep = new RecipeCookingStepFragment();
+
+
+            RecipeStep recipeStepData = recipe.getCookingSteps().get(position);
+
+
+            cookingStep.setRecipeStep(recipeStepData);
+
+            return cookingStep;
         }
 
         @Override
         public int getCount() {
-            return NUM_STEPS;
+            return numSteps;
         }
 
 
