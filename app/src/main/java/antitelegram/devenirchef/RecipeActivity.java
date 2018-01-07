@@ -61,11 +61,11 @@ public class RecipeActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == cookRequestCode && resultCode == RESULT_OK) {
             // cooking was successful. get to the place, where this recipe came from
             this.finish();
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
