@@ -185,9 +185,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setImageToView(ImageView image, String photoUrl) {
-        Glide.with(this)
-                .load(photoUrl)
-                .into(image);
+
+
+        if (!isFinishing()) {
+            Glide.with(image.getContext())
+                    .load(photoUrl)
+                    .into(image);
+        }
     }
 
     @Override

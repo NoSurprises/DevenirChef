@@ -79,9 +79,12 @@ public class RecipeActivity extends AppCompatActivity {
 
         // bind image
         ImageView image = (ImageView) findViewById(R.id.recipe_image);
-        Glide.with(this)
-                .load(recipe.getPhotoUrl())
-                .into(image);
+
+        if (!isFinishing()) {
+            Glide.with(image.getContext())
+                    .load(recipe.getPhotoUrl())
+                    .into(image);
+        }
     }
 
 
