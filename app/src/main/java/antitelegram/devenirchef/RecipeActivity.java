@@ -19,6 +19,8 @@ public class RecipeActivity extends AppCompatActivity {
 
     private Recipe recipe;
     private Intent fromIntent;
+    private int cookRequestCode = 1;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +56,17 @@ public class RecipeActivity extends AppCompatActivity {
     private void launchCookActivity() {
         Intent intent = new Intent(RecipeActivity.this, CookActivity.class);
         intent.putExtra("recipe", recipe);
-        startActivity(intent);
+        startActivityForResult(intent, cookRequestCode);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == cookRequestCode && resultCode == RESULT_OK) {
+            // cooking was successful. get to the place, where this recipe came from
+            this.finish();
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     private Recipe getRecipe() {

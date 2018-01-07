@@ -2,6 +2,7 @@ package antitelegram.devenirchef;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -29,14 +30,20 @@ public class CookActivity extends FragmentActivity {
         setUpRecipe();
 
         // to update count info
-        pagerAdapter.notifyDataSetChanged();
+        setNewDatasetSize();
 
+    }
+
+    private void setNewDatasetSize() {
+        numSteps = recipe.getCookingSteps().size();
+        // adding last "finish" screen
+        numSteps += 1;
+        pagerAdapter.notifyDataSetChanged();
     }
 
     private void setUpRecipe() {
         fromIntent = getIntent();
         recipe = getRecipe();
-        numSteps = recipe.getCookingSteps().size();
 
     }
 
@@ -61,6 +68,7 @@ public class CookActivity extends FragmentActivity {
         }
     }
 
+
     private class CookingPagerAdapter extends FragmentStatePagerAdapter {
 
         private static final String TAG = "daywint";
@@ -72,16 +80,22 @@ public class CookActivity extends FragmentActivity {
 
         @Override
         public Fragment getItem(int position) {
+            if (position == numSteps - 1) {
+                return new FinishRecipeStepFragment();
+            }
+
+            return createCookingStepFragment(position);
+        }
+
+        @NonNull
+        private Fragment createCookingStepFragment(int position) {
             RecipeCookingStepFragment cookingStep = new RecipeCookingStepFragment();
-
-
             RecipeStep recipeStepData = recipe.getCookingSteps().get(position);
-
-
             cookingStep.setRecipeStep(recipeStepData);
 
             return cookingStep;
         }
+
 
         @Override
         public int getCount() {
