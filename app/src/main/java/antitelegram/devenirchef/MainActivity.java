@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private List<Recipe> recipes;
     private Toolbar toolbar;
     private ChildEventListener childEventListener;
+    private View navigationHeader;
 
 
     @Override
@@ -72,12 +73,13 @@ public class MainActivity extends AppCompatActivity {
     private void setUpNavigationDrawer() {
         drawer = findViewById(R.id.drawer_layout);
         navigation = findViewById(R.id.nav_view);
+        navigationHeader = navigation.getHeaderView(0);
         setNavigationMenuClickListener();
         setUpEmailOptionsButton();
     }
 
     private void setUpEmailOptionsButton() {
-        ImageButton im = navigation.getHeaderView(0).findViewById(R.id.email_options_button);
+        ImageButton im = navigationHeader.findViewById(R.id.email_options_button);
 
         im.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -314,6 +316,12 @@ public class MainActivity extends AppCompatActivity {
     private void onSignedInInitialize(FirebaseUser user) {
         currentUser = user;
         addDatabaseReadListener();
+        initDataInNavigationDrawer();
+    }
+
+    private void initDataInNavigationDrawer() {
+        ((TextView) navigationHeader.findViewById(R.id.username)).setText(currentUser.getDisplayName());
+        ((TextView) navigationHeader.findViewById(R.id.user_email)).setText(currentUser.getEmail());
     }
 
 
