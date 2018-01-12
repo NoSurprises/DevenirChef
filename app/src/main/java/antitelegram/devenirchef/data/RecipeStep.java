@@ -1,4 +1,4 @@
-package antitelegram.devenirchef;
+package antitelegram.devenirchef.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;

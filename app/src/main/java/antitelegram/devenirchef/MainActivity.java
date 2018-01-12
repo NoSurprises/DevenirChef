@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import antitelegram.devenirchef.data.Recipe;
+
 public class MainActivity extends AppCompatActivity {
 
 
@@ -46,7 +48,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        toolbar.setTitle(R.string.app_name);
+        toolbar.inflateMenu(R.menu.options_menu);
 
 
         recipesLayout = findViewById(R.id.recipes_linear_layout);

@@ -1,4 +1,4 @@
-package antitelegram.devenirchef;
+package antitelegram.devenirchef.cooking;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -6,6 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import antitelegram.devenirchef.R;
+import antitelegram.devenirchef.data.RecipeStep;
 
 
 public class RecipeCookingStepFragment extends Fragment {

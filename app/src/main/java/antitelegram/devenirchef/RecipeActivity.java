@@ -11,6 +11,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import antitelegram.devenirchef.cooking.CookActivity;
+import antitelegram.devenirchef.data.Recipe;
+
 /**
  * Created by Nick on 11/27/2017.
  */
