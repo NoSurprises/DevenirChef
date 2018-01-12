@@ -3,27 +3,21 @@
 
     <group android:checkableBehavior="none">
         <item
-            android:id="@+id/nav_camera"
-            android:title="hello" />
+            android:id="@+id/nav_level_info"
+            android:title="Level info" />
+
         <item
-            android:id="@+id/nav_gallery"
-            android:title="world" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:title="sample" />
-        <item
-            android:id="@+id/nav_manage"
-            android:title="itemssss" />
+            android:id="@+id/nav_rate_others"
+            android:title="Rate others" />
+
     </group>
 
-    <item android:title="comunicate">
+    <item android:title="Info">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:title="hello" />
-            <item
-                android:id="@+id/nav_send"
-                android:title="world" />
+                android:id="@+id/nav_info"
+                android:title="Info" />
+
         </menu>
     </item>
 

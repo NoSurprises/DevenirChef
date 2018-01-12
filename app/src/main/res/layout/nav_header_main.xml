@@ -1,20 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="150dp"
+    android:layout_height="192dp"
+    android:background="@color/colorPrimaryDark"
     android:gravity="bottom"
     android:orientation="vertical"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark">
+    android:weightSum="1">
 
     <ImageView
         android:id="@+id/header_navigation_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="104dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="@dimen/margin_drawer"
+        android:layout_weight="0.54"
         android:src="@android:drawable/sym_def_app_icon" />
 
+
     <TextView
+        android:id="@+id/username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Devenir chefff!" />
+        android:layout_marginLeft="@dimen/margin_drawer"
+        android:layout_marginTop="8dp"
+        android:text="Sample username"
+        android:textColor="@color/colorWhite"
+        android:textSize="14sp" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/user_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_drawer"
+            android:gravity="left"
+
+            android:text="sample@google.com"
+            android:textColor="@color/colorWhite"
+            android:textSize="14sp" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/margin_drawer"
+            app:srcCompat="@android:drawable/arrow_down_float" />
+
+    </RelativeLayout>
 
 </LinearLayout>
