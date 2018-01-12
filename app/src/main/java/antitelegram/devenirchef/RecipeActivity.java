@@ -11,6 +11,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import antitelegram.devenirchef.cooking.CookActivity;
+import antitelegram.devenirchef.data.Recipe;
+
 /**
  * Created by Nick on 11/27/2017.
  */
@@ -79,9 +82,12 @@ public class RecipeActivity extends AppCompatActivity {
 
         // bind image
         ImageView image = (ImageView) findViewById(R.id.recipe_image);
-        Glide.with(this)
-                .load(recipe.getPhotoUrl())
-                .into(image);
+
+        if (!isFinishing()) {
+            Glide.with(image.getContext())
+                    .load(recipe.getPhotoUrl())
+                    .into(image);
+        }
     }
 
 

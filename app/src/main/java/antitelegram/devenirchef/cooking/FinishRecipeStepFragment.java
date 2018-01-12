@@ -1,4 +1,4 @@
-package antitelegram.devenirchef;
+package antitelegram.devenirchef.cooking;
 
 
 import android.app.Activity;
@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import antitelegram.devenirchef.R;
 
 
 /**
