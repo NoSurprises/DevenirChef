@@ -26,25 +26,46 @@ public class Recipe implements Parcelable {
     private String ingredients;
     private String description;
     private String photoUrl;
+    private int level;
     private List<RecipeStep> cookingSteps;
-
-    public Recipe() {
-        this.title = "Sample";
-        this.ingredients = "1. Sample 2.Sample";
-        this.description = "sample sample text text sample sample text text";
-        this.cookingSteps = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            cookingSteps.add(new RecipeStep());
-        }
-    }
 
     protected Recipe(Parcel in) {
         title = in.readString();
         ingredients = in.readString();
         description = in.readString();
         photoUrl = in.readString();
-        cookingSteps = in.readArrayList(RecipeStep.class.getClassLoader());
+        level = in.readInt();
+        cookingSteps = in.createTypedArrayList(RecipeStep.CREATOR);
+    }
 
+    public Recipe() {
+        this.title = "Sample";
+        this.ingredients = "1. Sample 2.Sample";
+        this.description = "sample sample text text sample sample text text";
+        this.cookingSteps = new ArrayList<>();
+        this.level = 1;
+        for (int i = 0; i < 4; i++) {
+            cookingSteps.add(new RecipeStep());
+        }
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(ingredients);
+        dest.writeString(description);
+        dest.writeString(photoUrl);
+        dest.writeInt(level);
+        dest.writeTypedList(cookingSteps);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public int getLevel() {
+        return level;
     }
 
     public String getTitle() {
@@ -67,17 +88,4 @@ public class Recipe implements Parcelable {
         return photoUrl;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(title);
-        dest.writeString(ingredients);
-        dest.writeString(description);
-        dest.writeString(photoUrl);
-        dest.writeList(cookingSteps);
-    }
 }

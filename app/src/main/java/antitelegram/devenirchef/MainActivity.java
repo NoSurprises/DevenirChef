@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
@@ -263,18 +264,25 @@ public class MainActivity extends AppCompatActivity {
 
                     // get data
                     TextView text = view.findViewById(R.id.recipe_name);
-                    ImageView imageView = view.findViewById(R.id.recipe_image);
+                    LinearLayout starsContainer = view.findViewById(R.id.recipe_star_container);
+                    ImageView recipeImage = view.findViewById(R.id.recipe_image);
+                    TextView description = view.findViewById(R.id.recipe_description);
 
 
                     // bind data
                     text.setText(newRecipe.getTitle());
-                    // TODO: 12/30/2017 bind description, steps..
-                    setImageToView(imageView, newRecipe.getPhotoUrl());
 
+                    int level = newRecipe.getLevel();
+                    LayoutInflater layoutInflater = getLayoutInflater();
+                    for (int i = 1; i < level; i++) {
+                        layoutInflater.inflate(R.layout.recipe_star, starsContainer, true);
+                    }
+                    setImageToView(recipeImage, newRecipe.getPhotoUrl());
+                    description.setText(newRecipe.getDescription());
 
                     // bind listeners
                     text.setOnClickListener(listener);
-                    imageView.setOnClickListener(listener);
+                    recipeImage.setOnClickListener(listener);
 
 
                 }
