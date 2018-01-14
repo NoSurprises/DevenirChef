@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -23,6 +25,10 @@ public class RecipeActivity extends AppCompatActivity {
     private Recipe recipe;
     private Intent fromIntent;
     private int cookRequestCode = 1;
+    private TextView recipeTitle;
+    private TextView description;
+    private TextView ingredients;
+    private LinearLayout starsContainer;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,9 +83,22 @@ public class RecipeActivity extends AppCompatActivity {
     }
 
     private void bindInfoToViews() {
-        ((TextView) findViewById(R.id.recipe_name)).setText(recipe.getTitle());
-        // TODO: 1/2/2018 bind other fields
 
+        recipeTitle = findViewById(R.id.recipe_name);
+        description = findViewById(R.id.recipe_description);
+        ingredients = findViewById(R.id.recipe_ingredients);
+        starsContainer = findViewById(R.id.recipe_star_container);
+
+
+        // bind data
+        recipeTitle.setText(recipe.getTitle());
+        description.setText(recipe.getDescription());
+        ingredients.setText(recipe.getIngredients());
+        LayoutInflater inflater = getLayoutInflater();
+        for (int i = 1; i < recipe.getLevel(); i++) {
+
+            inflater.inflate(R.layout.recipe_star, starsContainer, true);
+        }
         // bind image
         ImageView image = (ImageView) findViewById(R.id.recipe_image);
 
