@@ -1,5 +1,6 @@
 package antitelegram.devenirchef;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -22,6 +23,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ResultCodes;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -35,6 +38,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import antitelegram.devenirchef.data.Recipe;
+
+import static com.google.android.gms.common.ConnectionResult.SUCCESS;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -55,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private ChildEventListener childEventListener;
     private View navigationHeader;
+    private TextView drawerUsername;
+    private TextView drawerEmail;
 
 
     @Override
@@ -76,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
         drawer = findViewById(R.id.drawer_layout);
         navigation = findViewById(R.id.nav_view);
         navigationHeader = navigation.getHeaderView(0);
+        initDrawerDataFields();
         setNavigationMenuClickListener();
         setUpEmailOptionsButton();
     }
@@ -203,18 +211,44 @@ public class MainActivity extends AppCompatActivity {
                             new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
                             new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()
                     );
-                    startActivityForResult(
-                            AuthUI.getInstance()
-                                    .createSignInIntentBuilder()
-                                    .setIsSmartLockEnabled(false)
-                                    .setAvailableProviders(providers)
-                                    .build(),
-                            RC_SIGN_IN);
+
+
+                    GoogleApiAvailability apiAvailability = GoogleApiAvailability
+                            .getInstance();
+                    int codeServicesAvailable =
+                            apiAvailability
+                                    .isGooglePlayServicesAvailable(MainActivity.this);
+
+                    if (codeServicesAvailable == SUCCESS) {
+                        startActivityForResult(
+
+                                AuthUI.getInstance()
+                                        .createSignInIntentBuilder()
+                                        .setIsSmartLockEnabled(false)
+                                        .setAvailableProviders(providers)
+                                        .build(),
+                                RC_SIGN_IN);
+                    } else {
+                        apiAvailability.showErrorDialogFragment(MainActivity.this, codeServicesAvailable, RC_SIGN_IN);
+                    }
 
                 }
 
             }
         };
+    }
+
+    private boolean isGooglePlayServicesAvailable() {
+        GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
+        Integer resultCode = googleApiAvailability.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            Dialog dialog = googleApiAvailability.getErrorDialog(this, resultCode, 0);
+            if (dialog != null) {
+                dialog.show();
+            }
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -225,7 +259,7 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == ResultCodes.OK) {
                 FirebaseUser user = auth.getCurrentUser();
             } else {
-                Toast.makeText(this, "failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "failed " + resultCode, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -337,8 +371,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initDataInNavigationDrawer() {
-        ((TextView) navigationHeader.findViewById(R.id.username)).setText(currentUser.getDisplayName());
-        ((TextView) navigationHeader.findViewById(R.id.user_email)).setText(currentUser.getEmail());
+        drawerUsername.setText(currentUser.getDisplayName());
+        drawerEmail.setText(currentUser.getEmail());
+    }
+
+    private void initDrawerDataFields() {
+        drawerUsername = navigationHeader.findViewById(R.id.username);
+        drawerEmail = navigationHeader.findViewById(R.id.user_email);
     }
 
 
