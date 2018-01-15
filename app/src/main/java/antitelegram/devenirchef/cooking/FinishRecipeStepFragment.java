@@ -2,14 +2,24 @@ package antitelegram.devenirchef.cooking;
 
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import antitelegram.devenirchef.R;
+
+import static android.app.Activity.RESULT_OK;
 
 
 /**
@@ -18,7 +28,11 @@ import antitelegram.devenirchef.R;
 public class FinishRecipeStepFragment extends Fragment {
 
 
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final String TAG = "daywint";
     private Button takePhoto;
+    private Button mainScreen;
+    private ImageView imageView;
 
     public FinishRecipeStepFragment() {
         // Required empty public constructor
@@ -26,31 +40,68 @@ public class FinishRecipeStepFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View finishScreen = inflater.inflate(R.layout.fragment_finish_recipe_step, container, false);
 
         initializeViews(finishScreen);
-        setTakePhotoClickListener();
+        setButtonsListeners();
 
         return finishScreen;
     }
 
-    private void setTakePhotoClickListener() {
+    private void setButtonsListeners() {
+
         takePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: 1/7/2018 missed step of taking photo
+                if (checkCameraHardware(v.getContext())) {
+                    dispatchTakePictureIntent(v.getContext());
+
+                }
+            }
+        });
+
+        mainScreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 Activity cookingActivity = getActivity();
-                cookingActivity.setResult(Activity.RESULT_OK);
-                cookingActivity.finish();
+                if (cookingActivity != null) {
+                    cookingActivity.setResult(RESULT_OK);
+                    cookingActivity.finish();
+                }
             }
         });
     }
 
-    private void initializeViews(View finishScreen) {
-        takePhoto = finishScreen.findViewById(R.id.finish_take_photo);
+
+    private void dispatchTakePictureIntent(Context context) {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(context.getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
     }
 
+    private boolean checkCameraHardware(Context context) {
+        return context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA);
+    }
+
+    private void initializeViews(View finishScreen) {
+        takePhoto = finishScreen.findViewById(R.id.finish_take_photo);
+        mainScreen = finishScreen.findViewById(R.id.main_screen_button);
+        imageView = finishScreen.findViewById(R.id.image_result);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "onActivityResult: ");
+        if (requestCode == FinishRecipeStepFragment.REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            imageView.setImageBitmap(imageBitmap);
+        }
+    }
 }
+
