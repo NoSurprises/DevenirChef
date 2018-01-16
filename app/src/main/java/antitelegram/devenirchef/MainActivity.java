@@ -270,6 +270,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initDatabase() {
         database = FirebaseDatabase.getInstance();
+        database.setPersistenceEnabled(true);
     }
 
     private void addDatabaseReadListener() {
