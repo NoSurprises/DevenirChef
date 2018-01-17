@@ -101,6 +101,12 @@ public class FinishRecipeStepFragment extends Fragment {
 
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             imageView.setImageBitmap(imageBitmap);
+
+            // TODO: 1/17/2018 move to listener on "go to main menu" button
+            CookActivity cookActivity = (CookActivity) getActivity();
+            if (cookActivity != null) {
+                cookActivity.saveImageToDatabase(imageBitmap);
+            }
         }
     }
 }
