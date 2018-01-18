@@ -19,7 +19,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 import antitelegram.devenirchef.R;
@@ -75,7 +78,7 @@ public class CookActivity extends FragmentActivity {
 
     }
 
-    public void saveImageToDatabase(Bitmap image) {
+    public void saveImageToDatabase(final Bitmap image) {
 
         usersValueListener = new ValueEventListener() {
             @Override
@@ -113,7 +116,8 @@ public class CookActivity extends FragmentActivity {
             private void addNewFinishedRecipeToDatabase(User user) {
                 FinishedRecipe finishedRecipe = new FinishedRecipe();
                 finishedRecipe.setTitle(recipe.getTitle());
-                finishedRecipe.setPhotoUrl("stub!!!"); // TODO: 1/18/2018 set photo url
+                String photoUrl = uploadImageToStorage(image);
+                finishedRecipe.setPhotoUrl(photoUrl);
                 user.getFinishedRecipes().add(finishedRecipe);
                 userReference.setValue(user);
             }
@@ -125,6 +129,25 @@ public class CookActivity extends FragmentActivity {
         };
 
         userReference.addListenerForSingleValueEvent(usersValueListener);
+    }
+
+    private String uploadImageToStorage(Bitmap image) {
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference finished = storage.getReference("finishedRecipes");
+
+        if (image == null) {
+            return "none"; // TODO: 1/18/2018 change hardcoded to constant
+        }
+        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, byteStream);
+        byte[] byteImage = byteStream.toByteArray();
+
+        StorageReference imageRef = finished.child(firebaseAuth.getCurrentUser().getUid() +
+                image.hashCode());
+
+        imageRef.putBytes(byteImage);
+        return imageRef.getPath();
     }
 
     // todo remove dubug function
