@@ -33,6 +33,7 @@ public class FinishRecipeStepFragment extends Fragment {
     private Button takePhoto;
     private Button mainScreen;
     private ImageView imageView;
+    private Bitmap finishImage;
 
     public FinishRecipeStepFragment() {
         // Required empty public constructor
@@ -66,11 +67,31 @@ public class FinishRecipeStepFragment extends Fragment {
         mainScreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                CookActivity cookActivity = (CookActivity) getActivity();
+                if (cookActivity != null) {
+                    cookActivity.saveImageToDatabase(finishImage);
+                }
+
                 Activity cookingActivity = getActivity();
                 if (cookingActivity != null) {
                     cookingActivity.setResult(RESULT_OK);
                     cookingActivity.finish();
                 }
+
+            }
+        });
+
+        // todo remove debug listener
+        mainScreen.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                CookActivity cookActivity = (CookActivity) getActivity();
+                if (cookActivity != null) {
+                    cookActivity.removeUsersData();
+                }
+
+                return true;
             }
         });
     }
@@ -99,14 +120,9 @@ public class FinishRecipeStepFragment extends Fragment {
         if (requestCode == FinishRecipeStepFragment.REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
 
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            imageView.setImageBitmap(imageBitmap);
+            finishImage = (Bitmap) extras.get("data");
+            imageView.setImageBitmap(finishImage);
 
-            // TODO: 1/17/2018 move to listener on "go to main menu" button
-            CookActivity cookActivity = (CookActivity) getActivity();
-            if (cookActivity != null) {
-                cookActivity.saveImageToDatabase(imageBitmap);
-            }
         }
     }
 }

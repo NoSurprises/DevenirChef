@@ -3,7 +3,6 @@ package antitelegram.devenirchef.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,14 +38,7 @@ public class Recipe implements Parcelable {
     }
 
     public Recipe() {
-        this.title = "Sample";
-        this.ingredients = "1. Sample 2.Sample";
-        this.description = "sample sample text text sample sample text text";
-        this.cookingSteps = new ArrayList<>();
-        this.level = 1;
-        for (int i = 0; i < 4; i++) {
-            cookingSteps.add(new RecipeStep());
-        }
+
     }
 
     @Override

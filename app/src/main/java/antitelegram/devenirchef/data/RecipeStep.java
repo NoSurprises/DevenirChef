@@ -23,8 +23,7 @@ public class RecipeStep implements Parcelable {
     private String descriptionOfStep;
 
     public RecipeStep() {
-        this.stepNumber = 4;
-        this.descriptionOfStep = "Sample";
+
     }
 
     protected RecipeStep(Parcel in) {

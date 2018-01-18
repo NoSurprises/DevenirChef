@@ -1,6 +1,6 @@
 package antitelegram.devenirchef.data;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Nick on 1/16/2018.
@@ -9,16 +9,18 @@ import java.util.ArrayList;
 public class User {
     int level;
     int exp;
-    private ArrayList<FinishedRecipe> finishedRecipes;
+    private List<FinishedRecipe> finishedRecipes;
 
     public User() {
-        this.finishedRecipes = new ArrayList<>();
-        this.level = 1;
-        this.exp = 0;
+        level = 1;
     }
 
-    public ArrayList<FinishedRecipe> getFinishedRecipes() {
+    public List<FinishedRecipe> getFinishedRecipes() {
         return finishedRecipes;
+    }
+
+    public void setFinishedRecipes(List<FinishedRecipe> finishedRecipes) {
+        this.finishedRecipes = finishedRecipes;
     }
 
     public int getLevel() {

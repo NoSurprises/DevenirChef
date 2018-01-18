@@ -9,8 +9,7 @@ public class FinishedRecipe {
     private String photoUrl;
 
     public FinishedRecipe() {
-        title = "stub";
-        photoUrl = "stub";
+
     }
 
     public String getTitle() {

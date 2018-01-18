@@ -20,6 +20,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 import antitelegram.devenirchef.R;
 import antitelegram.devenirchef.data.FinishedRecipe;
 import antitelegram.devenirchef.data.Recipe;
@@ -74,15 +76,46 @@ public class CookActivity extends FragmentActivity {
     }
 
     public void saveImageToDatabase(Bitmap image) {
+
         usersValueListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d(TAG, "onDataChange: value " + dataSnapshot.getValue());
-                if (!dataSnapshot.exists()) {
-                    userReference.setValue(new User());
-                    Log.d(TAG, "onDataChange: created new user in database");
+
+                User user;
+
+
+                try {
+
+                    Log.d(TAG, "onDataChange: value in snapshot " + dataSnapshot.getValue());
+                    if (!dataSnapshot.exists()) {
+                        user = new User();
+                        Log.d(TAG, "onDataChange: created new user");
+                    } else {
+                        user = dataSnapshot.getValue(User.class);
+                    }
+                    initUserFinishedRecipesIfNull(user);
+
+                    if (user == null) return;
+                    addNewFinishedRecipeToDatabase(user);
+                } catch (Exception e) {
+                    Log.d(TAG, "onDataChange: can't add finished recipe to database " + e);
+                    e.printStackTrace();
                 }
-                addNewFinishedRecipe();
+            }
+
+
+            private void initUserFinishedRecipesIfNull(User user) {
+                if (user.getFinishedRecipes() == null) {
+                    user.setFinishedRecipes(new ArrayList<FinishedRecipe>());
+                }
+            }
+
+            private void addNewFinishedRecipeToDatabase(User user) {
+                FinishedRecipe finishedRecipe = new FinishedRecipe();
+                finishedRecipe.setTitle(recipe.getTitle());
+                finishedRecipe.setPhotoUrl("stub!!!"); // TODO: 1/18/2018 set photo url
+                user.getFinishedRecipes().add(finishedRecipe);
+                userReference.setValue(user);
             }
 
             @Override
@@ -90,15 +123,13 @@ public class CookActivity extends FragmentActivity {
 
             }
         };
+
         userReference.addListenerForSingleValueEvent(usersValueListener);
     }
 
-    private void addNewFinishedRecipe() {
-        FinishedRecipe finishedRecipe = new FinishedRecipe();
-        finishedRecipe.setTitle(recipe.getTitle());
-        finishedRecipe.setPhotoUrl("stuub!");
-
-        userReference.child("finishedRecipes").push().setValue(finishedRecipe);
+    // todo remove dubug function
+    public void removeUsersData() {
+        userReference.removeValue();
     }
 
 
