@@ -30,6 +30,8 @@ import antitelegram.devenirchef.data.FinishedRecipe;
 import antitelegram.devenirchef.data.Recipe;
 import antitelegram.devenirchef.data.RecipeStep;
 import antitelegram.devenirchef.data.User;
+import antitelegram.devenirchef.utils.Constants;
+import antitelegram.devenirchef.utils.Utils;
 
 public class CookActivity extends FragmentActivity {
 
@@ -83,27 +85,28 @@ public class CookActivity extends FragmentActivity {
         usersValueListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
-                User user;
-
-
                 try {
-
                     Log.d(TAG, "onDataChange: value in snapshot " + dataSnapshot.getValue());
-                    if (!dataSnapshot.exists()) {
-                        user = new User();
-                        Log.d(TAG, "onDataChange: created new user");
-                    } else {
-                        user = dataSnapshot.getValue(User.class);
-                    }
+
+                    User user = getUser(dataSnapshot);
                     initUserFinishedRecipesIfNull(user);
 
-                    if (user == null) return;
-                    addNewFinishedRecipeToDatabase(user);
+                    updateUserInDatabase(user);
                 } catch (Exception e) {
                     Log.d(TAG, "onDataChange: can't add finished recipe to database " + e);
                     e.printStackTrace();
                 }
+            }
+
+            private User getUser(DataSnapshot dataSnapshot) {
+                User user;
+                if (!dataSnapshot.exists()) {
+                    user = new User();
+                    Log.d(TAG, "onDataChange: created new user");
+                } else {
+                    user = dataSnapshot.getValue(User.class);
+                }
+                return user;
             }
 
 
@@ -113,13 +116,25 @@ public class CookActivity extends FragmentActivity {
                 }
             }
 
-            private void addNewFinishedRecipeToDatabase(User user) {
-                FinishedRecipe finishedRecipe = new FinishedRecipe();
-                finishedRecipe.setTitle(recipe.getTitle());
-                String photoUrl = uploadImageToStorage(image);
-                finishedRecipe.setPhotoUrl(photoUrl);
+            private void updateUserInDatabase(User user) {
+                FinishedRecipe finishedRecipe = getFinishedRecipe();
                 user.getFinishedRecipes().add(finishedRecipe);
                 userReference.setValue(user);
+            }
+
+            @NonNull
+            private FinishedRecipe getFinishedRecipe() {
+                FinishedRecipe finishedRecipe = new FinishedRecipe();
+                setDataToRecipe(finishedRecipe);
+
+                return finishedRecipe;
+            }
+
+            private void setDataToRecipe(FinishedRecipe finishedRecipe) {
+                finishedRecipe.setTitle(recipe.getTitle());
+
+                String photoUrl = uploadImageToStorage(image);
+                finishedRecipe.setPhotoUrl(photoUrl);
             }
 
             @Override
@@ -133,24 +148,37 @@ public class CookActivity extends FragmentActivity {
 
     private String uploadImageToStorage(Bitmap image) {
 
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference finished = storage.getReference("finishedRecipes");
-
         if (image == null) {
-            return "none"; // TODO: 1/18/2018 change hardcoded to constant
+            return Constants.NO_FILE_ADDED;
         }
-        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, 100, byteStream);
-        byte[] byteImage = byteStream.toByteArray();
+        byte[] byteImage = convertImageToByteArray(image);
 
-        StorageReference imageRef = finished.child(firebaseAuth.getCurrentUser().getUid() +
-                image.hashCode());
-
+        StorageReference imageRef = getReferenceToImage(image);
         imageRef.putBytes(byteImage);
+
         return imageRef.getPath();
     }
 
-    // todo remove dubug function
+    @NonNull
+    private StorageReference getReferenceToImage(Bitmap image) {
+        StorageReference finished = getReferenceToFinishedRecipes();
+        return finished.child(firebaseAuth.getCurrentUser().getUid() +
+                image.hashCode());
+    }
+
+    @NonNull
+    private StorageReference getReferenceToFinishedRecipes() {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        return storage.getReference("finishedRecipes");
+    }
+
+    private byte[] convertImageToByteArray(Bitmap image) {
+        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, byteStream);
+        return byteStream.toByteArray();
+    }
+
+    // todo remove debug function
     public void removeUsersData() {
         userReference.removeValue();
     }
@@ -168,7 +196,7 @@ public class CookActivity extends FragmentActivity {
     }
 
     private void initDatabase() {
-        firebaseDatabase = FirebaseDatabase.getInstance();
+        firebaseDatabase = Utils.getFirebaseDatabase();
     }
 
     private void setNewDatasetSize() {

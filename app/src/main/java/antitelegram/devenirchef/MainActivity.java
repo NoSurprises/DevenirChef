@@ -38,6 +38,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import antitelegram.devenirchef.data.Recipe;
+import antitelegram.devenirchef.utils.Utils;
 
 import static com.google.android.gms.common.ConnectionResult.SUCCESS;
 
@@ -269,8 +270,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initDatabase() {
-        database = FirebaseDatabase.getInstance();
-        database.setPersistenceEnabled(true);
+        database = Utils.getFirebaseDatabase();
     }
 
     private void addDatabaseReadListener() {
