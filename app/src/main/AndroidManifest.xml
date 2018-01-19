@@ -18,10 +18,10 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".SearchResultsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -31,13 +31,11 @@
                 android:name="android.app.seachable"
                 android:resource="@xml/searchable" />
         </activity>
-
         <activity
             android:name=".RecipeActivity"
-            android:parentActivityName=".MainActivity"></activity>
-
-        <activity android:name=".cooking.CookActivity"></activity>
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".cooking.CookActivity" />
+        <activity android:name=".UserInfoActivity"></activity>
     </application>
-
 
 </manifest>

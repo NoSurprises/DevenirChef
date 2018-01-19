@@ -8,7 +8,8 @@
 
 
     <include
-        layout="@layout/app_main"
+        android:id="@+id/content_drawer_layout"
+        layout="@layout/base_app_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
