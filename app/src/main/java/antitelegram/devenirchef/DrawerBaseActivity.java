@@ -66,6 +66,11 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
         initStorage();
         initAuth();
 
+
+    }
+
+    public void setOnToolbarClickedListener(View.OnClickListener listener) {
+        toolbar.setOnClickListener(listener);
     }
 
     @Override

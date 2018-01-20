@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +35,7 @@ public class MainActivity extends DrawerBaseActivity {
 
     private List<Recipe> recipes;
     private ChildEventListener childEventListener;
+    private ScrollView recipesScroll;
 
 
 
@@ -41,18 +43,34 @@ public class MainActivity extends DrawerBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentLayout(R.layout.main_content);
+
         initRecipesStorage();
+
+        setToolbarClickedListener();
+
 
     }
 
     private void initRecipesStorage() {
         recipesLayout = findViewById(R.id.recipes_linear_layout);
+        recipesScroll = findViewById(R.id.scroll_recipes_view);
         recipes = new ArrayList<>();
+
     }
 
     private void removeAllRecipes() {
         recipes.clear();
         recipesLayout.removeAllViews();
+    }
+
+    private void setToolbarClickedListener() {
+        View.OnClickListener toolbarClicked = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                recipesScroll.fullScroll(ScrollView.FOCUS_UP);
+            }
+        };
+        setOnToolbarClickedListener(toolbarClicked);
     }
 
 
@@ -165,16 +183,10 @@ public class MainActivity extends DrawerBaseActivity {
     }
 
     private void setImageToView(ImageView image, String photoUrl) {
-
-
         if (!isFinishing()) {
             Glide.with(image.getContext())
                     .load(photoUrl)
                     .into(image);
         }
     }
-
-
-
-
 }
