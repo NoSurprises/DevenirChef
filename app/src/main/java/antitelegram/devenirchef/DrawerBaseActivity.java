@@ -282,9 +282,10 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
     }
 
     private void removeDatabaseReadListener() {
-        if (childEventListener != null) {
-            database.getReference("recipes").removeEventListener(childEventListener);
+        if (childEventListener == null) {
+            return;
         }
+        database.getReference("recipes").removeEventListener(childEventListener);
         childEventListener = null;
     }
 

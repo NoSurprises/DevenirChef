@@ -2,9 +2,6 @@ package antitelegram.devenirchef;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,8 +16,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,21 +25,14 @@ import antitelegram.devenirchef.utils.Utils;
 
 public class MainActivity extends DrawerBaseActivity {
 
-    private static final String TAG = "daywint";
+    public static final String TAG = "daywint";
     private static final int RC_SIGN_IN = 123;
 
-    private NavigationView navigation;
-    private DrawerLayout drawer;
-    private FirebaseUser currentUser;
-    private FirebaseDatabase database;
-    private FirebaseStorage storage;
-    private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authStateListener;
     private LinearLayout recipesLayout;
 
 
     private List<Recipe> recipes;
-    private Toolbar toolbar;
     private ChildEventListener childEventListener;
 
 
@@ -78,6 +66,8 @@ public class MainActivity extends DrawerBaseActivity {
     void addDatabaseReadListener() {
         if (childEventListener == null) {
             childEventListener = new ChildEventListener() {
+
+
                 @Override
                 public void onChildAdded(final DataSnapshot dataSnapshot, String s) {
                     View recipeView = createNewRecipeCard();
@@ -88,7 +78,7 @@ public class MainActivity extends DrawerBaseActivity {
 
                 private void bindDataToViewFromRecipe(View view, final Recipe newRecipe) {
 
-                    View.OnClickListener listener = new View.OnClickListener() {
+                    View.OnClickListener openRecipeActivity = new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Intent intent = new Intent(MainActivity.this, RecipeActivity.class);
@@ -96,6 +86,7 @@ public class MainActivity extends DrawerBaseActivity {
                             startActivity(intent);
                         }
                     };
+
 
                     // TODO: 1/2/2018 decompose
 
@@ -111,6 +102,8 @@ public class MainActivity extends DrawerBaseActivity {
 
                     int level = newRecipe.getLevel();
                     LayoutInflater layoutInflater = getLayoutInflater();
+
+                    // start from 1, because 1 star is already in xml
                     for (int i = 1; i < level; i++) {
                         layoutInflater.inflate(R.layout.recipe_star, starsContainer, true);
                     }
@@ -118,8 +111,8 @@ public class MainActivity extends DrawerBaseActivity {
                     description.setText(newRecipe.getDescription());
 
                     // bind listeners
-                    text.setOnClickListener(listener);
-                    recipeImage.setOnClickListener(listener);
+                    text.setOnClickListener(openRecipeActivity);
+                    recipeImage.setOnClickListener(openRecipeActivity);
 
 
                 }

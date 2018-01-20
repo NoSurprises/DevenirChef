@@ -92,6 +92,7 @@ public class CookActivity extends FragmentActivity {
                     initUserFinishedRecipesIfNull(user);
 
                     updateUserInDatabase(user);
+                    Log.d(TAG, "onDataChange: updated user info");
                 } catch (Exception e) {
                     Log.d(TAG, "onDataChange: can't add finished recipe to database " + e);
                     e.printStackTrace();
@@ -99,14 +100,13 @@ public class CookActivity extends FragmentActivity {
             }
 
             private User getUser(DataSnapshot dataSnapshot) {
-                User user;
+
                 if (!dataSnapshot.exists()) {
-                    user = new User();
                     Log.d(TAG, "onDataChange: created new user");
-                } else {
-                    user = dataSnapshot.getValue(User.class);
+                    return new User();
                 }
-                return user;
+                return dataSnapshot.getValue(User.class);
+
             }
 
 
@@ -168,7 +168,7 @@ public class CookActivity extends FragmentActivity {
 
     @NonNull
     private StorageReference getReferenceToFinishedRecipes() {
-        FirebaseStorage storage = FirebaseStorage.getInstance();
+        FirebaseStorage storage = Utils.getFirebaseStorage();
         return storage.getReference("finishedRecipes");
     }
 
@@ -185,7 +185,7 @@ public class CookActivity extends FragmentActivity {
 
 
     private void initAuth() {
-        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuth = Utils.getFirebaseAuth();
         FirebaseUser user = firebaseAuth.getCurrentUser();
         if (user == null) {
             return;

@@ -100,7 +100,7 @@ public class RecipeActivity extends AppCompatActivity {
             inflater.inflate(R.layout.recipe_star, starsContainer, true);
         }
         // bind image
-        ImageView image = (ImageView) findViewById(R.id.recipe_image);
+        ImageView image = findViewById(R.id.recipe_image);
 
         if (!isFinishing()) {
             Glide.with(image.getContext())

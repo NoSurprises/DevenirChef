@@ -3,13 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="antitelegram.devenirchef.CookActivity">
+    tools:context="antitelegram.devenirchef.cooking.CookActivity">
 
     <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        android:layout_height="match_parent"
+        android:layout_margin="8dp">
     </android.support.v4.view.ViewPager>
 
 </android.support.constraint.ConstraintLayout>
