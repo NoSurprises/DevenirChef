@@ -3,6 +3,9 @@
 
     <group android:checkableBehavior="none">
         <item
+            android:id="@+id/nav_recipes"
+            android:title="Recipes" />
+        <item
             android:id="@+id/nav_level_info"
             android:title="Level info" />
 

@@ -7,7 +7,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewStub;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -53,12 +52,7 @@ public class MainActivity extends DrawerBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        ViewStub viewStub = findViewById(R.id.drawer_content_stub);
-        viewStub.setLayoutResource(R.layout.main_content);
-        viewStub.inflate();
-
-
+        setContentLayout(R.layout.main_content);
         initRecipesStorage();
 
     }

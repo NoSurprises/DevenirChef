@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewStub;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,7 +54,6 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
     private TextView drawerUsername;
     private TextView drawerEmail;
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +67,46 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
         initAuth();
 
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        auth.addAuthStateListener(authStateListener);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (authStateListener != null) {
+            auth.removeAuthStateListener(authStateListener);
+        }
+        removeDatabaseReadListener();
+    }
+
+    void setContentLayout(int layoutResource) {
+        ViewStub viewStub = findViewById(R.id.drawer_content_stub);
+        viewStub.setLayoutResource(layoutResource);
+        viewStub.inflate();
+    }
+
+    void onSignedOut() {
+        currentUser = null;
+        removeDatabaseReadListener();
+    }
+
+    public void initDataInNavigationDrawer() {
+        drawerUsername.setText(currentUser.getDisplayName());
+        drawerEmail.setText(currentUser.getEmail());
+    }
+
+    private void onSignedInInitialize(FirebaseUser user) {
+        currentUser = user;
+        addDatabaseReadListener();
+        initDataInNavigationDrawer();
+    }
+
+    abstract void addDatabaseReadListener();
 
     private void setUpNavigationDrawer() {
         drawer = findViewById(R.id.drawer_layout);
@@ -88,10 +128,23 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 drawer.closeDrawers();
                 switch (item.getItemId()) {
-                    case R.id.nav_info: {
-                        Intent infoIntent = new Intent(DrawerBaseActivity.this, UserInfoActivity.class);
-                        startActivity(infoIntent);
+                    case R.id.nav_recipes: {
+                        if (DrawerBaseActivity.this instanceof MainActivity) {
+                            break;
+                        }
+                        Intent recipesIntent = new Intent(DrawerBaseActivity.this, MainActivity.class);
+                        startActivityWithoutHistory(recipesIntent);
+                        break;
                     }
+                    case R.id.nav_level_info: {
+                        if (DrawerBaseActivity.this instanceof UserInfoActivity) {
+                            break;
+                        }
+                        Intent infoIntent = new Intent(DrawerBaseActivity.this, UserInfoActivity.class);
+                        startActivityWithoutHistory(infoIntent);
+                        break;
+                    }
+
                     default: {
                         Toast.makeText(DrawerBaseActivity.this,
                                 item.getTitle() + " not implemented by Alex yet", Toast.LENGTH_SHORT).show();
@@ -100,103 +153,12 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
                 }
                 return true;
             }
-        });
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        auth.addAuthStateListener(authStateListener);
-    }
-
-    private void initAuth() {
-        // TODO: 1/7/2018 decompose
-        auth = FirebaseAuth.getInstance();
-        currentUser = auth.getCurrentUser();
-
-        authStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    onSignedInInitialize(user);
-                } else {
-
-                    onSignedOut();
-                    List<AuthUI.IdpConfig> providers = Arrays.asList(
-                            new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                            new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()
-                    );
-
-
-                    GoogleApiAvailability apiAvailability = GoogleApiAvailability
-                            .getInstance();
-                    int codeServicesAvailable =
-                            apiAvailability
-                                    .isGooglePlayServicesAvailable(DrawerBaseActivity.this);
-
-                    if (codeServicesAvailable == SUCCESS) {
-                        startActivityForResult(
-
-                                AuthUI.getInstance()
-                                        .createSignInIntentBuilder()
-                                        .setIsSmartLockEnabled(false)
-                                        .setAvailableProviders(providers)
-                                        .build(),
-                                RC_SIGN_IN);
-                    } else {
-                        apiAvailability.showErrorDialogFragment(DrawerBaseActivity.this, codeServicesAvailable, RC_SIGN_IN);
-                    }
-
-                }
-
+            private void startActivityWithoutHistory(Intent recipesIntent) {
+                DrawerBaseActivity.this.finish();
+                startActivity(recipesIntent);
             }
-        };
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (authStateListener != null) {
-            auth.removeAuthStateListener(authStateListener);
-        }
-        removeDatabaseReadListener();
-    }
-
-    private void initStorage() {
-        storage = FirebaseStorage.getInstance();
-    }
-
-    private void initDatabase() {
-        database = Utils.getFirebaseDatabase();
-    }
-
-
-    private void removeDatabaseReadListener() {
-        if (childEventListener != null) {
-            database.getReference("recipes").removeEventListener(childEventListener);
-        }
-        childEventListener = null;
-    }
-
-
-    abstract void addDatabaseReadListener();
-
-    private void onSignedInInitialize(FirebaseUser user) {
-        currentUser = user;
-        addDatabaseReadListener();
-        initDataInNavigationDrawer();
-    }
-
-    void onSignedOut() {
-        currentUser = null;
-        removeDatabaseReadListener();
-    }
-
-    public void initDataInNavigationDrawer() {
-        drawerUsername.setText(currentUser.getDisplayName());
-        drawerEmail.setText(currentUser.getEmail());
+        });
     }
 
     private void setUpEmailOptionsButton() {
@@ -206,6 +168,7 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 PopupMenu emailOptions = createPopupMenu(v);
+
                 emailOptions.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
@@ -215,7 +178,6 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
                                 drawer.closeDrawers();
                                 return true;
                             }
-
                         }
                         return false;
                     }
@@ -223,22 +185,14 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
 
             }
 
-            private PopupMenu createPopupMenu(View v) {
-                PopupMenu emailOptions = new PopupMenu(DrawerBaseActivity.this, v, Gravity.END);
+            private PopupMenu createPopupMenu(View anchor) {
+                PopupMenu emailOptions = new PopupMenu(DrawerBaseActivity.this, anchor, Gravity.END);
                 emailOptions.inflate(R.menu.email_options_menu);
                 emailOptions.show();
                 return emailOptions;
             }
         });
     }
-
-    private void logout() {
-        if (currentUser != null) {
-            AuthUI.getInstance().signOut(this);
-        }
-
-    }
-
 
     private void setUpToolbar() {
         initToolbar();
@@ -264,6 +218,81 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.open_drawer, R.string.close_drawer);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+    }
+
+    private void initAuth() {
+        // TODO: 1/7/2018 decompose
+        auth = FirebaseAuth.getInstance();
+        currentUser = auth.getCurrentUser();
+
+        authStateListener = new FirebaseAuth.AuthStateListener() {
+
+            private List<AuthUI.IdpConfig> providers;
+            private int codeServicesAvailable;
+            private GoogleApiAvailability apiAvailability;
+
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    onSignedInInitialize(user);
+                } else {
+                    onSignedOut();
+
+                    apiAvailability = GoogleApiAvailability.getInstance();
+                    codeServicesAvailable = apiAvailability
+                            .isGooglePlayServicesAvailable(DrawerBaseActivity.this);
+
+                    setAuthProviders();
+
+                    if (codeServicesAvailable == SUCCESS) {
+                        startAuthenticationActivity();
+                    } else {
+                        apiAvailability.showErrorDialogFragment(DrawerBaseActivity.this, codeServicesAvailable, RC_SIGN_IN);
+                    }
+                }
+            }
+
+            private void startAuthenticationActivity() {
+                startActivityForResult(
+                        AuthUI.getInstance()
+                                .createSignInIntentBuilder()
+                                .setIsSmartLockEnabled(false)
+                                .setAvailableProviders(providers)
+                                .build(),
+                        RC_SIGN_IN);
+            }
+
+            private void setAuthProviders() {
+                providers = Arrays.asList(
+                        new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                        new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()
+                );
+            }
+        };
+    }
+
+    private void initStorage() {
+        storage = Utils.getFirebaseStorage();
+    }
+
+
+    private void initDatabase() {
+        database = Utils.getFirebaseDatabase();
+    }
+
+    private void removeDatabaseReadListener() {
+        if (childEventListener != null) {
+            database.getReference("recipes").removeEventListener(childEventListener);
+        }
+        childEventListener = null;
+    }
+
+    private void logout() {
+        if (currentUser != null) {
+            AuthUI.getInstance().signOut(this);
+        }
+
     }
 
 }
