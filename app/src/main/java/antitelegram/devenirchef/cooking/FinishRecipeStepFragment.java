@@ -49,6 +49,10 @@ public class FinishRecipeStepFragment extends Fragment {
         initializeViews(finishScreen);
         setButtonsListeners();
 
+        if (savedInstanceState != null && savedInstanceState.containsKey("image")) {
+            finishImage = ((Bitmap) savedInstanceState.get("image"));
+            imageView.setImageBitmap(finishImage);
+        }
         return finishScreen;
     }
 
@@ -124,6 +128,13 @@ public class FinishRecipeStepFragment extends Fragment {
             imageView.setImageBitmap(finishImage);
 
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelable("image", finishImage);
     }
 }
 
