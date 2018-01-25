@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -56,12 +57,18 @@ public class CookActivity extends FragmentActivity {
         initDatabase();
         initAuth();
 
-        setUpViewPager();
         setUpRecipe();
+        setUpViewPager();
+        setUpToolbar();
+
 
         // to update count info
         setNewDatasetSize();
 
+    }
+
+    private void setUpToolbar() {
+        setUpTabs();
     }
 
     @Override
@@ -209,15 +216,17 @@ public class CookActivity extends FragmentActivity {
     private void setUpRecipe() {
         fromIntent = getIntent();
         recipe = getRecipe();
-
     }
 
     private void setUpViewPager() {
         allStepsViewPager = findViewById(R.id.view_pager);
         pagerAdapter = new CookingPagerAdapter(getSupportFragmentManager());
         allStepsViewPager.setAdapter(pagerAdapter);
+    }
 
-
+    private void setUpTabs() {
+        TabLayout tabs = findViewById(R.id.tabs);
+        tabs.setupWithViewPager(allStepsViewPager);
     }
 
     private Recipe getRecipe() {

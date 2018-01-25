@@ -9,3 +9,4 @@
 .externalNativeBuild
 /app/*.apk
 local_stuff
+/*.pdf
