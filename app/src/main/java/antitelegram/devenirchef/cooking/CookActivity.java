@@ -6,11 +6,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,7 +35,7 @@ import antitelegram.devenirchef.data.User;
 import antitelegram.devenirchef.utils.Constants;
 import antitelegram.devenirchef.utils.Utils;
 
-public class CookActivity extends FragmentActivity {
+public class CookActivity extends AppCompatActivity {
 
 
     public static final String TAG = "daywint";
@@ -68,6 +69,9 @@ public class CookActivity extends FragmentActivity {
     }
 
     private void setUpToolbar() {
+        Log.d(TAG, "setUpToolbar: action bar " + getSupportActionBar());
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(recipe.getTitle());
         setUpTabs();
     }
 

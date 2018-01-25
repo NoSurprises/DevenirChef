@@ -42,7 +42,9 @@
             android:parentActivityName=".MainActivity" />
 
 
-        <activity android:name=".cooking.CookActivity" />
+        <activity
+            android:name=".cooking.CookActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
 
 
         <activity
