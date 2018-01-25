@@ -22,6 +22,7 @@ import antitelegram.devenirchef.data.Recipe;
 
 public class RecipeActivity extends AppCompatActivity {
 
+    private static final String RECIPE_KEY = "recipe";
     private Recipe recipe;
     private Intent fromIntent;
     private int cookRequestCode = 1;
@@ -39,11 +40,10 @@ public class RecipeActivity extends AppCompatActivity {
         if (fromIntent == null)
             return;
 
-        recipe = getRecipe();
+        recipe = getRecipeFromIntent();
+
         bindInfoToViews();
-
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -64,7 +64,7 @@ public class RecipeActivity extends AppCompatActivity {
 
     private void launchCookActivity() {
         Intent intent = new Intent(RecipeActivity.this, CookActivity.class);
-        intent.putExtra("recipe", recipe);
+        intent.putExtra(RECIPE_KEY, recipe);
         startActivityForResult(intent, cookRequestCode);
     }
 
@@ -78,8 +78,8 @@ public class RecipeActivity extends AppCompatActivity {
         }
     }
 
-    private Recipe getRecipe() {
-        return fromIntent.getExtras().getParcelable("recipe");
+    private Recipe getRecipeFromIntent() {
+        return fromIntent.getExtras().getParcelable(RECIPE_KEY);
     }
 
     private void bindInfoToViews() {

@@ -65,13 +65,12 @@ public class CookActivity extends AppCompatActivity {
 
         // to update count info
         setNewDatasetSize();
-
     }
 
     private void setUpToolbar() {
-        Log.d(TAG, "setUpToolbar: action bar " + getSupportActionBar());
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(recipe.getTitle());
+
         setUpTabs();
     }
 
@@ -88,7 +87,6 @@ public class CookActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable("recipe", recipe);
-
     }
 
     public void saveImageToDatabase(final Bitmap image) {
