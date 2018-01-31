@@ -6,16 +6,26 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import antitelegram.devenirchef.R;
 
@@ -34,6 +44,7 @@ public class FinishRecipeStepFragment extends Fragment {
     private Button mainScreen;
     private ImageView imageView;
     private Bitmap finishImage;
+    private String takenImagePath;
 
     public FinishRecipeStepFragment() {
         // Required empty public constructor
@@ -104,7 +115,19 @@ public class FinishRecipeStepFragment extends Fragment {
     private void dispatchTakePictureIntent(Context context) {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(context.getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            File photo = null;
+            try {
+                photo = createImageFile();
+            } catch (IOException e) {
+                Toast.makeText(context, "Can't create picture", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "dispatchTakePictureIntent: " + e);
+            }
+            if (photo != null) {
+                Uri photoUri = FileProvider.getUriForFile(getActivity(), "devenirchef.fileprovider", photo);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
         }
     }
 
@@ -122,12 +145,18 @@ public class FinishRecipeStepFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "onActivityResult: ");
         if (requestCode == FinishRecipeStepFragment.REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-
-            finishImage = (Bitmap) extras.get("data");
-            imageView.setImageBitmap(finishImage);
-
+            setPic();
         }
+    }
+
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFilename = "JPEG_" + timeStamp + "_";
+        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
+        File image = File.createTempFile(imageFilename, ".jpg", storageDir);
+        takenImagePath = image.getAbsolutePath();
+        return image;
     }
 
     @Override
@@ -135,6 +164,12 @@ public class FinishRecipeStepFragment extends Fragment {
         super.onSaveInstanceState(outState);
 
         outState.putParcelable("image", finishImage);
+    }
+
+    private void setPic() {
+        Bitmap image = BitmapFactory.decodeFile(takenImagePath);
+        Log.d(TAG, "setPic: image");
+        imageView.setImageBitmap(image);
     }
 }
 
