@@ -167,9 +167,9 @@ public class FinishRecipeStepFragment extends Fragment {
     }
 
     private void setPic() {
-        Bitmap image = BitmapFactory.decodeFile(takenImagePath);
-        Log.d(TAG, "setPic: image");
-        imageView.setImageBitmap(image);
+        finishImage = BitmapFactory.decodeFile(takenImagePath);
+        Log.d(TAG, "setPic: " + finishImage);
+        imageView.setImageBitmap(finishImage);
     }
 }
 
