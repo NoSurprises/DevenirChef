@@ -3,6 +3,7 @@
 /local.properties
 /keystore.properties
 /.idea
+/.idea/*.xml
 .DS_Store
 /build
 /captures
