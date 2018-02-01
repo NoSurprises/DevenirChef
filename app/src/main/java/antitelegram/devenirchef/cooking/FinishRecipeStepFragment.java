@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -64,7 +65,8 @@ public class FinishRecipeStepFragment extends Fragment {
 
         if (savedInstanceState != null && savedInstanceState.containsKey("image")) {
             takenImagePath = savedInstanceState.getString("image");
-            setPic();
+            initImageBitmap();
+            setPic(finishImage);
         }
         return finishScreen;
     }
@@ -146,29 +148,40 @@ public class FinishRecipeStepFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == FinishRecipeStepFragment.REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Uri uri = Uri.fromFile(new File(takenImagePath));
-            InputStream in = null;
-            try {
-                in = getActivity().getContentResolver().openInputStream(uri);
-                ExifInterface exifInterface = new ExifInterface(in);
+            initImageBitmap();
+            finishImage = getRotatedPhoto();
 
-                int rotation = getImageRotation(exifInterface);
+            if (finishImage != null) {
+                setPic(finishImage);
+            }
+        }
+    }
 
-                Log.d(TAG, "onActivityResult: rotation of the photo " + rotation);
+    private Bitmap getRotatedPhoto() {
+        Uri uri = Uri.fromFile(new File(takenImagePath));
+        InputStream in = null;
+        try {
+            in = getActivity().getContentResolver().openInputStream(uri);
 
-            } catch (IOException e) {
-                Log.d(TAG, "onActivityResult: error getting exifInterface " + e);
-            } finally {
-                if (in != null) {
-                    try {
-                        in.close();
-                    } catch (IOException ignored) {
-                    }
+            int rotation = getImageRotation(new ExifInterface(in));
+            return getRotatedBitmap(finishImage, rotation);
+        } catch (IOException e) {
+            Log.d(TAG, "onActivityResult:" + e);
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException ignored) {
                 }
             }
-
-            setPic();
         }
+        return null;
+    }
+
+    private Bitmap getRotatedBitmap(Bitmap image, int rotation) {
+        Matrix matrix = new Matrix();
+        matrix.setRotate(rotation, (float) image.getWidth() / 2, (float) image.getHeight() / 2);
+        return Bitmap.createBitmap(image, 0, 0, image.getWidth(), image.getHeight(), matrix, true);
     }
 
     private int getImageRotation(ExifInterface exifInterface) {
@@ -208,11 +221,12 @@ public class FinishRecipeStepFragment extends Fragment {
         outState.putString("image", takenImagePath);
     }
 
-    private void setPic() {
+    private void setPic(Bitmap image) {
+        imageView.setImageBitmap(image);
+    }
 
+    private void initImageBitmap() {
         finishImage = BitmapFactory.decodeFile(takenImagePath);
-        Log.d(TAG, "setPic: " + finishImage);
-        imageView.setImageBitmap(finishImage);
     }
 }
 
