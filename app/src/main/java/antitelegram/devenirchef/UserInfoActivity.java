@@ -113,7 +113,7 @@ public class UserInfoActivity extends DrawerBaseActivity {
     }
 
     private void addFinishedRecipe(FinishedRecipe recipe) {
-        View finishedRecipe = layoutInflater.inflate(R.layout.finished_recipe_user_info, finishedRecipes, false);
+        View finishedRecipe = layoutInflater.inflate(R.layout.user_info, finishedRecipes, false);
         setInfoToView(recipe, finishedRecipe);
         finishedRecipes.addView(finishedRecipe);
     }

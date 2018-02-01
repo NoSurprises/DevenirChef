@@ -48,6 +48,8 @@ public class FinishRecipeStepFragment extends Fragment {
     private ImageView imageView;
     private Bitmap finishImage;
     private String takenImagePath;
+    private Button share;
+    private Uri photoUri;
 
     public FinishRecipeStepFragment() {
         // Required empty public constructor
@@ -100,6 +102,13 @@ public class FinishRecipeStepFragment extends Fragment {
             }
         });
 
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shareOverstagram(Uri.fromFile(new File(takenImagePath)));
+            }
+        });
+
         // todo remove debug listener
         mainScreen.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -115,6 +124,14 @@ public class FinishRecipeStepFragment extends Fragment {
         });
     }
 
+    private void shareOverstagram(Uri uri) {
+
+        Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
+        shareIntent.setType("image/*");
+        shareIntent.putExtra(Intent.EXTRA_STREAM, photoUri); // set uri
+        shareIntent.setPackage("com.instagram.android");
+        startActivity(shareIntent);
+    }
 
     private void dispatchTakePictureIntent(Context context) {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -127,7 +144,7 @@ public class FinishRecipeStepFragment extends Fragment {
                 Log.d(TAG, "dispatchTakePictureIntent: " + e);
             }
             if (photo != null) {
-                Uri photoUri = FileProvider.getUriForFile(getActivity(), "devenirchef.fileprovider", photo);
+                photoUri = FileProvider.getUriForFile(getActivity(), "devenirchef.fileprovider", photo);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
 
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
@@ -143,6 +160,7 @@ public class FinishRecipeStepFragment extends Fragment {
         takePhoto = finishScreen.findViewById(R.id.finish_take_photo);
         mainScreen = finishScreen.findViewById(R.id.main_screen_button);
         imageView = finishScreen.findViewById(R.id.image_result);
+        share = finishScreen.findViewById(R.id.share);
     }
 
     @Override
@@ -158,10 +176,10 @@ public class FinishRecipeStepFragment extends Fragment {
     }
 
     private Bitmap getRotatedPhoto() {
-        Uri uri = Uri.fromFile(new File(takenImagePath));
+
         InputStream in = null;
         try {
-            in = getActivity().getContentResolver().openInputStream(uri);
+            in = getActivity().getContentResolver().openInputStream(photoUri);
 
             int rotation = getImageRotation(new ExifInterface(in));
             return getRotatedBitmap(finishImage, rotation);

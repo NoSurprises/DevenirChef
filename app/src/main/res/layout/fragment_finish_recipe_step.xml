@@ -32,37 +32,52 @@
     <ImageView
         android:id="@+id/image_result"
         android:layout_width="0dp"
-        android:layout_height="300dp"
+        android:layout_height="0dp"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toTopOf="@+id/finish_take_photo"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Button
         android:id="@+id/finish_take_photo"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:text="TAKE PHOTO"
         app:layout_constraintBottom_toTopOf="@+id/main_screen_button"
-        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintEnd_toStartOf="@+id/share"
+        app:layout_constraintHorizontal_bias="0.837"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         tools:layout_constraintLeft_creator="1" />
 
     <Button
         android:id="@+id/main_screen_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:text="go to main screen"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="148dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/share"
+        style="?attr/borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="Share"
+        app:layout_constraintBottom_toTopOf="@+id/main_screen_button"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>
