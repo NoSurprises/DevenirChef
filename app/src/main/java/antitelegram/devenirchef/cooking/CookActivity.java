@@ -100,7 +100,7 @@ public class CookActivity extends AppCompatActivity {
                     User user = getUser(dataSnapshot);
                     initUserFinishedRecipesIfNull(user);
 
-                    updateUserInDatabase(user);
+                    addRecipeToUserInDatabase(user);
                     Log.d(TAG, "onDataChange: updated user info");
                 } catch (Exception e) {
                     Log.d(TAG, "onDataChange: can't add finished recipe to database " + e);
@@ -125,7 +125,7 @@ public class CookActivity extends AppCompatActivity {
                 }
             }
 
-            private void updateUserInDatabase(User user) {
+            private void addRecipeToUserInDatabase(User user) {
                 FinishedRecipe finishedRecipe = getFinishedRecipe();
                 user.getFinishedRecipes().add(finishedRecipe);
                 userReference.setValue(user);
