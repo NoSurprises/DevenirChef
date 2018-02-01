@@ -4,6 +4,7 @@ package antitelegram.devenirchef.cooking;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -96,6 +97,7 @@ public class FinishRecipeStepFragment extends Fragment {
                 Activity cookingActivity = getActivity();
                 if (cookingActivity != null) {
                     cookingActivity.setResult(RESULT_OK);
+                    deleteTakenPhoto();
                     cookingActivity.finish();
                 }
 
@@ -105,7 +107,7 @@ public class FinishRecipeStepFragment extends Fragment {
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                shareOverstagram(Uri.fromFile(new File(takenImagePath)));
+                shareOverstagram();
             }
         });
 
@@ -124,13 +126,31 @@ public class FinishRecipeStepFragment extends Fragment {
         });
     }
 
-    private void shareOverstagram(Uri uri) {
+    private void deleteTakenPhoto() {
+        if (takenImagePath != null) {
+            new File(takenImagePath).delete();
+        }
+    }
 
+    private void shareOverstagram() {
+        if (!isInstagramInstalled()) {
+            Toast.makeText(getActivity(), "Instagram not installed!", Toast.LENGTH_SHORT).show();
+            return;
+        }
         Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
         shareIntent.setType("image/*");
-        shareIntent.putExtra(Intent.EXTRA_STREAM, photoUri); // set uri
+        shareIntent.putExtra(Intent.EXTRA_STREAM, photoUri);
         shareIntent.setPackage("com.instagram.android");
         startActivity(shareIntent);
+    }
+
+    private boolean isInstagramInstalled() {
+        try {
+            ApplicationInfo info = getActivity().getPackageManager().getApplicationInfo("com.instagram.android", 0);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
     }
 
     private void dispatchTakePictureIntent(Context context) {
