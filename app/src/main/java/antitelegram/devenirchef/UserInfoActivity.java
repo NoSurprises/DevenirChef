@@ -141,7 +141,7 @@ public class UserInfoActivity extends DrawerBaseActivity {
             @Override
             public void onSuccess(Uri uri) {
                 if (!isFinishing()) {
-                    Glide.with(image.getContext())
+                    Glide.with(getApplicationContext())
                             .load(uri)
                             .into(image);
 
