@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.media.ExifInterface;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -61,8 +63,8 @@ public class FinishRecipeStepFragment extends Fragment {
         setButtonsListeners();
 
         if (savedInstanceState != null && savedInstanceState.containsKey("image")) {
-            finishImage = ((Bitmap) savedInstanceState.get("image"));
-            imageView.setImageBitmap(finishImage);
+            takenImagePath = savedInstanceState.getString("image");
+            setPic();
         }
         return finishScreen;
     }
@@ -143,10 +145,49 @@ public class FinishRecipeStepFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(TAG, "onActivityResult: ");
         if (requestCode == FinishRecipeStepFragment.REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Uri uri = Uri.fromFile(new File(takenImagePath));
+            InputStream in = null;
+            try {
+                in = getActivity().getContentResolver().openInputStream(uri);
+                ExifInterface exifInterface = new ExifInterface(in);
+
+                int rotation = getImageRotation(exifInterface);
+
+                Log.d(TAG, "onActivityResult: rotation of the photo " + rotation);
+
+            } catch (IOException e) {
+                Log.d(TAG, "onActivityResult: error getting exifInterface " + e);
+            } finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException ignored) {
+                    }
+                }
+            }
+
             setPic();
         }
+    }
+
+    private int getImageRotation(ExifInterface exifInterface) {
+        int rotation = 0;
+        int orientation = exifInterface.getAttributeInt(
+                ExifInterface.TAG_ORIENTATION,
+                ExifInterface.ORIENTATION_NORMAL);
+        switch (orientation) {
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                rotation = 90;
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                rotation = 180;
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                rotation = 270;
+                break;
+        }
+        return rotation;
     }
 
     private File createImageFile() throws IOException {
@@ -156,6 +197,7 @@ public class FinishRecipeStepFragment extends Fragment {
 
         File image = File.createTempFile(imageFilename, ".jpg", storageDir);
         takenImagePath = image.getAbsolutePath();
+
         return image;
     }
 
@@ -163,10 +205,11 @@ public class FinishRecipeStepFragment extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putParcelable("image", finishImage);
+        outState.putString("image", takenImagePath);
     }
 
     private void setPic() {
+
         finishImage = BitmapFactory.decodeFile(takenImagePath);
         Log.d(TAG, "setPic: " + finishImage);
         imageView.setImageBitmap(finishImage);
