@@ -184,7 +184,7 @@ public class MainActivity extends DrawerBaseActivity {
 
     private void setImageToView(ImageView image, String photoUrl) {
         if (!isFinishing()) {
-            Glide.with(image.getContext())
+            Glide.with(this)
                     .load(photoUrl)
                     .into(image);
         }

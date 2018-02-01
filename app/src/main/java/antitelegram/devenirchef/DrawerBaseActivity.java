@@ -146,7 +146,7 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
                             break;
                         }
                         Intent infoIntent = new Intent(DrawerBaseActivity.this, UserInfoActivity.class);
-                        startActivityWithoutHistory(infoIntent);
+                        startActivity(infoIntent);
                         break;
                     }
 
