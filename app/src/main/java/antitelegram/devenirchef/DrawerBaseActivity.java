@@ -150,6 +150,16 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
                         break;
                     }
 
+                    case R.id.nav_rate_others: {
+                        if (DrawerBaseActivity.this instanceof RateOthersActivity) {
+                            break;
+                        }
+
+                        Intent rateOthersIntent = new Intent(DrawerBaseActivity.this, RateOthersActivity.class);
+                        startActivityWithoutHistory(rateOthersIntent);
+                        break;
+                    }
+
                     default: {
                         Toast.makeText(DrawerBaseActivity.this,
                                 item.getTitle() + " not implemented by Alex yet", Toast.LENGTH_SHORT).show();

@@ -32,6 +32,8 @@ public class UserInfoActivity extends DrawerBaseActivity {
 
 
     private TextView username;
+    private TextView userLevel;
+    private TextView experience;
     private LinearLayout finishedRecipes;
     private FirebaseUser currentUser;
     private LayoutInflater layoutInflater;
@@ -50,7 +52,6 @@ public class UserInfoActivity extends DrawerBaseActivity {
         if (currentUser == null) {
             return;
         }
-
 
         setName(currentUser.getDisplayName());
 
@@ -101,15 +102,49 @@ public class UserInfoActivity extends DrawerBaseActivity {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+
+        userReference.child("level").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                setLevel((long) dataSnapshot.getValue());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        userReference.child("exp").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                setExperience((long) dataSnapshot.getValue());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void bindViews() {
         username = findViewById(R.id.username);
+        userLevel = findViewById(R.id.userLevel);
+        experience = findViewById(R.id.experience);
         finishedRecipes = findViewById(R.id.finished_recipes_container);
     }
 
     private void setName(String name) {
         username.setText(name);
+    }
+
+    private void setLevel(Long level) {
+        userLevel.setText(level.toString());
+    }
+
+    private void setExperience(Long exp) {
+        experience.setText(exp.toString());
     }
 
     private void addFinishedRecipe(FinishedRecipe recipe) {

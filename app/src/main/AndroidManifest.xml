@@ -64,6 +64,11 @@
         <activity
             android:name=".UserInfoActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".RateOthersActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
     </application>
 
 </manifest>
