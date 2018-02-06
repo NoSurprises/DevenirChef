@@ -13,6 +13,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -67,12 +68,6 @@ public class CookActivity extends AppCompatActivity {
         setNewDatasetSize();
     }
 
-    private void setUpToolbar() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle(recipe.getTitle());
-
-        setUpTabs();
-    }
 
     @Override
     public void onBackPressed() {
@@ -81,12 +76,6 @@ public class CookActivity extends AppCompatActivity {
         else {
             allStepsViewPager.setCurrentItem(allStepsViewPager.getCurrentItem() - 1);
         }
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable("recipe", recipe);
     }
 
     public void saveImageToDatabase(final Bitmap image) {
@@ -153,6 +142,38 @@ public class CookActivity extends AppCompatActivity {
         };
 
         userReference.addListenerForSingleValueEvent(usersValueListener);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("recipe", recipe);
+    }
+
+    private void setUpToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(recipe.getTitle());
+
+        setUpMenu(toolbar);
+        setUpTabs();
+    }
+
+    private void setUpMenu(Toolbar toolbar) {
+        toolbar.inflateMenu(R.menu.cooking_menu);
+
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.abort:
+                        setResult(RESULT_CANCELED);
+                        finish();
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
     }
 
     private String uploadImageToStorage(Bitmap image) {
