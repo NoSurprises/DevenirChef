@@ -80,8 +80,8 @@ public class FinishRecipeStepFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (checkCameraHardware(v.getContext())) {
+                    deleteTakenPhoto();
                     dispatchTakePictureIntent(v.getContext());
-
                 }
             }
         });
@@ -134,6 +134,7 @@ public class FinishRecipeStepFragment extends Fragment {
     private void deleteTakenPhoto() {
         if (takenImagePath != null) {
             new File(takenImagePath).delete();
+            takenImagePath = null;
         }
     }
 
