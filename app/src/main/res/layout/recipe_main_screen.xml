@@ -43,7 +43,7 @@
                     android:adjustViewBounds="true"
                     android:cropToPadding="false"
                     android:foreground="@drawable/gragient"
-                    android:scaleType="centerCrop"
+                    android:scaleType="fitXY"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:srcCompat="@drawable/ic_placeholder" />
 
