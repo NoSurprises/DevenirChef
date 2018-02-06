@@ -97,7 +97,6 @@ public class FinishRecipeStepFragment extends Fragment {
                 Activity cookingActivity = getActivity();
                 if (cookingActivity != null) {
                     cookingActivity.setResult(RESULT_OK);
-                    deleteTakenPhoto();
                     cookingActivity.finish();
                 }
 
@@ -124,6 +123,12 @@ public class FinishRecipeStepFragment extends Fragment {
                 return true;
             }
         });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        deleteTakenPhoto();
     }
 
     private void deleteTakenPhoto() {
@@ -188,12 +193,43 @@ public class FinishRecipeStepFragment extends Fragment {
         if (requestCode == FinishRecipeStepFragment.REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             initImageBitmap();
             finishImage = getRotatedPhoto();
-
+            finishImage = getCroppedPhoto();
+            finishImage = getScaledPhoto();
             if (finishImage != null) {
                 setPic(finishImage);
             }
         }
     }
+
+    private Bitmap getScaledPhoto() {
+        int width = 1080;
+        int height = 1080;
+
+        return Bitmap.createScaledBitmap(finishImage, width, height, false);
+    }
+
+    private Bitmap getCroppedPhoto() {
+
+        if (finishImage.getWidth() >= finishImage.getHeight()) {
+            return Bitmap.createBitmap(
+                    finishImage,
+                    finishImage.getWidth() / 2 - finishImage.getHeight() / 2,
+                    0,
+                    finishImage.getHeight(),
+                    finishImage.getHeight()
+            );
+
+        }
+
+        return Bitmap.createBitmap(
+                finishImage,
+                0,
+                finishImage.getHeight() / 2 - finishImage.getWidth() / 2,
+                finishImage.getWidth(),
+                finishImage.getWidth()
+        );
+    }
+
 
     private Bitmap getRotatedPhoto() {
 
