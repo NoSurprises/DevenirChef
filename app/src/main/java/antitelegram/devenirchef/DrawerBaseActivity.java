@@ -138,7 +138,7 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
                             break;
                         }
                         Intent recipesIntent = new Intent(DrawerBaseActivity.this, MainActivity.class);
-                        startActivityWithoutHistory(recipesIntent);
+                        startActivityFromDrawer(recipesIntent);
                         break;
                     }
                     case R.id.nav_level_info: {
@@ -146,7 +146,7 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
                             break;
                         }
                         Intent infoIntent = new Intent(DrawerBaseActivity.this, UserInfoActivity.class);
-                        startActivity(infoIntent);
+                        startActivityFromDrawer(infoIntent);
                         break;
                     }
 
@@ -156,7 +156,7 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
                         }
 
                         Intent rateOthersIntent = new Intent(DrawerBaseActivity.this, RateOthersActivity.class);
-                        startActivityWithoutHistory(rateOthersIntent);
+                        startActivityFromDrawer(rateOthersIntent);
                         break;
                     }
 
@@ -169,7 +169,11 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
                 return true;
             }
 
-            private void startActivityWithoutHistory(Intent recipesIntent) {
+            private void startActivityFromDrawer(Intent recipesIntent) {
+                if (DrawerBaseActivity.this instanceof MainActivity) {
+                    startActivity(recipesIntent);
+                    return;
+                }
                 DrawerBaseActivity.this.finish();
                 startActivity(recipesIntent);
             }
