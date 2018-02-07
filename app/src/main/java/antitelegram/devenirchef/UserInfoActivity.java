@@ -44,24 +44,22 @@ public class UserInfoActivity extends DrawerBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentLayout(R.layout.activity_user_info);
-
         bindViews();
 
 
         layoutInflater = getLayoutInflater();
-
         currentUser = Utils.getFirebaseAuth().getCurrentUser();
         if (currentUser == null) {
             return;
         }
 
+        setUserInfoFromReference(getUserReference());
+    }
+
+    private void setUserInfoFromReference(final DatabaseReference userReference) {
         setName(currentUser.getDisplayName());
         setUserImage();
-        String userUid = currentUser.getUid();
-        final DatabaseReference userReference = Utils.getFirebaseDatabase()
-                .getReference(Constants.DATABASE_USERS)
-                .child(userUid);
-
+      
         userReference.addListenerForSingleValueEvent(new ValueEventListener() {
             User user;
 
@@ -73,9 +71,7 @@ public class UserInfoActivity extends DrawerBaseActivity {
                 } else {
                     user = dataSnapshot.getValue(User.class);
                 }
-
                 createFinishedRecipesViews();
-
             }
 
             private void createFinishedRecipesViews() {
@@ -104,7 +100,6 @@ public class UserInfoActivity extends DrawerBaseActivity {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
-
         userReference.child("level").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -116,7 +111,6 @@ public class UserInfoActivity extends DrawerBaseActivity {
 
             }
         });
-
         userReference.child("exp").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -138,6 +132,13 @@ public class UserInfoActivity extends DrawerBaseActivity {
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .into(userAvatar);
         }
+}
+
+    private DatabaseReference getUserReference() {
+        String userUid = currentUser.getUid();
+        return Utils.getFirebaseDatabase()
+                .getReference(Constants.DATABASE_USERS)
+                .child(userUid);
     }
 
     private void bindViews() {
