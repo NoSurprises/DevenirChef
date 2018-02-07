@@ -6,10 +6,10 @@
 
     <ImageView
         android:id="@+id/recipe_star"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
         android:layout_weight="1"
-        app:srcCompat="@android:drawable/btn_star_big_on" />
+        app:srcCompat="@drawable/ic_yellow_bright_star" />
 
 </LinearLayout>

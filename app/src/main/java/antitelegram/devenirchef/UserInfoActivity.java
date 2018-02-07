@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
@@ -37,13 +38,14 @@ public class UserInfoActivity extends DrawerBaseActivity {
     private LinearLayout finishedRecipes;
     private FirebaseUser currentUser;
     private LayoutInflater layoutInflater;
-
+    private ImageView userAvatar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentLayout(R.layout.activity_user_info);
         bindViews();
+
 
         layoutInflater = getLayoutInflater();
         currentUser = Utils.getFirebaseAuth().getCurrentUser();
@@ -56,7 +58,8 @@ public class UserInfoActivity extends DrawerBaseActivity {
 
     private void setUserInfoFromReference(final DatabaseReference userReference) {
         setName(currentUser.getDisplayName());
-
+        setUserImage();
+      
         userReference.addListenerForSingleValueEvent(new ValueEventListener() {
             User user;
 
@@ -121,6 +124,16 @@ public class UserInfoActivity extends DrawerBaseActivity {
         });
     }
 
+    private void setUserImage() {
+        if (!isFinishing()) {
+            Uri avatar = currentUser.getPhotoUrl();
+            Glide.with(this)
+                    .load(avatar)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .into(userAvatar);
+        }
+}
+
     private DatabaseReference getUserReference() {
         String userUid = currentUser.getUid();
         return Utils.getFirebaseDatabase()
@@ -133,6 +146,7 @@ public class UserInfoActivity extends DrawerBaseActivity {
         userLevel = findViewById(R.id.userLevel);
         experience = findViewById(R.id.experience);
         finishedRecipes = findViewById(R.id.finished_recipes_container);
+        userAvatar = findViewById(R.id.user_avatar);
     }
 
     private void setName(String name) {
@@ -178,6 +192,8 @@ public class UserInfoActivity extends DrawerBaseActivity {
                 if (!isFinishing()) {
                     Glide.with(getApplicationContext())
                             .load(uri)
+                            .placeholder(R.mipmap.ic_launcher)
+                            .crossFade()
                             .into(image);
 
                     Log.d(TAG, "setInfoToView: set image " + recipe.getPhotoUrl());

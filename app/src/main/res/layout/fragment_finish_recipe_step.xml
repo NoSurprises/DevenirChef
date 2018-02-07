@@ -1,24 +1,28 @@
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingEnd="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingStart="16dp"
     tools:context="antitelegram.devenirchef.cooking.FinishRecipeStepFragment">
 
-    <!-- TODO: Update blank fragment layout -->
+    <!-- TODO: Update blank fragment layout -->\
+
     <TextView
         android:id="@+id/finish_text"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="0dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="finish. congrats!"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="fon"
+        android:paddingBottom="8dp"
+        android:paddingTop="16dp"
+        android:text="Готово!"
         android:textAlignment="center"
-        android:textSize="32sp"
+        android:textColor="@color/headlineTextColor"
+        android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/finished_image"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -31,53 +35,78 @@
 
     <ImageView
         android:id="@+id/image_result"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:maxHeight="300dp"
+        android:paddingBottom="16dp"
+        android:paddingEnd="8dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingStart="8dp"
+        android:paddingTop="8dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_placeholder_square"
         app:layout_constraintBottom_toTopOf="@+id/finish_take_photo"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/finish_take_photo"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:text="TAKE PHOTO"
-        app:layout_constraintBottom_toTopOf="@+id/main_screen_button"
-        app:layout_constraintEnd_toStartOf="@+id/share"
-        app:layout_constraintHorizontal_bias="0.837"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_constraintLeft_creator="1" />
-
-    <Button
-        android:id="@+id/main_screen_button"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:text="go to main screen"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:gravity="center_vertical|center_horizontal|center"
+        android:orientation="horizontal"
+        android:paddingTop="16dp">
 
-    <Button
-        android:id="@+id/share"
-        style="?attr/borderlessButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:text="Share"
-        app:layout_constraintBottom_toTopOf="@+id/main_screen_button"
-        app:layout_constraintEnd_toEndOf="parent" />
+        <Button
+            android:id="@+id/share"
+            style="@style/Base.Widget.AppCompat.Button.Borderless"
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/roboto_medium"
+            android:padding="8dp"
+            android:text="SHARE"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@+id/main_screen_button"
+            app:layout_constraintEnd_toEndOf="parent" />
 
+        <Button
+            android:id="@+id/finish_take_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@color/colorPrimary"
+            android:fontFamily="@font/roboto_medium"
+            android:padding="8dp"
+            android:text="TAKE PHOTO"
+            android:textAlignment="center"
+            android:textColor="@color/colorWhite"
+            android:textColorLink="@color/colorPrimary"
+            app:layout_constraintBottom_toTopOf="@+id/main_screen_button"
+            app:layout_constraintEnd_toStartOf="@+id/share"
+            app:layout_constraintHorizontal_bias="0.837"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_constraintLeft_creator="1"
+            tools:style="@style/Base.Widget.AppCompat.Button.Colored" />
 
-</android.support.constraint.ConstraintLayout>
+        <Button
+            android:id="@+id/main_screen_button"
+            style="@style/Base.Widget.AppCompat.Button.Borderless"
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/roboto_medium"
+            android:padding="8dp"
+            android:text="MAIN SCREEN"
+            android:textAlignment="center"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </LinearLayout>
+
+</LinearLayout>
