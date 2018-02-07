@@ -72,7 +72,7 @@ public class RateOthersActivity extends DrawerBaseActivity {
 
     refreshRecipes();
 
-    Log.d("alex", "Recipe list size " + recipeList.size());
+    Log.d("rateOthers", "Recipe list size " + recipeList.size());
 
     //setImage(recipeList.get(0), recipeImageBox);
   }
@@ -99,7 +99,7 @@ public class RateOthersActivity extends DrawerBaseActivity {
     return new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        Log.d("alex", "rate button pressed");
+        Log.d("rateOthers", "rate button pressed");
 
         String user = usersId.get(0);
 
@@ -110,7 +110,7 @@ public class RateOthersActivity extends DrawerBaseActivity {
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
           @Override
           public void onDataChange(DataSnapshot dataSnapshot) {
-            Log.d("alex", "exp up");
+            Log.d("rateOthers", "exp up");
             ref.setValue((long) dataSnapshot.getValue() + rateNumber);
           }
 
@@ -137,7 +137,7 @@ public class RateOthersActivity extends DrawerBaseActivity {
         recipeList.remove(0);
         usersId.remove(0);
 
-        Log.d("alex", "Recipe list size " + recipeList.size());
+        Log.d("rateOthers", "Recipe list size " + recipeList.size());
 
         if (recipeList.isEmpty()) {
           refreshRecipes();
@@ -157,7 +157,10 @@ public class RateOthersActivity extends DrawerBaseActivity {
     refresher = new ValueEventListener() {
       @Override
       public void onDataChange(DataSnapshot dataSnapshot) {
-        Log.d("alex", "I SHOULD BE HERE");
+        if (!recipeList.isEmpty())
+          return;
+
+        //Log.d("alex", "I SHOULD BE HERE");
 
         for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
 
@@ -176,11 +179,11 @@ public class RateOthersActivity extends DrawerBaseActivity {
               recipeList.add(recipe);
               usersId.add(user);
 
-              Log.d("alex", "onDataChangeIf: " + recipe.getPhotoUrl());
+              Log.d("rateOthers", "onDataChangeIf: " + recipe.getPhotoUrl());
             }
           }
         }
-        Log.d("alex", "Recipe list size " + recipeList.size());
+        Log.d("rateOthers", "Recipe list size " + recipeList.size());
         setImage(recipeList.get(0), recipeImageBox);
       }
 
@@ -189,7 +192,7 @@ public class RateOthersActivity extends DrawerBaseActivity {
 
       }
     };
-    query.addListenerForSingleValueEvent(refresher);
+    query.addValueEventListener(refresher);
   }
 
   private void setImage(final FinishedRecipe recipe, final ImageView image) {
@@ -211,7 +214,7 @@ public class RateOthersActivity extends DrawerBaseActivity {
               .load(uri)
               .into(image);
 
-          Log.d(TAG, "setInfoToView: set image " + recipe.getPhotoUrl());
+          Log.d("rateOthers", "setInfoToView: set image " + recipe.getPhotoUrl());
         }
       }
     });
