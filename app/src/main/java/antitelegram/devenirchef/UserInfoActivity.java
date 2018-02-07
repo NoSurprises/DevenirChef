@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
@@ -37,7 +38,7 @@ public class UserInfoActivity extends DrawerBaseActivity {
     private LinearLayout finishedRecipes;
     private FirebaseUser currentUser;
     private LayoutInflater layoutInflater;
-
+    private ImageView userAvatar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +46,7 @@ public class UserInfoActivity extends DrawerBaseActivity {
         setContentLayout(R.layout.activity_user_info);
 
         bindViews();
+
 
         layoutInflater = getLayoutInflater();
 
@@ -54,7 +56,7 @@ public class UserInfoActivity extends DrawerBaseActivity {
         }
 
         setName(currentUser.getDisplayName());
-
+        setUserImage();
         String userUid = currentUser.getUid();
         final DatabaseReference userReference = Utils.getFirebaseDatabase()
                 .getReference(Constants.DATABASE_USERS)
@@ -128,11 +130,23 @@ public class UserInfoActivity extends DrawerBaseActivity {
         });
     }
 
+    private void setUserImage() {
+        if (!isFinishing()) {
+            Uri avatar = currentUser.getPhotoUrl();
+            Glide.with(this)
+                    .load(avatar)
+                    .placeholder(R.drawable.ic_placeholder)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .into(userAvatar);
+        }
+    }
+
     private void bindViews() {
         username = findViewById(R.id.username);
         userLevel = findViewById(R.id.userLevel);
         experience = findViewById(R.id.experience);
         finishedRecipes = findViewById(R.id.finished_recipes_container);
+        userAvatar = findViewById(R.id.user_avatar);
     }
 
     private void setName(String name) {
