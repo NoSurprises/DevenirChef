@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
@@ -32,33 +33,33 @@ public class UserInfoActivity extends DrawerBaseActivity {
 
 
     private TextView username;
+    private TextView userLevel;
+    private TextView experience;
     private LinearLayout finishedRecipes;
     private FirebaseUser currentUser;
     private LayoutInflater layoutInflater;
-
+    private ImageView userAvatar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentLayout(R.layout.activity_user_info);
-
         bindViews();
 
-        layoutInflater = getLayoutInflater();
 
+        layoutInflater = getLayoutInflater();
         currentUser = Utils.getFirebaseAuth().getCurrentUser();
         if (currentUser == null) {
             return;
         }
 
+        setUserInfoFromReference(getUserReference());
+    }
 
+    private void setUserInfoFromReference(final DatabaseReference userReference) {
         setName(currentUser.getDisplayName());
-
-        String userUid = currentUser.getUid();
-        final DatabaseReference userReference = Utils.getFirebaseDatabase()
-                .getReference(Constants.DATABASE_USERS)
-                .child(userUid);
-
+        setUserImage();
+      
         userReference.addListenerForSingleValueEvent(new ValueEventListener() {
             User user;
 
@@ -70,9 +71,7 @@ public class UserInfoActivity extends DrawerBaseActivity {
                 } else {
                     user = dataSnapshot.getValue(User.class);
                 }
-
                 createFinishedRecipesViews();
-
             }
 
             private void createFinishedRecipesViews() {
@@ -101,15 +100,65 @@ public class UserInfoActivity extends DrawerBaseActivity {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+        userReference.child("level").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                setLevel((long) dataSnapshot.getValue());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        userReference.child("exp").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                setExperience((long) dataSnapshot.getValue());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void setUserImage() {
+        if (!isFinishing()) {
+            Uri avatar = currentUser.getPhotoUrl();
+            Glide.with(this)
+                    .load(avatar)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .into(userAvatar);
+        }
+}
+
+    private DatabaseReference getUserReference() {
+        String userUid = currentUser.getUid();
+        return Utils.getFirebaseDatabase()
+                .getReference(Constants.DATABASE_USERS)
+                .child(userUid);
     }
 
     private void bindViews() {
         username = findViewById(R.id.username);
+        userLevel = findViewById(R.id.userLevel);
+        experience = findViewById(R.id.experience);
         finishedRecipes = findViewById(R.id.finished_recipes_container);
+        userAvatar = findViewById(R.id.user_avatar);
     }
 
     private void setName(String name) {
         username.setText(name);
+    }
+
+    private void setLevel(Long level) {
+        userLevel.setText(level.toString());
+    }
+
+    private void setExperience(Long exp) {
+        experience.setText(exp.toString());
     }
 
     private void addFinishedRecipe(FinishedRecipe recipe) {
@@ -143,6 +192,8 @@ public class UserInfoActivity extends DrawerBaseActivity {
                 if (!isFinishing()) {
                     Glide.with(getApplicationContext())
                             .load(uri)
+                            .placeholder(R.mipmap.ic_launcher)
+                            .crossFade()
                             .into(image);
 
                     Log.d(TAG, "setInfoToView: set image " + recipe.getPhotoUrl());

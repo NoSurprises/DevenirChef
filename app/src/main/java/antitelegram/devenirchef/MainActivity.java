@@ -186,6 +186,8 @@ public class MainActivity extends DrawerBaseActivity {
         if (!isFinishing()) {
             Glide.with(this)
                     .load(photoUrl)
+                    .placeholder(R.drawable.ic_placeholder)
+                    .crossFade()
                     .into(image);
         }
     }
