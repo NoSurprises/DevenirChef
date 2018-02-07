@@ -40,120 +40,106 @@
 
     </RelativeLayout>
 
-    <TableLayout
-        android:id="@+id/info_layout"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:paddingBottom="8dp"
         android:paddingEnd="16dp"
         android:paddingStart="16dp"
-        android:paddingTop="8dp">
+        android:paddingTop="24dp">
 
-        <TableRow
-            android:id="@+id/levelRow"
+        <TextView
+            android:id="@+id/level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_medium"
+            android:paddingEnd="8dp"
+            android:text="Level:"
+            android:textColor="@color/body1TextColor"
+            android:textSize="14sp"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="16dp" />
+
+        <TextView
+            android:id="@+id/userLevel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_medium"
+            android:text="Sample Level"
+            android:textColor="@color/body1TextColor"
+            android:textSize="14sp"
+            tools:layout_editor_absoluteY="16dp" />
+    </LinearLayout>
+
+    \
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="8dp"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp">
+
+        <TextView
+            android:id="@+id/exp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_medium"
+            android:paddingEnd="16dp"
+            android:text="Exp:"
+            android:textColor="@color/body1TextColor"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/experience"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_medium"
+            android:text="Sample experience"
+            android:textColor="@color/body1TextColor"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/finished_recipes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="false"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:fontFamily="@font/roboto_medium"
+        android:paddingBottom="8dp"
+        android:text="Finished recipes"
+        android:textColor="@color/body1TextColor"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/experience"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/finished_recipes">
+
+        <LinearLayout
+            android:id="@+id/finished_recipes_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="8dp"
-            android:paddingTop="8dp">
-
-            <TextView
-                android:id="@+id/level"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_medium"
-                android:paddingEnd="8dp"
-                android:text="Level"
-                android:textColor="@color/body1TextColor"
-                android:textSize="14sp"
-                tools:layout_editor_absoluteX="0dp"
-                tools:layout_editor_absoluteY="16dp" />
-
-            <TextView
-                android:id="@+id/userLevel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_medium"
-                android:text="Sample Level"
-                android:textColor="@color/body1TextColor"
-                android:textSize="14sp"
-                tools:layout_editor_absoluteY="16dp" />
-        </TableRow>
-
-        <TableRow
-            android:id="@+id/experienceRow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="8dp"
-            android:paddingTop="8dp">
-
-            <TextView
-                android:id="@+id/exp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_medium"
-                android:paddingEnd="8dp"
-                android:text="Exp:"
-                android:textColor="@color/body1TextColor"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/experience"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_medium"
-                android:text="Sample experience"
-                android:textColor="@color/body1TextColor"
-                android:textSize="14sp" />
-        </TableRow>
-
-        <TableRow
-            android:id="@+id/fin_rec_row"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/finished_recipes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="false"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                android:fontFamily="@font/roboto_medium"
-                android:paddingBottom="8dp"
-                android:text="Finished recipes"
-                android:textColor="@color/body1TextColor"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/experience"
-                tools:layout_editor_absoluteX="0dp" />
-
-        </TableRow>
-
-        <TableRow
-            android:id="@+id/scroll_row"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <HorizontalScrollView
-                android:id="@+id/horizontalScrollView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/finished_recipes">
-
-                <LinearLayout
-                    android:id="@+id/finished_recipes_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+            android:orientation="horizontal">
 
 
-                </LinearLayout>
-            </HorizontalScrollView>
-        </TableRow>
+        </LinearLayout>
+    </HorizontalScrollView>
 
-    </TableLayout>
 
 
 </LinearLayout>
