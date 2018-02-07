@@ -80,8 +80,8 @@ public class FinishRecipeStepFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (checkCameraHardware(v.getContext())) {
+                    deleteTakenPhoto();
                     dispatchTakePictureIntent(v.getContext());
-
                 }
             }
         });
@@ -97,7 +97,6 @@ public class FinishRecipeStepFragment extends Fragment {
                 Activity cookingActivity = getActivity();
                 if (cookingActivity != null) {
                     cookingActivity.setResult(RESULT_OK);
-                    deleteTakenPhoto();
                     cookingActivity.finish();
                 }
 
@@ -126,9 +125,16 @@ public class FinishRecipeStepFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        deleteTakenPhoto();
+    }
+
     private void deleteTakenPhoto() {
         if (takenImagePath != null) {
             new File(takenImagePath).delete();
+            takenImagePath = null;
         }
     }
 
@@ -188,12 +194,43 @@ public class FinishRecipeStepFragment extends Fragment {
         if (requestCode == FinishRecipeStepFragment.REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             initImageBitmap();
             finishImage = getRotatedPhoto();
-
+            finishImage = getCroppedPhoto();
+            finishImage = getScaledPhoto();
             if (finishImage != null) {
                 setPic(finishImage);
             }
         }
     }
+
+    private Bitmap getScaledPhoto() {
+        int width = 1080;
+        int height = 1080;
+
+        return Bitmap.createScaledBitmap(finishImage, width, height, false);
+    }
+
+    private Bitmap getCroppedPhoto() {
+
+        if (finishImage.getWidth() >= finishImage.getHeight()) {
+            return Bitmap.createBitmap(
+                    finishImage,
+                    finishImage.getWidth() / 2 - finishImage.getHeight() / 2,
+                    0,
+                    finishImage.getHeight(),
+                    finishImage.getHeight()
+            );
+
+        }
+
+        return Bitmap.createBitmap(
+                finishImage,
+                0,
+                finishImage.getHeight() / 2 - finishImage.getWidth() / 2,
+                finishImage.getWidth(),
+                finishImage.getWidth()
+        );
+    }
+
 
     private Bitmap getRotatedPhoto() {
 
