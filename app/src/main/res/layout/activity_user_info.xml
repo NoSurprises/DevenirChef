@@ -14,11 +14,12 @@
 
         <ImageView
             android:id="@+id/user_avatar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:adjustViewBounds="false"
             android:foreground="@drawable/gragient"
-            app:srcCompat="@drawable/ic_placeholder"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/ic_placeholder_square"
             tools:layout_editor_absoluteX="0dp" />
 
         <TextView
@@ -107,7 +108,6 @@
         android:id="@+id/finished_recipes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="false"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
@@ -116,16 +116,12 @@
         android:text="Finished recipes"
         android:textColor="@color/body1TextColor"
         android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/experience"
         tools:layout_editor_absoluteX="0dp" />
 
     <HorizontalScrollView
         android:id="@+id/horizontalScrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingEnd="16dp"
-        android:paddingStart="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/finished_recipes">
