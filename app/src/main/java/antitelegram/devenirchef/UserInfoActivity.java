@@ -135,7 +135,6 @@ public class UserInfoActivity extends DrawerBaseActivity {
             Uri avatar = currentUser.getPhotoUrl();
             Glide.with(this)
                     .load(avatar)
-                    .placeholder(R.drawable.ic_placeholder)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .into(userAvatar);
         }
@@ -192,6 +191,8 @@ public class UserInfoActivity extends DrawerBaseActivity {
                 if (!isFinishing()) {
                     Glide.with(getApplicationContext())
                             .load(uri)
+                            .placeholder(R.mipmap.ic_launcher)
+                            .crossFade()
                             .into(image);
 
                     Log.d(TAG, "setInfoToView: set image " + recipe.getPhotoUrl());

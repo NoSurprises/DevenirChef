@@ -73,7 +73,6 @@
             tools:layout_editor_absoluteY="16dp" />
     </LinearLayout>
 
-    \
 
     <LinearLayout
         android:layout_width="match_parent"
