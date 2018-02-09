@@ -18,6 +18,7 @@ public class RecipeCookingStepFragment extends Fragment {
     private static final String RECIPE_KEY = "recipe";
     private TextView stepText;
     private RecipeStep recipeStep;
+    private TextView stepNumber;
 
     public RecipeCookingStepFragment() {
         // Required empty public constructor
@@ -47,7 +48,7 @@ public class RecipeCookingStepFragment extends Fragment {
 
     private void initializeViewFields(View cookingStep) {
         stepText = cookingStep.findViewById(R.id.cooking_step_text);
-        // TODO: 1/7/2018 initialize other fields. same as bind
+        stepNumber = cookingStep.findViewById(R.id.step_number);
 
     }
 
@@ -58,7 +59,7 @@ public class RecipeCookingStepFragment extends Fragment {
 
     private void bindCookingStepDataToViews() {
         stepText.setText(recipeStep.getDescriptionOfStep());
-        // TODO: 1/7/2018 bind other data
+        stepNumber.setText(String.valueOf(recipeStep.getStepNumber()));
     }
 
 

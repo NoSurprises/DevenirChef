@@ -277,6 +277,7 @@ public class CookActivity extends AppCompatActivity {
         private Fragment createCookingStepFragment(int position) {
             RecipeCookingStepFragment cookingStep = new RecipeCookingStepFragment();
             RecipeStep recipeStepData = recipe.getCookingSteps().get(position);
+            recipeStepData.setStepNumber(position + 1);
             cookingStep.setRecipeStep(recipeStepData);
 
             return cookingStep;
