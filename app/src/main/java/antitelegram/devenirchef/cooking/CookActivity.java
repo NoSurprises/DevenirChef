@@ -36,7 +36,7 @@ import antitelegram.devenirchef.data.User;
 import antitelegram.devenirchef.utils.Constants;
 import antitelegram.devenirchef.utils.Utils;
 
-public class CookActivity extends AppCompatActivity {
+public class CookActivity extends AppCompatActivity implements StepsNavigation {
 
 
     public static final String TAG = "daywint";
@@ -256,6 +256,16 @@ public class CookActivity extends AppCompatActivity {
         return fromIntent.getExtras().getParcelable("recipe");
     }
 
+    @Override
+    public void forward() {
+        allStepsViewPager.setCurrentItem(allStepsViewPager.getCurrentItem() + 1);
+    }
+
+    @Override
+    public void back() {
+        allStepsViewPager.setCurrentItem(allStepsViewPager.getCurrentItem() - 1);
+    }
+
     private class CookingPagerAdapter extends FragmentStatePagerAdapter {
 
         private static final String TAG = "daywint";
@@ -277,7 +287,7 @@ public class CookActivity extends AppCompatActivity {
         private Fragment createCookingStepFragment(int position) {
             RecipeCookingStepFragment cookingStep = new RecipeCookingStepFragment();
             RecipeStep recipeStepData = recipe.getCookingSteps().get(position);
-            recipeStepData.setStepNumber(position + 1);
+            recipeStepData.setStepNumber(position);
             cookingStep.setRecipeStep(recipeStepData);
 
             return cookingStep;
@@ -289,7 +299,5 @@ public class CookActivity extends AppCompatActivity {
             return numSteps;
         }
 
-
     }
-
 }
