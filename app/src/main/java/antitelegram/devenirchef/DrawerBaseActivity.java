@@ -15,9 +15,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.auth.FirebaseAuth;
@@ -53,6 +55,7 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
     private View navigationHeader;
     private TextView drawerUsername;
     private TextView drawerEmail;
+    private ImageView userImage;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -103,6 +106,13 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
     public void initDataInNavigationDrawer() {
         drawerUsername.setText(currentUser.getDisplayName());
         drawerEmail.setText(currentUser.getEmail());
+
+        if (!isFinishing()) {
+            Glide.with(this)
+                    .load(currentUser.getPhotoUrl())
+                    .crossFade()
+                    .into(userImage);
+        }
     }
 
     private void onSignedInInitialize(FirebaseUser user) {
@@ -125,6 +135,8 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
     private void initDrawerDataFields() {
         drawerUsername = navigationHeader.findViewById(R.id.username);
         drawerEmail = navigationHeader.findViewById(R.id.user_email);
+        userImage = navigationHeader.findViewById(R.id.header_navigation_image);
+
     }
 
     private void setNavigationMenuClickListener() {
