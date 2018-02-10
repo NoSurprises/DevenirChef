@@ -1,7 +1,6 @@
 package antitelegram.devenirchef.cooking;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -92,12 +91,10 @@ public class FinishRecipeStepFragment extends Fragment {
                 CookActivity cookActivity = (CookActivity) getActivity();
                 if (cookActivity != null) {
                     cookActivity.saveImageToDatabase(finishImage);
-                }
-
-                Activity cookingActivity = getActivity();
-                if (cookingActivity != null) {
-                    cookingActivity.setResult(RESULT_OK);
-                    cookingActivity.finish();
+                    cookActivity.removeSavedState();
+                    cookActivity.setResult(RESULT_OK);
+                    cookActivity.disableSavingState();
+                    cookActivity.finish();
                 }
 
             }
