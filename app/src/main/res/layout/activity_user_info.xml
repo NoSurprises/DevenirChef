@@ -39,6 +39,17 @@
             app:layout_constraintBottom_toBottomOf="@+id/user_avatar"
             app:layout_constraintStart_toEndOf="@+id/user_avatar" />
 
+        <Button
+            android:id="@+id/change_image"
+            style="?attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/user_avatar"
+            android:layout_alignParentEnd="true"
+            android:fontFamily="@font/roboto_regular"
+            android:text="Change"
+            android:textColor="@color/whiteHeadline" />
+
     </RelativeLayout>
 
     <LinearLayout

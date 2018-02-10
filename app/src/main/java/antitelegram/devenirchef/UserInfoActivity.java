@@ -1,10 +1,13 @@
 package antitelegram.devenirchef;
 
+import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,6 +23,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.List;
 
 import antitelegram.devenirchef.data.FinishedRecipe;
@@ -32,6 +37,7 @@ import static antitelegram.devenirchef.MainActivity.TAG;
 public class UserInfoActivity extends DrawerBaseActivity {
 
 
+    private static final int PICK_IMAGE = 321;
     private TextView username;
     private TextView userLevel;
     private TextView experience;
@@ -39,13 +45,14 @@ public class UserInfoActivity extends DrawerBaseActivity {
     private FirebaseUser currentUser;
     private LayoutInflater layoutInflater;
     private ImageView userAvatar;
+    private Button changeImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentLayout(R.layout.activity_user_info);
         bindViews();
-
+        setChangeImageListener();
 
         layoutInflater = getLayoutInflater();
         currentUser = Utils.getFirebaseAuth().getCurrentUser();
@@ -54,6 +61,38 @@ public class UserInfoActivity extends DrawerBaseActivity {
         }
 
         setUserInfoFromReference(getUserReference());
+    }
+
+    private void setChangeImageListener() {
+        changeImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/*");
+
+                startActivityForResult(Intent.createChooser(intent, "Select picture"), PICK_IMAGE);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
+            Log.d(TAG, "onActivityResult: user picked image");
+
+            try {
+                if (data == null) {
+                    Log.d(TAG, "onActivityResult: data is null");
+                    return;
+                }
+                InputStream inputStream = getContentResolver().openInputStream(data.getData());
+                userAvatar.setImageBitmap(BitmapFactory.decodeStream(inputStream));
+
+            } catch (FileNotFoundException e) {
+                Log.d(TAG, "onActivityResult: " + e);
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void setUserInfoFromReference(final DatabaseReference userReference) {
@@ -147,6 +186,7 @@ public class UserInfoActivity extends DrawerBaseActivity {
         experience = findViewById(R.id.experience);
         finishedRecipes = findViewById(R.id.finished_recipes_container);
         userAvatar = findViewById(R.id.user_avatar);
+        changeImage = findViewById(R.id.change_image);
     }
 
     private void setName(String name) {
