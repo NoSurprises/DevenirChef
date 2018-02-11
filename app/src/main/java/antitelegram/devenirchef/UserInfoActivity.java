@@ -1,9 +1,11 @@
 package antitelegram.devenirchef;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,16 +16,20 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
-import java.io.FileNotFoundException;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
@@ -86,25 +92,68 @@ public class UserInfoActivity extends DrawerBaseActivity {
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
             Log.d(TAG, "onActivityResult: user picked image");
 
-            try {
-                if (data == null) {
-                    Log.d(TAG, "onActivityResult: data is null");
-                    return;
-                }
-                InputStream inputStream = getContentResolver().openInputStream(data.getData());
-                userAvatar.setImageBitmap(BitmapFactory.decodeStream(inputStream));
+            final Uri chosenImage = data.getData();
 
-            } catch (FileNotFoundException e) {
-                Log.d(TAG, "onActivityResult: " + e);
+            try {
+                changeImage(chosenImage);
+            } catch (IOException e) {
+                Log.d(TAG, "onActivityResult: can't change image " + e);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    private void changeImage(Uri chosenImage) throws IOException {
+
+        InputStream inputStream = getContentResolver().openInputStream(chosenImage);
+        final Bitmap userImage = BitmapFactory.decodeStream(inputStream);
+        final StorageReference userAvatars = Utils.getFirebaseStorage().getReference("userAvatars");
+
+        UploadTask upload = getUploadImageTask(userImage, userAvatars);
+
+        upload.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                Log.d(TAG, "onComplete: image uploaded");
+
+                final Uri downloadUrl = task.getResult().getDownloadUrl();
+                updateFirebaseUserImage(downloadUrl);
+            }
+
+        });
+
+        userAvatar.setImageBitmap(userImage);
+        inputStream.close();
+
+    }
+
+    private void updateFirebaseUserImage(Uri downloadUrl) {
+        UserProfileChangeRequest changeRequest = new UserProfileChangeRequest.Builder()
+                .setPhotoUri(downloadUrl)
+                .build();
+
+        currentUser.updateProfile(changeRequest)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "onSuccess: user profile updated");
+                    }
+                });
+    }
+
+    @NonNull
+    private UploadTask getUploadImageTask(Bitmap userImage, StorageReference userAvatars) throws IOException {
+        ByteArrayOutputStream imageBytes = new ByteArrayOutputStream();
+        userImage.compress(Bitmap.CompressFormat.JPEG, 20, imageBytes);
+        UploadTask upload = userAvatars.putBytes(imageBytes.toByteArray());
+        imageBytes.close();
+        return upload;
+    }
+
     private void setUserInfoFromReference(final DatabaseReference userReference) {
         setName(currentUser.getDisplayName());
         setUserImage();
-      
+
         userReference.addListenerForSingleValueEvent(new ValueEventListener() {
             User user;
 
@@ -177,7 +226,7 @@ public class UserInfoActivity extends DrawerBaseActivity {
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .into(userAvatar);
         }
-}
+    }
 
     private DatabaseReference getUserReference() {
         String userUid = currentUser.getUid();
