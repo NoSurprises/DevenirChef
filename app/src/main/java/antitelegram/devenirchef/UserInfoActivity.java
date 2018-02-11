@@ -36,6 +36,7 @@ import java.util.List;
 import antitelegram.devenirchef.data.FinishedRecipe;
 import antitelegram.devenirchef.data.User;
 import antitelegram.devenirchef.utils.Constants;
+import antitelegram.devenirchef.utils.PhotoRedactor;
 import antitelegram.devenirchef.utils.Utils;
 
 import static antitelegram.devenirchef.MainActivity.TAG;
@@ -105,8 +106,9 @@ public class UserInfoActivity extends DrawerBaseActivity {
 
     private void changeImage(Uri chosenImage) throws IOException {
 
-        InputStream inputStream = getContentResolver().openInputStream(chosenImage);
-        final Bitmap userImage = BitmapFactory.decodeStream(inputStream);
+
+        Bitmap userImage = getFinishedImage(chosenImage); // it's rotated, if needed todo not working
+
         final StorageReference userAvatars = Utils.getFirebaseStorage().getReference("userAvatars");
 
         UploadTask upload = getUploadImageTask(userImage, userAvatars);
@@ -119,12 +121,26 @@ public class UserInfoActivity extends DrawerBaseActivity {
                 final Uri downloadUrl = task.getResult().getDownloadUrl();
                 updateFirebaseUserImage(downloadUrl);
             }
-
         });
 
         userAvatar.setImageBitmap(userImage);
-        inputStream.close();
 
+    }
+
+    private Bitmap getFinishedImage(Uri chosenImage) throws IOException {
+        InputStream inputStream = getContentResolver().openInputStream(chosenImage);
+        Bitmap userImage = BitmapFactory.decodeStream(inputStream);
+
+        userImage = redactPhoto(inputStream, userImage);
+
+        inputStream.close();
+        return userImage;
+    }
+
+    private Bitmap redactPhoto(InputStream inputStream, Bitmap userImage) {
+        PhotoRedactor redactor = new PhotoRedactor();
+        userImage = redactor.getRotatedPhoto(inputStream, userImage);
+        return userImage;
     }
 
     private void updateFirebaseUserImage(Uri downloadUrl) {

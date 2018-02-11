@@ -69,9 +69,11 @@ public class FinishRecipeStepFragment extends Fragment {
 
         if (savedInstanceState != null && savedInstanceState.containsKey("image")) {
             takenImagePath = savedInstanceState.getString("image");
-            initImageBitmap();
-            setPic(finishImage);
-            photoUri = FileProvider.getUriForFile(getActivity(), "devenirchef.fileprovider", new File(takenImagePath));
+            if (takenImagePath != null) {
+                initImageBitmap();
+                setPic(finishImage);
+                photoUri = FileProvider.getUriForFile(getActivity(), "devenirchef.fileprovider", new File(takenImagePath));
+            }
             Log.d(TAG, "onCreateView: restored image " + takenImagePath);
         }
         return finishScreen;
