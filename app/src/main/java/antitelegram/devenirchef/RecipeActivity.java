@@ -105,6 +105,8 @@ public class RecipeActivity extends AppCompatActivity {
         if (!isFinishing()) {
             Glide.with(this)
                     .load(recipe.getPhotoUrl())
+                    .placeholder(R.drawable.ic_placeholder)
+                    .crossFade()
                     .into(image);
         }
     }

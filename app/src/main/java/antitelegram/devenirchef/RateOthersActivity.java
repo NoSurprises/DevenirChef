@@ -4,34 +4,28 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.util.Util;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import antitelegram.devenirchef.data.FinishedRecipe;
-import antitelegram.devenirchef.data.User;
 import antitelegram.devenirchef.utils.Constants;
 import antitelegram.devenirchef.utils.Utils;
-
-import static antitelegram.devenirchef.MainActivity.TAG;
 
 public class RateOthersActivity extends DrawerBaseActivity {
 
@@ -212,6 +206,8 @@ public class RateOthersActivity extends DrawerBaseActivity {
         if (!isFinishing()) {
           Glide.with(image.getContext())
               .load(uri)
+                  .thumbnail(0.1f)
+                  .crossFade()
               .into(image);
 
           Log.d("rateOthers", "setInfoToView: set image " + recipe.getPhotoUrl());

@@ -1,20 +1,17 @@
 package antitelegram.devenirchef.cooking;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.media.ExifInterface;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
@@ -26,12 +23,15 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import antitelegram.devenirchef.R;
+import antitelegram.devenirchef.utils.PhotoRedactor;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -51,6 +51,7 @@ public class FinishRecipeStepFragment extends Fragment {
     private String takenImagePath;
     private Button share;
     private Uri photoUri;
+    private PhotoRedactor redactor;
 
     public FinishRecipeStepFragment() {
         // Required empty public constructor
@@ -68,8 +69,12 @@ public class FinishRecipeStepFragment extends Fragment {
 
         if (savedInstanceState != null && savedInstanceState.containsKey("image")) {
             takenImagePath = savedInstanceState.getString("image");
-            initImageBitmap();
-            setPic(finishImage);
+            if (takenImagePath != null) {
+                initImageBitmap();
+                setPic(finishImage);
+                photoUri = FileProvider.getUriForFile(getActivity(), "devenirchef.fileprovider", new File(takenImagePath));
+            }
+            Log.d(TAG, "onCreateView: restored image " + takenImagePath);
         }
         return finishScreen;
     }
@@ -92,12 +97,11 @@ public class FinishRecipeStepFragment extends Fragment {
                 CookActivity cookActivity = (CookActivity) getActivity();
                 if (cookActivity != null) {
                     cookActivity.saveImageToDatabase(finishImage);
-                }
-
-                Activity cookingActivity = getActivity();
-                if (cookingActivity != null) {
-                    cookingActivity.setResult(RESULT_OK);
-                    cookingActivity.finish();
+                    cookActivity.removeSavedState();
+                    cookActivity.setResult(RESULT_OK);
+                    cookActivity.disableSavingState();
+                    deleteTakenPhoto();
+                    cookActivity.finish();
                 }
 
             }
@@ -123,12 +127,6 @@ public class FinishRecipeStepFragment extends Fragment {
                 return true;
             }
         });
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        deleteTakenPhoto();
     }
 
     private void deleteTakenPhoto() {
@@ -193,90 +191,46 @@ public class FinishRecipeStepFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == FinishRecipeStepFragment.REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             initImageBitmap();
-            finishImage = getRotatedPhoto();
-            finishImage = getCroppedPhoto();
-            finishImage = getScaledPhoto();
+            redactor = new PhotoRedactor();
+            InputStream in = null;
+            try {
+                in = getActivity().getContentResolver().openInputStream(photoUri);
+            } catch (FileNotFoundException e) {
+                Log.d(TAG, "onActivityResult: can't get input steam " + e);
+                return;
+            }
+            redactPhoto(in);
+            updateImageInStorage();
+
+            Log.d(TAG, "onActivityResult: change image " + finishImage);
             if (finishImage != null) {
                 setPic(finishImage);
             }
         }
     }
 
-    private Bitmap getScaledPhoto() {
-        int width = 1080;
-        int height = 1080;
-
-        return Bitmap.createScaledBitmap(finishImage, width, height, false);
-    }
-
-    private Bitmap getCroppedPhoto() {
-
-        if (finishImage.getWidth() >= finishImage.getHeight()) {
-            return Bitmap.createBitmap(
-                    finishImage,
-                    finishImage.getWidth() / 2 - finishImage.getHeight() / 2,
-                    0,
-                    finishImage.getHeight(),
-                    finishImage.getHeight()
-            );
-
-        }
-
-        return Bitmap.createBitmap(
-                finishImage,
-                0,
-                finishImage.getHeight() / 2 - finishImage.getWidth() / 2,
-                finishImage.getWidth(),
-                finishImage.getWidth()
-        );
-    }
-
-
-    private Bitmap getRotatedPhoto() {
-
-        InputStream in = null;
+    private void updateImageInStorage() {
+        FileOutputStream out = null;
         try {
-            in = getActivity().getContentResolver().openInputStream(photoUri);
-
-            int rotation = getImageRotation(new ExifInterface(in));
-            return getRotatedBitmap(finishImage, rotation);
-        } catch (IOException e) {
-            Log.d(TAG, "onActivityResult:" + e);
+            out = new FileOutputStream(takenImagePath);
+            finishImage.compress(Bitmap.CompressFormat.JPEG, 100, out);
+        } catch (FileNotFoundException e) {
+            Log.d(TAG, "onActivityResult: " + e);
         } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException ignored) {
-                }
+            try {
+                out.close();
+            } catch (IOException e) {
+                Log.d(TAG, "onActivityResult: " + e);
             }
         }
-        return null;
     }
 
-    private Bitmap getRotatedBitmap(Bitmap image, int rotation) {
-        Matrix matrix = new Matrix();
-        matrix.setRotate(rotation, (float) image.getWidth() / 2, (float) image.getHeight() / 2);
-        return Bitmap.createBitmap(image, 0, 0, image.getWidth(), image.getHeight(), matrix, true);
+    private void redactPhoto(InputStream in) {
+        finishImage = redactor.getRotatedPhoto(in, finishImage);
+        finishImage = redactor.getCroppedPhoto(finishImage);
+        finishImage = redactor.getScaledPhoto(finishImage);
     }
 
-    private int getImageRotation(ExifInterface exifInterface) {
-        int rotation = 0;
-        int orientation = exifInterface.getAttributeInt(
-                ExifInterface.TAG_ORIENTATION,
-                ExifInterface.ORIENTATION_NORMAL);
-        switch (orientation) {
-            case ExifInterface.ORIENTATION_ROTATE_90:
-                rotation = 90;
-                break;
-            case ExifInterface.ORIENTATION_ROTATE_180:
-                rotation = 180;
-                break;
-            case ExifInterface.ORIENTATION_ROTATE_270:
-                rotation = 270;
-                break;
-        }
-        return rotation;
-    }
 
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
