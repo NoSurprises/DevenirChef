@@ -109,8 +109,7 @@ public class UserInfoActivity extends DrawerBaseActivity {
 
         Bitmap userImage = getFinishedImage(chosenImage); // it's rotated, if needed todo not working
 
-        final StorageReference userAvatars = Utils.getFirebaseStorage().getReference("userAvatars");
-
+        final StorageReference userAvatars = Utils.getFirebaseStorage().getReference("userAvatars/").child(currentUser.getUid());
         UploadTask upload = getUploadImageTask(userImage, userAvatars);
 
         upload.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
