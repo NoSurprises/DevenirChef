@@ -44,6 +44,7 @@ import static antitelegram.devenirchef.MainActivity.TAG;
 public class UserInfoActivity extends DrawerBaseActivity {
 
 
+    public static final int SHOW_RECIPES_LAST = 7;
     private static final int PICK_IMAGE = 321;
     private TextView username;
     private TextView userLevel;
@@ -190,7 +191,8 @@ public class UserInfoActivity extends DrawerBaseActivity {
                     return;
                 }
 
-                for (int i = userFinishedRecipes.size() - 1; i >= 0; i--) {
+                final int n = userFinishedRecipes.size();
+                for (int i = n - 1; i >= n - SHOW_RECIPES_LAST && i >= 0; i--) {
                     addFinishedRecipe(userFinishedRecipes.get(i));
                 }
             }

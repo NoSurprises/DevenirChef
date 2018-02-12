@@ -123,7 +123,7 @@
         android:layout_marginStart="16dp"
         android:fontFamily="@font/roboto_medium"
         android:paddingBottom="8dp"
-        android:text="Finished recipes"
+        android:text="Recent finished recipes"
         android:textColor="@color/body1TextColor"
         android:textSize="14sp"
         tools:layout_editor_absoluteX="0dp" />
