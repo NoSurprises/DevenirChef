@@ -20,20 +20,35 @@
         android:scaleType="fitXY"
         app:srcCompat="@drawable/ic_placeholder" />
 
-    <TextView
-        android:id="@+id/step_number"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/roboto_regular"
-        android:paddingBottom="16dp"
-        android:paddingEnd="16dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingStart="16dp"
-        android:paddingTop="24dp"
-        android:text="Шаг n"
-        android:textColor="@color/headlineTextColor"
-        android:textSize="24sp" />
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/step_number_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_regular"
+            android:paddingBottom="16dp"
+            android:paddingEnd="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingStart="16dp"
+            android:paddingTop="24dp"
+            android:text="Шаг "
+            android:textColor="@color/headlineTextColor"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/step_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_regular"
+            android:text="n"
+            android:textColor="@color/headlineTextColor"
+            android:textSize="24sp" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/cooking_step_text"
@@ -59,14 +74,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Button" />
+            android:text="Назад" />
 
         <Button
             android:id="@+id/forward_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Button" />
+            android:text="Вперед" />
     </LinearLayout>
 
 </LinearLayout>

@@ -27,16 +27,19 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Map;
 
 import antitelegram.devenirchef.R;
+import antitelegram.devenirchef.data.CookingStepPreference;
 import antitelegram.devenirchef.data.FinishedRecipe;
 import antitelegram.devenirchef.data.Recipe;
 import antitelegram.devenirchef.data.RecipeStep;
+import antitelegram.devenirchef.data.SharedPreferencesModel;
 import antitelegram.devenirchef.data.User;
 import antitelegram.devenirchef.utils.Constants;
 import antitelegram.devenirchef.utils.Utils;
 
-public class CookActivity extends AppCompatActivity {
+public class CookActivity extends AppCompatActivity implements StepsNavigation {
 
 
     public static final String TAG = "daywint";
@@ -49,6 +52,8 @@ public class CookActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private ValueEventListener usersValueListener;
     private DatabaseReference userReference;
+    private SharedPreferencesModel cookingState;
+    private boolean needToSaveState = true;
 
 
     @Override
@@ -58,16 +63,21 @@ public class CookActivity extends AppCompatActivity {
 
         initDatabase();
         initAuth();
-
+        cookingState = new CookingStepPreference(getSharedPreferences("cooking", MODE_PRIVATE));
+        Log.d(TAG, "onCreate: all in SP: ");
+        for (Map.Entry<String, ?> entry : cookingState.all().entrySet()) {
+            Log.d(TAG, entry.getKey() + " --- " + entry.getValue());
+        }
         setUpRecipe();
         setUpViewPager();
         setUpToolbar();
 
-
         // to update count info
         setNewDatasetSize();
-    }
 
+        restoreCookingStep();
+
+    }
 
     @Override
     public void onBackPressed() {
@@ -77,6 +87,16 @@ public class CookActivity extends AppCompatActivity {
             allStepsViewPager.setCurrentItem(allStepsViewPager.getCurrentItem() - 1);
         }
     }
+
+    @Override
+    protected void onPause() {
+        if (needToSaveState) {
+            cookingState.saveStep(recipe.getTitle(), allStepsViewPager.getCurrentItem());
+            Log.d(TAG, "saved state " + recipe.getTitle() + " " + allStepsViewPager.getCurrentItem());
+        }
+        super.onPause();
+    }
+
 
     public void saveImageToDatabase(final Bitmap image) {
 
@@ -167,6 +187,8 @@ public class CookActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.abort:
                         setResult(RESULT_CANCELED);
+                        cookingState.removeSavedState(recipe.getTitle());
+                        needToSaveState = false;
                         finish();
                         return true;
                     default:
@@ -247,6 +269,11 @@ public class CookActivity extends AppCompatActivity {
         allStepsViewPager.setAdapter(pagerAdapter);
     }
 
+    private void restoreCookingStep() {
+        Log.d(TAG, "restore state " + cookingState.getSavedStep(recipe.getTitle()));
+        allStepsViewPager.setCurrentItem(cookingState.getSavedStep(recipe.getTitle()));
+    }
+
     private void setUpTabs() {
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(allStepsViewPager);
@@ -254,6 +281,24 @@ public class CookActivity extends AppCompatActivity {
 
     private Recipe getRecipe() {
         return fromIntent.getExtras().getParcelable("recipe");
+    }
+
+    @Override
+    public void forward() {
+        allStepsViewPager.setCurrentItem(allStepsViewPager.getCurrentItem() + 1);
+    }
+
+    @Override
+    public void back() {
+        allStepsViewPager.setCurrentItem(allStepsViewPager.getCurrentItem() - 1);
+    }
+
+    public void removeSavedState() {
+        cookingState.removeSavedState(recipe.getTitle());
+    }
+
+    public void disableSavingState() {
+        needToSaveState = false;
     }
 
     private class CookingPagerAdapter extends FragmentStatePagerAdapter {
@@ -277,6 +322,7 @@ public class CookActivity extends AppCompatActivity {
         private Fragment createCookingStepFragment(int position) {
             RecipeCookingStepFragment cookingStep = new RecipeCookingStepFragment();
             RecipeStep recipeStepData = recipe.getCookingSteps().get(position);
+            recipeStepData.setStepNumber(position);
             cookingStep.setRecipeStep(recipeStepData);
 
             return cookingStep;
@@ -288,7 +334,5 @@ public class CookActivity extends AppCompatActivity {
             return numSteps;
         }
 
-
     }
-
 }

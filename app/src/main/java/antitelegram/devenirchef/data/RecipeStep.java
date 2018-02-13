@@ -34,6 +34,10 @@ public class RecipeStep implements Parcelable {
     public int getStepNumber() {
         return stepNumber;
     }
+
+    public void setStepNumber(int value) {
+        stepNumber = value;
+    }
     // TODO: 12/30/2017 add image
 
     public String getDescriptionOfStep() {

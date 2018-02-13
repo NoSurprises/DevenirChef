@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import antitelegram.devenirchef.R;
@@ -18,6 +19,9 @@ public class RecipeCookingStepFragment extends Fragment {
     private static final String RECIPE_KEY = "recipe";
     private TextView stepText;
     private RecipeStep recipeStep;
+    private TextView stepNumber;
+    private Button forward;
+    private Button back;
 
     public RecipeCookingStepFragment() {
         // Required empty public constructor
@@ -35,7 +39,38 @@ public class RecipeCookingStepFragment extends Fragment {
             recipeStep = savedInstanceState.getParcelable(RECIPE_KEY);
         }
         bindCookingStepDataToViews();
+        handleNavigationButtons();
+
         return cookingStep;
+    }
+
+    private void handleNavigationButtons() {
+        final StepsNavigation navigation = ((StepsNavigation) getActivity());
+
+        setBackNavigation(navigation);
+        setForwardNavigation(navigation);
+    }
+
+    private void setForwardNavigation(final StepsNavigation navigation) {
+        forward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                navigation.forward();
+            }
+        });
+    }
+
+    private void setBackNavigation(final StepsNavigation navigation) {
+        if (recipeStep.getStepNumber() == 0) {
+            back.setEnabled(false);
+        } else {
+            back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    navigation.back();
+                }
+            });
+        }
     }
 
     @Override
@@ -47,7 +82,9 @@ public class RecipeCookingStepFragment extends Fragment {
 
     private void initializeViewFields(View cookingStep) {
         stepText = cookingStep.findViewById(R.id.cooking_step_text);
-        // TODO: 1/7/2018 initialize other fields. same as bind
+        stepNumber = cookingStep.findViewById(R.id.step_number);
+        forward = cookingStep.findViewById(R.id.forward_button);
+        back = cookingStep.findViewById(R.id.back_button);
 
     }
 
@@ -58,7 +95,7 @@ public class RecipeCookingStepFragment extends Fragment {
 
     private void bindCookingStepDataToViews() {
         stepText.setText(recipeStep.getDescriptionOfStep());
-        // TODO: 1/7/2018 bind other data
+        stepNumber.setText(String.valueOf(recipeStep.getStepNumber() + 1));
     }
 
 

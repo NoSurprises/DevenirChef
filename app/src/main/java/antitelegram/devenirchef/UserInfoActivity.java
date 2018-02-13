@@ -1,30 +1,42 @@
 package antitelegram.devenirchef;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import antitelegram.devenirchef.data.FinishedRecipe;
 import antitelegram.devenirchef.data.User;
 import antitelegram.devenirchef.utils.Constants;
+import antitelegram.devenirchef.utils.PhotoRedactor;
 import antitelegram.devenirchef.utils.Utils;
 
 import static antitelegram.devenirchef.MainActivity.TAG;
@@ -32,6 +44,8 @@ import static antitelegram.devenirchef.MainActivity.TAG;
 public class UserInfoActivity extends DrawerBaseActivity {
 
 
+    public static final int SHOW_RECIPES_LAST = 7;
+    private static final int PICK_IMAGE = 321;
     private TextView username;
     private TextView userLevel;
     private TextView experience;
@@ -39,13 +53,14 @@ public class UserInfoActivity extends DrawerBaseActivity {
     private FirebaseUser currentUser;
     private LayoutInflater layoutInflater;
     private ImageView userAvatar;
+    private Button changeImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentLayout(R.layout.activity_user_info);
         bindViews();
-
+        setChangeImageListener();
 
         layoutInflater = getLayoutInflater();
         currentUser = Utils.getFirebaseAuth().getCurrentUser();
@@ -56,10 +71,105 @@ public class UserInfoActivity extends DrawerBaseActivity {
         setUserInfoFromReference(getUserReference());
     }
 
+    private void setChangeImageListener() {
+        changeImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/*");
+
+                Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                pickIntent.setType("image/*");
+
+                Intent chooserIntent = Intent.createChooser(intent, "Select Image");
+                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
+
+                startActivityForResult(chooserIntent, PICK_IMAGE);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
+            Log.d(TAG, "onActivityResult: user picked image");
+
+            final Uri chosenImage = data.getData();
+
+            try {
+                changeImage(chosenImage);
+            } catch (IOException e) {
+                Log.d(TAG, "onActivityResult: can't change image " + e);
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void changeImage(Uri chosenImage) throws IOException {
+
+
+        Bitmap userImage = getFinishedImage(chosenImage); // it's rotated, if needed todo not working
+
+        final StorageReference userAvatars = Utils.getFirebaseStorage().getReference("userAvatars/").child(currentUser.getUid());
+        UploadTask upload = getUploadImageTask(userImage, userAvatars);
+
+        upload.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                Log.d(TAG, "onComplete: image uploaded");
+
+                final Uri downloadUrl = task.getResult().getDownloadUrl();
+                updateFirebaseUserImage(downloadUrl);
+            }
+        });
+
+        userAvatar.setImageBitmap(userImage);
+
+    }
+
+    private Bitmap getFinishedImage(Uri chosenImage) throws IOException {
+        InputStream inputStream = getContentResolver().openInputStream(chosenImage);
+        Bitmap userImage = BitmapFactory.decodeStream(inputStream);
+
+        userImage = redactPhoto(inputStream, userImage);
+
+        inputStream.close();
+        return userImage;
+    }
+
+    private Bitmap redactPhoto(InputStream inputStream, Bitmap userImage) {
+        PhotoRedactor redactor = new PhotoRedactor();
+        userImage = redactor.getRotatedPhoto(inputStream, userImage);
+        return userImage;
+    }
+
+    private void updateFirebaseUserImage(Uri downloadUrl) {
+        UserProfileChangeRequest changeRequest = new UserProfileChangeRequest.Builder()
+                .setPhotoUri(downloadUrl)
+                .build();
+
+        currentUser.updateProfile(changeRequest)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "onSuccess: user profile updated");
+                    }
+                });
+    }
+
+    @NonNull
+    private UploadTask getUploadImageTask(Bitmap userImage, StorageReference userAvatars) throws IOException {
+        ByteArrayOutputStream imageBytes = new ByteArrayOutputStream();
+        userImage.compress(Bitmap.CompressFormat.JPEG, 20, imageBytes);
+        UploadTask upload = userAvatars.putBytes(imageBytes.toByteArray());
+        imageBytes.close();
+        return upload;
+    }
+
     private void setUserInfoFromReference(final DatabaseReference userReference) {
         setName(currentUser.getDisplayName());
         setUserImage();
-      
+
         userReference.addListenerForSingleValueEvent(new ValueEventListener() {
             User user;
 
@@ -81,7 +191,8 @@ public class UserInfoActivity extends DrawerBaseActivity {
                     return;
                 }
 
-                for (int i = userFinishedRecipes.size() - 1; i >= 0; i--) {
+                final int n = userFinishedRecipes.size();
+                for (int i = n - 1; i >= n - SHOW_RECIPES_LAST && i >= 0; i--) {
                     addFinishedRecipe(userFinishedRecipes.get(i));
                 }
             }
@@ -132,7 +243,7 @@ public class UserInfoActivity extends DrawerBaseActivity {
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .into(userAvatar);
         }
-}
+    }
 
     private DatabaseReference getUserReference() {
         String userUid = currentUser.getUid();
@@ -147,6 +258,7 @@ public class UserInfoActivity extends DrawerBaseActivity {
         experience = findViewById(R.id.experience);
         finishedRecipes = findViewById(R.id.finished_recipes_container);
         userAvatar = findViewById(R.id.user_avatar);
+        changeImage = findViewById(R.id.change_image);
     }
 
     private void setName(String name) {

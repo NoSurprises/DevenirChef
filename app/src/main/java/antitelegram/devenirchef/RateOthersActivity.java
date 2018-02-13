@@ -27,6 +27,8 @@ import antitelegram.devenirchef.data.FinishedRecipe;
 import antitelegram.devenirchef.utils.Constants;
 import antitelegram.devenirchef.utils.Utils;
 
+import static antitelegram.devenirchef.MainActivity.TAG;
+
 public class RateOthersActivity extends DrawerBaseActivity {
 
   private FirebaseUser currentUser;
@@ -191,7 +193,8 @@ public class RateOthersActivity extends DrawerBaseActivity {
 
   private void setImage(final FinishedRecipe recipe, final ImageView image) {
 
-    image.setImageResource(0);
+      image.setImageResource(R.drawable.ic_placeholder_transparent);
+      Log.d(TAG, "setImage: " + recipe.getTitle());
 
     String photoUrl = recipe.getPhotoUrl();
     if (photoUrl.equals(Constants.NO_FILE_ADDED))
@@ -199,18 +202,20 @@ public class RateOthersActivity extends DrawerBaseActivity {
 
     StorageReference imageRef = Utils.getFirebaseStorage().getReference(photoUrl);
     Task<Uri> imageTask = imageRef.getDownloadUrl();
-
+      Log.d(TAG, "setImage: start getting url from firebase");
     imageTask.addOnSuccessListener(new OnSuccessListener<Uri>() {
       @Override
       public void onSuccess(Uri uri) {
+          Log.d(TAG, "start glide downloading ");
         if (!isFinishing()) {
+
           Glide.with(image.getContext())
               .load(uri)
-                  .thumbnail(0.1f)
-                  .crossFade()
+                  .error(R.drawable.ic_search_black_24dp)
+                  .placeholder(R.drawable.ic_placeholder_transparent)
+                  .dontAnimate()
               .into(image);
 
-          Log.d("rateOthers", "setInfoToView: set image " + recipe.getPhotoUrl());
         }
       }
     });
