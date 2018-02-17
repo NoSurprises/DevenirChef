@@ -47,8 +47,6 @@ public class MainActivity extends DrawerBaseActivity {
         initRecipesStorage();
 
         setToolbarClickedListener();
-
-
     }
 
     private void initRecipesStorage() {
@@ -113,11 +111,11 @@ public class MainActivity extends DrawerBaseActivity {
                     LinearLayout starsContainer = view.findViewById(R.id.recipe_star_container);
                     ImageView recipeImage = view.findViewById(R.id.recipe_image);
                     TextView description = view.findViewById(R.id.recipe_description);
+                    LinearLayout tags = view.findViewById(R.id.tags_container);
 
 
                     // bind data
                     text.setText(newRecipe.getTitle());
-
                     int level = newRecipe.getLevel();
                     LayoutInflater layoutInflater = getLayoutInflater();
 
@@ -128,6 +126,14 @@ public class MainActivity extends DrawerBaseActivity {
                     setImageToView(recipeImage, newRecipe.getPhotoUrl());
                     description.setText(newRecipe.getDescription());
 
+                    if (newRecipe.getTags() != null) {
+                        for (String tag : newRecipe.getTags()) {
+                            TextView tagView = new TextView(view.getContext());
+                            tagView.setText(tag);
+                            tags.addView(tagView);
+                        }
+
+                    }
                     // bind listeners
                     text.setOnClickListener(openRecipeActivity);
                     recipeImage.setOnClickListener(openRecipeActivity);
