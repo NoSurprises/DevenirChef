@@ -13,4 +13,22 @@
         <item name="colorControlNormal">@color/colorWhite</item>
     </style>
 
+    <style name="AppTheme.TransparentActionBar" parent="AppTheme">
+
+        <item name="android:actionBarStyle">@style/TransparentActionBar</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <!-- Support library compatibility -->
+        <item name="actionBarStyle">@style/TransparentActionBar</item>
+        <item name="windowActionBarOverlay">true</item>
+    </style>
+
+
+    <style name="TransparentActionBar" parent="Widget.AppCompat.Light.ActionBar.Solid">
+        <item name="android:displayOptions">showHome|useLogo</item>
+        <item name="displayOptions">showHome|useLogo</item>
+        <item name="android:background">@null</item>
+        <!-- Support library compatibility -->
+        <item name="background">@null</item>
+    </style>
+
 </resources>

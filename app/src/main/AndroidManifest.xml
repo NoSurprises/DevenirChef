@@ -53,7 +53,8 @@
 
         <activity
             android:name=".RecipeActivity"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.TransparentActionBar" />
 
 
         <activity
