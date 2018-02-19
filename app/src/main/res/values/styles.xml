@@ -2,9 +2,10 @@
 
 
     <style name="AppTheme.NoActionBar" parent="AppTheme">
-
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="toolbarStyle">@style/TransparentActionBar</item>
+
     </style>
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">

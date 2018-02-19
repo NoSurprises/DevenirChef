@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,6 +53,7 @@ public class UserInfoActivity extends DrawerBaseActivity {
     private FirebaseUser currentUser;
     private LayoutInflater layoutInflater;
     private ImageView userAvatar;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +61,9 @@ public class UserInfoActivity extends DrawerBaseActivity {
         setContentLayout(R.layout.activity_user_info);
         bindViews();
         setChangeImageListener();
+
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        findViewById(R.id.appbar).bringToFront();
 
         layoutInflater = getLayoutInflater();
         currentUser = Utils.getFirebaseAuth().getCurrentUser();
@@ -256,6 +261,7 @@ public class UserInfoActivity extends DrawerBaseActivity {
         experience = findViewById(R.id.experience);
         finishedRecipes = findViewById(R.id.finished_recipes_container);
         userAvatar = findViewById(R.id.user_avatar);
+        toolbar = findViewById(R.id.toolbar);
     }
 
     private void setName(String name) {

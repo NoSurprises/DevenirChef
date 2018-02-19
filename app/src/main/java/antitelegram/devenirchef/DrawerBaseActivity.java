@@ -14,6 +14,7 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewStub;
+import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -60,6 +61,11 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (this instanceof UserInfoActivity) {
+            getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+        }
+
         setContentView(R.layout.base_drawer_layout);
 
         setUpNavigationDrawer();
@@ -244,6 +250,7 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
     }
 
     private void setUpToolbar() {
+
         initToolbar();
         setUpDrawerToggle();
 
@@ -261,6 +268,12 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.app_name);
         toolbar.inflateMenu(R.menu.options_menu);
+        findViewById(R.id.appbar).bringToFront();
+        if (this instanceof UserInfoActivity) {
+            toolbar.setBackgroundResource(R.drawable.background_toolbar);
+        }
+
+        setSupportActionBar(toolbar);
     }
 
     private void setUpDrawerToggle() {
