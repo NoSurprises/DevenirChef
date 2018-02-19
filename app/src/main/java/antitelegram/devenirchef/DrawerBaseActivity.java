@@ -14,7 +14,6 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewStub;
-import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -62,20 +61,17 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (this instanceof UserInfoActivity) {
-            getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+        if (this instanceof UserInfoActivity || this instanceof RateOthersActivity) {
+            setContentView(R.layout.base_drawer_layout_transparent_toolbar);
+        } else {
+            setContentView(R.layout.base_drawer_layout);
         }
-
-        setContentView(R.layout.base_drawer_layout);
-
         setUpNavigationDrawer();
         setUpToolbar();
 
         initDatabase();
         initStorage();
         initAuth();
-
-
     }
 
     public void setOnToolbarClickedListener(View.OnClickListener listener) {
@@ -269,7 +265,7 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
         toolbar.setTitle(R.string.app_name);
         toolbar.inflateMenu(R.menu.options_menu);
         findViewById(R.id.appbar).bringToFront();
-        if (this instanceof UserInfoActivity) {
+        if (this instanceof UserInfoActivity || this instanceof RateOthersActivity) {
             toolbar.setBackgroundResource(R.drawable.background_toolbar);
         }
 

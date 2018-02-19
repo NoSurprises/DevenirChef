@@ -63,7 +63,6 @@ public class UserInfoActivity extends DrawerBaseActivity {
         setChangeImageListener();
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        findViewById(R.id.appbar).bringToFront();
 
         layoutInflater = getLayoutInflater();
         currentUser = Utils.getFirebaseAuth().getCurrentUser();
