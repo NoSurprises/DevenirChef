@@ -4,11 +4,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginEnd="16dp"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
-    android:layout_marginStart="16dp"
-    android:layout_marginTop="8dp"
     android:orientation="vertical">
 
     <ImageView
@@ -67,21 +62,29 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:baselineAligned="false"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/back_button"
+            style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Назад" />
+            android:text="Назад"
+            android:textColor="@color/colorPrimary" />
 
         <Button
             android:id="@+id/forward_button"
+            style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Вперед" />
+            android:text="Вперед"
+            android:textColor="@color/colorPrimary" />
     </LinearLayout>
 
 </LinearLayout>

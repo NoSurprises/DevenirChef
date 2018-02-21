@@ -12,16 +12,10 @@
         <item
             android:id="@+id/nav_rate_others"
             android:title="Rate others" />
+        <item
+            android:id="@+id/nav_info"
+            android:title="Info" />
 
     </group>
-
-    <item android:title="Info">
-        <menu>
-            <item
-                android:id="@+id/nav_info"
-                android:title="Info" />
-
-        </menu>
-    </item>
 
 </menu>
