@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewStub;
@@ -263,13 +264,21 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
     private void initToolbar() {
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.app_name);
-        toolbar.inflateMenu(R.menu.options_menu);
         findViewById(R.id.appbar).bringToFront();
         if (this instanceof UserInfoActivity || this instanceof RateOthersActivity) {
             toolbar.setBackgroundResource(R.drawable.background_toolbar);
         }
 
         setSupportActionBar(toolbar);
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (this instanceof MainActivity) {
+            getMenuInflater().inflate(R.menu.options_menu, menu);
+        }
+        return super.onCreateOptionsMenu(menu);
     }
 
     private void setUpDrawerToggle() {
