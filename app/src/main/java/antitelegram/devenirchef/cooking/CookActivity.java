@@ -173,29 +173,26 @@ public class CookActivity extends AppCompatActivity implements StepsNavigation {
     private void setUpToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(recipe.getTitle());
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        setUpMenu(toolbar);
         setUpTabs();
     }
 
-    private void setUpMenu(Toolbar toolbar) {
-        toolbar.inflateMenu(R.menu.cooking_menu);
 
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.abort:
-                        setResult(RESULT_CANCELED);
-                        cookingState.removeSavedState(recipe.getTitle());
-                        needToSaveState = false;
-                        finish();
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-        });
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Log.d(TAG, "onMenuItemClick: homeasup pressed");
+                setResult(RESULT_CANCELED);
+                cookingState.removeSavedState(recipe.getTitle());
+                needToSaveState = false;
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private String uploadImageToStorage(Bitmap image) {
