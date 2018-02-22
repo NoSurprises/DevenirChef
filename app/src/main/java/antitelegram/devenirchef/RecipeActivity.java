@@ -3,10 +3,10 @@ package antitelegram.devenirchef;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -30,6 +30,7 @@ public class RecipeActivity extends AppCompatActivity {
     private TextView description;
     private TextView ingredients;
     private LinearLayout starsContainer;
+    private FloatingActionButton cook;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,23 +44,16 @@ public class RecipeActivity extends AppCompatActivity {
         recipe = getRecipeFromIntent();
 
         bindInfoToViews();
+        addListeners();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.recipe_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.cook_action:
+    private void addListeners() {
+        cook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 launchCookActivity();
-                return true;
-
-        }
-        return false;
+            }
+        });
     }
 
     private void launchCookActivity() {
@@ -88,6 +82,7 @@ public class RecipeActivity extends AppCompatActivity {
         description = findViewById(R.id.recipe_description);
         ingredients = findViewById(R.id.recipe_ingredients);
         starsContainer = findViewById(R.id.recipe_star_container);
+        cook = findViewById(R.id.cook_action_button);
 
 
         // bind data

@@ -6,8 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingEnd="8dp"
-    android:paddingStart="8dp"
     android:paddingTop="8dp">
 
     <android.support.v7.widget.CardView
@@ -93,6 +91,14 @@
                 android:text="Short description with some useless information about this recipe so the user can read this shit to entertain himself "
                 android:textColor="@color/body1TextColor"
                 android:textSize="14sp" />
+
+            <LinearLayout
+                android:id="@+id/tags_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+            </LinearLayout>
         </LinearLayout>
 
     </android.support.v7.widget.CardView>

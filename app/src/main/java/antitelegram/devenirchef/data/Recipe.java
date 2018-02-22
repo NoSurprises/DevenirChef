@@ -27,6 +27,7 @@ public class Recipe implements Parcelable {
     private String photoUrl;
     private int level;
     private List<RecipeStep> cookingSteps;
+    private List<String> tags;
 
     protected Recipe(Parcel in) {
         title = in.readString();
@@ -35,6 +36,7 @@ public class Recipe implements Parcelable {
         photoUrl = in.readString();
         level = in.readInt();
         cookingSteps = in.createTypedArrayList(RecipeStep.CREATOR);
+        tags = in.createStringArrayList();
     }
 
     public Recipe() {
@@ -49,6 +51,7 @@ public class Recipe implements Parcelable {
         dest.writeString(photoUrl);
         dest.writeInt(level);
         dest.writeTypedList(cookingSteps);
+        dest.writeStringList(tags);
     }
 
     @Override
@@ -78,6 +81,10 @@ public class Recipe implements Parcelable {
 
     public String getPhotoUrl() {
         return photoUrl;
+    }
+
+    public List<String> getTags() {
+        return tags;
     }
 
 }

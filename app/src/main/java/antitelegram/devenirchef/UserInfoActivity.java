@@ -6,10 +6,10 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -53,7 +53,7 @@ public class UserInfoActivity extends DrawerBaseActivity {
     private FirebaseUser currentUser;
     private LayoutInflater layoutInflater;
     private ImageView userAvatar;
-    private Button changeImage;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +61,8 @@ public class UserInfoActivity extends DrawerBaseActivity {
         setContentLayout(R.layout.activity_user_info);
         bindViews();
         setChangeImageListener();
+
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         layoutInflater = getLayoutInflater();
         currentUser = Utils.getFirebaseAuth().getCurrentUser();
@@ -72,7 +74,7 @@ public class UserInfoActivity extends DrawerBaseActivity {
     }
 
     private void setChangeImageListener() {
-        changeImage.setOnClickListener(new View.OnClickListener() {
+        userAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -258,7 +260,7 @@ public class UserInfoActivity extends DrawerBaseActivity {
         experience = findViewById(R.id.experience);
         finishedRecipes = findViewById(R.id.finished_recipes_container);
         userAvatar = findViewById(R.id.user_avatar);
-        changeImage = findViewById(R.id.change_image);
+        toolbar = findViewById(R.id.toolbar);
     }
 
     private void setName(String name) {
