@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -20,6 +21,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +47,7 @@ public class RateOthersActivity extends DrawerBaseActivity {
   private Button rate4Button;
   private Button rate5Button;
   private LinearLayout rateButtons;
+  private TextView noRecipes;
 
   private List<FinishedRecipe> recipeList;
   private List<String> usersId;
@@ -54,6 +58,8 @@ public class RateOthersActivity extends DrawerBaseActivity {
     setContentLayout(R.layout.rate_others);
     bindViews();
     bindButtons();
+
+    noRecipes.setVisibility(View.INVISIBLE);
 
     currentUser = Utils.getFirebaseAuth().getCurrentUser();
     if (currentUser == null) {
@@ -90,6 +96,7 @@ public class RateOthersActivity extends DrawerBaseActivity {
     rate4Button = findViewById(R.id.Rate4);
     rate5Button = findViewById(R.id.Rate5);
     rateButtons = findViewById(R.id.RateButtons);
+    noRecipes = findViewById(R.id.no_recipes);
   }
 
   private View.OnClickListener getRateButtonListener(final int rateNumber) {
@@ -97,19 +104,10 @@ public class RateOthersActivity extends DrawerBaseActivity {
       @Override
       public void onClick(View view) {
         Log.d("rateOthers", "rate button pressed");
-        /*
-        userRef.child("exp").addListenerForSingleValueEvent(new ValueEventListener() {
-          @Override
-          public void onDataChange(DataSnapshot dataSnapshot) {
-            Log.d("rateOthers", "exp up");
-            userRef.setValue((long) dataSnapshot.getValue() + rateNumber);
-          }
 
-          @Override
-          public void onCancelled(DatabaseError databaseError) {
-
-          }
-        });*/
+        if (recipeList.size() == 0) {
+          return;
+        }
 
         // Get recipe
         FinishedRecipe recipe = recipeList.get(0);
@@ -235,7 +233,13 @@ public class RateOthersActivity extends DrawerBaseActivity {
         }
         Log.d("rateOthers", "Recipe list size " + recipeList.size());
         if (recipeList.size() != 0) {
+          noRecipes.setVisibility(View.INVISIBLE);
+          recipeImageBox.setVisibility(View.VISIBLE);
           setImage(recipeList.get(0), recipeImageBox);
+        }
+        else {
+          noRecipes.setVisibility(View.VISIBLE);
+          recipeImageBox.setVisibility(View.INVISIBLE);
         }
       }
 
