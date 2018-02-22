@@ -9,7 +9,7 @@ public class FinishedRecipe {
     private String photoUrl;
     private List<String> usersRated;
     private int level;
-    private int averageRating;
+    private float averageRating;
     private String index;
     private boolean isRated;
 
@@ -39,9 +39,9 @@ public class FinishedRecipe {
 
     public void setLevel(int level) { this.level = level; }
 
-    public int getAverageRating() { return averageRating; }
+    public float getAverageRating() { return averageRating; }
 
-    public void setAverageRating(int averageRating) { this.averageRating = averageRating; }
+    public void setAverageRating(float averageRating) { this.averageRating = averageRating; }
 
     public List<String> getUsersRated() { return usersRated; }
 
