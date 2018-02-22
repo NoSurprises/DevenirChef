@@ -97,12 +97,7 @@ public class RateOthersActivity extends DrawerBaseActivity {
       @Override
       public void onClick(View view) {
         Log.d("rateOthers", "rate button pressed");
-
-        String user = usersId.get(0);
-
-         final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference(Constants.DATABASE_USERS)
-            .child(user);
-
+        /*
         userRef.child("exp").addListenerForSingleValueEvent(new ValueEventListener() {
           @Override
           public void onDataChange(DataSnapshot dataSnapshot) {
@@ -114,7 +109,72 @@ public class RateOthersActivity extends DrawerBaseActivity {
           public void onCancelled(DatabaseError databaseError) {
 
           }
-        });
+        });*/
+
+        // Get recipe
+        FinishedRecipe recipe = recipeList.get(0);
+        DatabaseReference userRef = FirebaseDatabase.getInstance().
+            getReference(Constants.DATABASE_USERS).child(usersId.get(0));
+
+        // If recipe is already rated, continue
+        if (recipe.isRated()) {
+          nextImage();
+          return;
+        }
+
+        // If recipe is not rated, but already has enough ratings => rate, then continue
+        if (!recipe.isRated() && recipe.getUsersRated().size() >= Constants.RATINGS_FOR_EXP) {
+          nextImage();
+          userRef.addListenerForSingleValueEvent(getExpSetter(recipe.getIndex()));
+          return;
+        }
+
+        // Add current rating to the picture;
+        recipe.setAverageRating(
+            (recipe.getAverageRating() * recipe.getUsersRated().size() + rateNumber) /
+                (recipe.getUsersRated().size() + 1));
+        recipe.addUsersRated(currentUser.getUid());
+        userRef.child(Constants.FINISHED_RECIPES).child(recipe.getIndex()).setValue(recipe);
+
+        // Rate if needed
+        if (recipe.getUsersRated().size() >= Constants.RATINGS_FOR_EXP) {
+          userRef.addListenerForSingleValueEvent(getExpSetter(recipe.getIndex()));
+        }
+
+        // Continue
+        nextImage();
+      }
+    };
+  }
+
+  private ValueEventListener getExpSetter(final String index)
+  {
+    return new ValueEventListener() {
+      @Override
+      public void onDataChange(DataSnapshot dataSnapshot) {
+        // dataSnapshot is user
+
+        FinishedRecipe recipe = dataSnapshot.child(Constants.FINISHED_RECIPES)
+            .child(index).getValue(FinishedRecipe.class);
+
+        recipe.setRated();
+        dataSnapshot.getRef().child(Constants.FINISHED_RECIPES).child(recipe.getIndex()).setValue(recipe);
+
+        long newExp = dataSnapshot.child(Constants.EXP).getValue(Long.class) +
+            recipe.getAverageRating() * Constants.RATING_MULTIPLIER;
+
+        dataSnapshot.getRef().child(Constants.EXP).setValue(newExp);
+
+        int level = dataSnapshot.child(Constants.LEVEL).getValue(Integer.class);
+        if (level < Constants.MAX_LEVEL && newExp >= Constants.EXP_LEVELS[level]) {
+          dataSnapshot.getRef().child(Constants.LEVEL).setValue(level + 1);
+        }
+
+      }
+
+      @Override
+      public void onCancelled(DatabaseError databaseError) {
+
       }
     };
   }
@@ -165,17 +225,18 @@ public class RateOthersActivity extends DrawerBaseActivity {
 
           for (DataSnapshot recipeSnapshot : userSnapshot.child("finishedRecipes").getChildren()) {
             FinishedRecipe recipe = recipeSnapshot.getValue(FinishedRecipe.class);
-            //Log.d("alex", "onDataChange: " + recipe.getPhotoUrl());
-            if (!recipe.getPhotoUrl().equals("none")) {
+            if (!recipe.getPhotoUrl().equals("none")
+                && recipe.getUsersRated().size() < Constants.RATINGS_FOR_EXP
+                /*&& !recipe.getUsersRated().contains(currentUser.getUid())*/) { // TODO: Uncomment this
               recipeList.add(recipe);
               usersId.add(user);
-
-              Log.d("rateOthers", "onDataChangeIf: " + recipe.getPhotoUrl());
             }
           }
         }
         Log.d("rateOthers", "Recipe list size " + recipeList.size());
-        setImage(recipeList.get(0), recipeImageBox);
+        if (recipeList.size() != 0) {
+          setImage(recipeList.get(0), recipeImageBox);
+        }
       }
 
       @Override

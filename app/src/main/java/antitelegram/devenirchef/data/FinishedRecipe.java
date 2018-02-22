@@ -10,10 +10,13 @@ public class FinishedRecipe {
     private List<String> usersRated;
     private int level;
     private int averageRating;
+    private String index;
+    private boolean isRated;
 
     public FinishedRecipe() {
         usersRated = new ArrayList<>();
         averageRating = 0;
+        isRated = false;
     }
 
     public String getTitle() {
@@ -43,4 +46,14 @@ public class FinishedRecipe {
     public List<String> getUsersRated() { return usersRated; }
 
     public void addUsersRated(String user) { usersRated.add(user); }
+
+    public String getIndex() { return index; }
+
+    //public void setIndex(int index) { this.index = Integer.toString(index); }
+
+    public void setIndex(String index) { this.index = index; }
+
+    public boolean isRated() { return isRated; }
+
+    public void setRated() { isRated = true; }
 }
