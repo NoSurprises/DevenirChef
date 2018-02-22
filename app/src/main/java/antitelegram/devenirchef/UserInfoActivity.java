@@ -283,10 +283,12 @@ public class UserInfoActivity extends DrawerBaseActivity {
 
     private void setInfoToView(final FinishedRecipe recipe, View finishedRecipe) {
         TextView title = finishedRecipe.findViewById(R.id.title);
+        TextView rating = finishedRecipe.findViewById(R.id.rating);
         final ImageView image = finishedRecipe.findViewById(R.id.finished_image);
 
         setImage(recipe, image);
         title.setText(recipe.getTitle());
+        rating.setText("Rating: " + Float.toString(recipe.getAverageRating()));
 
         Log.d(TAG, "setInfoToView: set all info to views");
     }

@@ -136,6 +136,8 @@ public class CookActivity extends AppCompatActivity implements StepsNavigation {
 
             private void addRecipeToUserInDatabase(User user) {
                 FinishedRecipe finishedRecipe = getFinishedRecipe();
+                finishedRecipe.setLevel(recipe.getLevel());
+                finishedRecipe.setIndex(Integer.toString(user.getFinishedRecipes().size()));
                 user.getFinishedRecipes().add(finishedRecipe);
                 userReference.setValue(user);
             }
@@ -240,7 +242,7 @@ public class CookActivity extends AppCompatActivity implements StepsNavigation {
             return;
         }
         String userUid = user.getUid();
-        userReference = firebaseDatabase.getReference("users/" + userUid);
+        userReference = firebaseDatabase.getReference(Constants.DATABASE_USERS + "/" + userUid);
 
     }
 

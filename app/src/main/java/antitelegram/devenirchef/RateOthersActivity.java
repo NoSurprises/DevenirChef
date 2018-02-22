@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -21,7 +23,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import antitelegram.devenirchef.data.FinishedRecipe;
 import antitelegram.devenirchef.utils.Constants;
@@ -37,11 +41,8 @@ public class RateOthersActivity extends DrawerBaseActivity {
 
   private ImageView recipeImageBox;
   private Button nextButton;
-  private Button rate1Button;
-  private Button rate2Button;
-  private Button rate3Button;
-  private Button rate4Button;
-  private Button rate5Button;
+  private LinearLayout rateButtons;
+  private TextView noRecipes;
 
   private List<FinishedRecipe> recipeList;
   private List<String> usersId;
@@ -52,6 +53,8 @@ public class RateOthersActivity extends DrawerBaseActivity {
     setContentLayout(R.layout.rate_others);
     bindViews();
     bindButtons();
+
+    noRecipes.setVisibility(View.INVISIBLE);
 
     currentUser = Utils.getFirebaseAuth().getCurrentUser();
     if (currentUser == null) {
@@ -69,8 +72,6 @@ public class RateOthersActivity extends DrawerBaseActivity {
     refreshRecipes();
 
     Log.d("rateOthers", "Recipe list size " + recipeList.size());
-
-    //setImage(recipeList.get(0), recipeImageBox);
   }
 
   @Override
@@ -84,11 +85,8 @@ public class RateOthersActivity extends DrawerBaseActivity {
   private void bindViews() {
     recipeImageBox = findViewById(R.id.RecipeImageBox);
     nextButton = findViewById(R.id.NextButton);
-    rate1Button = findViewById(R.id.Rate1);
-    rate2Button = findViewById(R.id.Rate2);
-    rate3Button = findViewById(R.id.Rate3);
-    rate4Button = findViewById(R.id.Rate4);
-    rate5Button = findViewById(R.id.Rate5);
+    rateButtons = findViewById(R.id.RateButtons);
+    noRecipes = findViewById(R.id.no_recipes);
   }
 
   private View.OnClickListener getRateButtonListener(final int rateNumber) {
@@ -97,70 +95,114 @@ public class RateOthersActivity extends DrawerBaseActivity {
       public void onClick(View view) {
         Log.d("rateOthers", "rate button pressed");
 
-        String user = usersId.get(0);
+        if (recipeList.size() == 0) {
+          return;
+        }
 
-        //final DatabaseReference ref = Utils.getFirebaseDatabase().getReference(Constants.DATABASE_USERS)
-         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference(Constants.DATABASE_USERS)
-            .child(user).child("exp");
+        // Get recipe
+        FinishedRecipe recipe = recipeList.get(0);
+        DatabaseReference userRef = FirebaseDatabase.getInstance().
+            getReference(Constants.DATABASE_USERS).child(usersId.get(0));
 
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-          @Override
-          public void onDataChange(DataSnapshot dataSnapshot) {
-            Log.d("rateOthers", "exp up");
-            ref.setValue((long) dataSnapshot.getValue() + rateNumber);
-          }
+        // If recipe is already rated, continue
+        if (recipe.isRated()) {
+          nextImage();
+          return;
+        }
 
-          @Override
-          public void onCancelled(DatabaseError databaseError) {
+        // If recipe is not rated, but already has enough ratings => rate, then continue
+        if (!recipe.isRated() && recipe.getUsersRated().size() >= Constants.RATINGS_FOR_EXP) {
+          nextImage();
+          userRef.addListenerForSingleValueEvent(getExpSetter(recipe.getIndex()));
+          return;
+        }
 
-          }
-        });
+        // Add current rating to the picture;
+        recipe.setAverageRating(
+            (recipe.getAverageRating() * recipe.getUsersRated().size() + rateNumber) /
+                (recipe.getUsersRated().size() + 1));
+        recipe.addUsersRated(currentUser.getUid());
+        userRef.child(Constants.FINISHED_RECIPES).child(recipe.getIndex()).setValue(recipe);
+
+        // Rate if needed
+        if (recipe.getUsersRated().size() >= Constants.RATINGS_FOR_EXP) {
+          userRef.addListenerForSingleValueEvent(getExpSetter(recipe.getIndex()));
+        }
+
+        // Continue
+        nextImage();
+      }
+    };
+  }
+
+  private ValueEventListener getExpSetter(final String index) {
+    return new ValueEventListener() {
+      @Override
+      public void onDataChange(DataSnapshot dataSnapshot) {
+        // dataSnapshot is user
+
+        FinishedRecipe recipe = dataSnapshot.child(Constants.FINISHED_RECIPES)
+            .child(index).getValue(FinishedRecipe.class);
+
+        recipe.setRated();
+        dataSnapshot.getRef().child(Constants.FINISHED_RECIPES).child(recipe.getIndex()).setValue(recipe);
+
+        long newExp = dataSnapshot.child(Constants.EXP).getValue(Long.class) +
+            (long) recipe.getAverageRating() * Constants.RATING_MULTIPLIER;
+
+        dataSnapshot.getRef().child(Constants.EXP).setValue(newExp);
+
+        int level = dataSnapshot.child(Constants.LEVEL).getValue(Integer.class);
+        if (level < Constants.MAX_LEVEL && newExp >= Constants.EXP_LEVELS[level]) {
+          dataSnapshot.getRef().child(Constants.LEVEL).setValue(level + 1);
+        }
+
+      }
+
+      @Override
+      public void onCancelled(DatabaseError databaseError) {
+
       }
     };
   }
 
   private void bindButtons() {
-    rate1Button.setOnClickListener(getRateButtonListener(1));
-    rate2Button.setOnClickListener(getRateButtonListener(2));
-    rate3Button.setOnClickListener(getRateButtonListener(3));
-    rate4Button.setOnClickListener(getRateButtonListener(4));
-    rate5Button.setOnClickListener(getRateButtonListener(5));
-
+    for (int i = 0; i < 5; ++i) {
+      rateButtons.getChildAt(i).setOnClickListener(getRateButtonListener(i + 1));
+    }
 
     nextButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        recipeList.remove(0);
-        usersId.remove(0);
-
-        Log.d("rateOthers", "Recipe list size " + recipeList.size());
-
-        if (recipeList.isEmpty()) {
-          refreshRecipes();
-        }
-        else {
-          setImage(recipeList.get(0), recipeImageBox);
-        }
-
-        // TODO: Do something if there are no recipes left
+        nextImage();
       }
     });
   }
 
+  private void nextImage() {
+    recipeList.remove(0);
+    usersId.remove(0);
+
+    Log.d("rateOthers", "Recipe list size " + recipeList.size());
+
+    if (recipeList.isEmpty()) {
+      refreshRecipes();
+    }
+    else {
+      setImage(recipeList.get(0), recipeImageBox);
+    }
+
+    // TODO: Do something if there are no recipes left
+  }
 
   private void refreshRecipes() {
-    //query.addListenerForSingleValueEvent(new ValueEventListener() {
     refresher = new ValueEventListener() {
       @Override
       public void onDataChange(DataSnapshot dataSnapshot) {
         if (!recipeList.isEmpty())
           return;
 
-        //Log.d("alex", "I SHOULD BE HERE");
-
         for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-
-          //Log.d("alex", "User children " + userSnapshot.getChildrenCount());
 
           String user = userSnapshot.getKey();
 
@@ -170,17 +212,28 @@ public class RateOthersActivity extends DrawerBaseActivity {
 
           for (DataSnapshot recipeSnapshot : userSnapshot.child("finishedRecipes").getChildren()) {
             FinishedRecipe recipe = recipeSnapshot.getValue(FinishedRecipe.class);
-            //Log.d("alex", "onDataChange: " + recipe.getPhotoUrl());
-            if (!recipe.getPhotoUrl().equals("none")) {
+            if (!recipe.getPhotoUrl().equals("none")
+                && recipe.getUsersRated().size() < Constants.RATINGS_FOR_EXP
+                /*&& !recipe.getUsersRated().contains(currentUser.getUid())*/) { // TODO: Uncomment this
               recipeList.add(recipe);
               usersId.add(user);
-
-              Log.d("rateOthers", "onDataChangeIf: " + recipe.getPhotoUrl());
             }
           }
         }
         Log.d("rateOthers", "Recipe list size " + recipeList.size());
-        setImage(recipeList.get(0), recipeImageBox);
+        if (recipeList.size() != 0) {
+          long seed = System.nanoTime();
+          Collections.shuffle(recipeList, new Random(seed));
+          Collections.shuffle(usersId, new Random(seed));
+
+          noRecipes.setVisibility(View.INVISIBLE);
+          recipeImageBox.setVisibility(View.VISIBLE);
+          setImage(recipeList.get(0), recipeImageBox);
+        }
+        else {
+          noRecipes.setVisibility(View.VISIBLE);
+          recipeImageBox.setVisibility(View.INVISIBLE);
+        }
       }
 
       @Override
@@ -193,8 +246,8 @@ public class RateOthersActivity extends DrawerBaseActivity {
 
   private void setImage(final FinishedRecipe recipe, final ImageView image) {
 
-      image.setImageResource(R.drawable.ic_placeholder_transparent);
-      Log.d(TAG, "setImage: " + recipe.getTitle());
+    image.setImageResource(R.drawable.ic_placeholder_transparent);
+    Log.d(TAG, "setImage: " + recipe.getTitle());
 
     String photoUrl = recipe.getPhotoUrl();
     if (photoUrl.equals(Constants.NO_FILE_ADDED))
@@ -202,7 +255,7 @@ public class RateOthersActivity extends DrawerBaseActivity {
 
     StorageReference imageRef = Utils.getFirebaseStorage().getReference(photoUrl);
     Task<Uri> imageTask = imageRef.getDownloadUrl();
-      Log.d(TAG, "setImage: start getting url from firebase");
+    Log.d(TAG, "setImage: start getting url from firebase");
     imageTask.addOnSuccessListener(new OnSuccessListener<Uri>() {
       @Override
       public void onSuccess(Uri uri) {
@@ -220,7 +273,6 @@ public class RateOthersActivity extends DrawerBaseActivity {
       }
     });
   }
-
 
   @Override
   void addDatabaseReadListener() {
