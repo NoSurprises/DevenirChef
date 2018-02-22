@@ -15,7 +15,7 @@ public class Constants {
   // Level constants
   public final static long RATINGS_FOR_EXP = 2;
   public final static long RATING_MULTIPLIER = 6;
-  public final static long[] EXP_LEVELS = {0, 100, 250, 400, 600, 9999};
+  public final static long[] EXP_LEVELS = {0, 100, 350, 750, 1350, 123456};
   public final static long MAX_LEVEL = 5;
 
 }

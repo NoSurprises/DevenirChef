@@ -25,7 +25,9 @@ import com.google.firebase.storage.StorageReference;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import antitelegram.devenirchef.data.FinishedRecipe;
 import antitelegram.devenirchef.utils.Constants;
@@ -41,11 +43,6 @@ public class RateOthersActivity extends DrawerBaseActivity {
 
   private ImageView recipeImageBox;
   private Button nextButton;
-  private Button rate1Button;
-  private Button rate2Button;
-  private Button rate3Button;
-  private Button rate4Button;
-  private Button rate5Button;
   private LinearLayout rateButtons;
   private TextView noRecipes;
 
@@ -90,11 +87,6 @@ public class RateOthersActivity extends DrawerBaseActivity {
   private void bindViews() {
     recipeImageBox = findViewById(R.id.RecipeImageBox);
     nextButton = findViewById(R.id.NextButton);
-    rate1Button = findViewById(R.id.Rate1);
-    rate2Button = findViewById(R.id.Rate2);
-    rate3Button = findViewById(R.id.Rate3);
-    rate4Button = findViewById(R.id.Rate4);
-    rate5Button = findViewById(R.id.Rate5);
     rateButtons = findViewById(R.id.RateButtons);
     noRecipes = findViewById(R.id.no_recipes);
   }
@@ -145,8 +137,7 @@ public class RateOthersActivity extends DrawerBaseActivity {
     };
   }
 
-  private ValueEventListener getExpSetter(final String index)
-  {
+  private ValueEventListener getExpSetter(final String index) {
     return new ValueEventListener() {
       @Override
       public void onDataChange(DataSnapshot dataSnapshot) {
@@ -233,6 +224,10 @@ public class RateOthersActivity extends DrawerBaseActivity {
         }
         Log.d("rateOthers", "Recipe list size " + recipeList.size());
         if (recipeList.size() != 0) {
+          long seed = System.nanoTime();
+          Collections.shuffle(recipeList, new Random(seed));
+          Collections.shuffle(usersId, new Random(seed));
+
           noRecipes.setVisibility(View.INVISIBLE);
           recipeImageBox.setVisibility(View.VISIBLE);
           setImage(recipeList.get(0), recipeImageBox);
