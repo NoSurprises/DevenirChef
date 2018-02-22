@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -42,6 +43,7 @@ public class RateOthersActivity extends DrawerBaseActivity {
   private Button rate3Button;
   private Button rate4Button;
   private Button rate5Button;
+  private LinearLayout rateButtons;
 
   private List<FinishedRecipe> recipeList;
   private List<String> usersId;
@@ -69,8 +71,6 @@ public class RateOthersActivity extends DrawerBaseActivity {
     refreshRecipes();
 
     Log.d("rateOthers", "Recipe list size " + recipeList.size());
-
-    //setImage(recipeList.get(0), recipeImageBox);
   }
 
   @Override
@@ -89,6 +89,7 @@ public class RateOthersActivity extends DrawerBaseActivity {
     rate3Button = findViewById(R.id.Rate3);
     rate4Button = findViewById(R.id.Rate4);
     rate5Button = findViewById(R.id.Rate5);
+    rateButtons = findViewById(R.id.RateButtons);
   }
 
   private View.OnClickListener getRateButtonListener(final int rateNumber) {
@@ -99,15 +100,14 @@ public class RateOthersActivity extends DrawerBaseActivity {
 
         String user = usersId.get(0);
 
-        //final DatabaseReference ref = Utils.getFirebaseDatabase().getReference(Constants.DATABASE_USERS)
-         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference(Constants.DATABASE_USERS)
-            .child(user).child("exp");
+         final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference(Constants.DATABASE_USERS)
+            .child(user);
 
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+        userRef.child("exp").addListenerForSingleValueEvent(new ValueEventListener() {
           @Override
           public void onDataChange(DataSnapshot dataSnapshot) {
             Log.d("rateOthers", "exp up");
-            ref.setValue((long) dataSnapshot.getValue() + rateNumber);
+            userRef.setValue((long) dataSnapshot.getValue() + rateNumber);
           }
 
           @Override
@@ -120,47 +120,42 @@ public class RateOthersActivity extends DrawerBaseActivity {
   }
 
   private void bindButtons() {
-    rate1Button.setOnClickListener(getRateButtonListener(1));
-    rate2Button.setOnClickListener(getRateButtonListener(2));
-    rate3Button.setOnClickListener(getRateButtonListener(3));
-    rate4Button.setOnClickListener(getRateButtonListener(4));
-    rate5Button.setOnClickListener(getRateButtonListener(5));
-
+    for (int i = 0; i < 5; ++i) {
+      rateButtons.getChildAt(i).setOnClickListener(getRateButtonListener(i + 1));
+    }
 
     nextButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        recipeList.remove(0);
-        usersId.remove(0);
-
-        Log.d("rateOthers", "Recipe list size " + recipeList.size());
-
-        if (recipeList.isEmpty()) {
-          refreshRecipes();
-        }
-        else {
-          setImage(recipeList.get(0), recipeImageBox);
-        }
-
-        // TODO: Do something if there are no recipes left
+        nextImage();
       }
     });
   }
 
+  private void nextImage() {
+    recipeList.remove(0);
+    usersId.remove(0);
+
+    Log.d("rateOthers", "Recipe list size " + recipeList.size());
+
+    if (recipeList.isEmpty()) {
+      refreshRecipes();
+    }
+    else {
+      setImage(recipeList.get(0), recipeImageBox);
+    }
+
+    // TODO: Do something if there are no recipes left
+  }
 
   private void refreshRecipes() {
-    //query.addListenerForSingleValueEvent(new ValueEventListener() {
     refresher = new ValueEventListener() {
       @Override
       public void onDataChange(DataSnapshot dataSnapshot) {
         if (!recipeList.isEmpty())
           return;
 
-        //Log.d("alex", "I SHOULD BE HERE");
-
         for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-
-          //Log.d("alex", "User children " + userSnapshot.getChildrenCount());
 
           String user = userSnapshot.getKey();
 
@@ -193,8 +188,8 @@ public class RateOthersActivity extends DrawerBaseActivity {
 
   private void setImage(final FinishedRecipe recipe, final ImageView image) {
 
-      image.setImageResource(R.drawable.ic_placeholder_transparent);
-      Log.d(TAG, "setImage: " + recipe.getTitle());
+    image.setImageResource(R.drawable.ic_placeholder_transparent);
+    Log.d(TAG, "setImage: " + recipe.getTitle());
 
     String photoUrl = recipe.getPhotoUrl();
     if (photoUrl.equals(Constants.NO_FILE_ADDED))
@@ -202,7 +197,7 @@ public class RateOthersActivity extends DrawerBaseActivity {
 
     StorageReference imageRef = Utils.getFirebaseStorage().getReference(photoUrl);
     Task<Uri> imageTask = imageRef.getDownloadUrl();
-      Log.d(TAG, "setImage: start getting url from firebase");
+    Log.d(TAG, "setImage: start getting url from firebase");
     imageTask.addOnSuccessListener(new OnSuccessListener<Uri>() {
       @Override
       public void onSuccess(Uri uri) {
@@ -220,7 +215,6 @@ public class RateOthersActivity extends DrawerBaseActivity {
       }
     });
   }
-
 
   @Override
   void addDatabaseReadListener() {
