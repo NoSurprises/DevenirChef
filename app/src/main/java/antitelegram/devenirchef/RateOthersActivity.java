@@ -122,6 +122,7 @@ public class RateOthersActivity extends DrawerBaseActivity {
             (recipe.getAverageRating() * recipe.getUsersRated().size() + rateNumber) /
                 (recipe.getUsersRated().size() + 1));
         recipe.addUsersRated(currentUser.getUid());
+        Log.d(TAG, "onClick: recipe index" + recipe.getIndex());
         userRef.child(Constants.FINISHED_RECIPES).child(recipe.getIndex()).setValue(recipe);
 
         // Rate if needed

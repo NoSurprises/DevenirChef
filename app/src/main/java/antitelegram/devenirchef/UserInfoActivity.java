@@ -184,6 +184,8 @@ public class UserInfoActivity extends DrawerBaseActivity {
                     user = dataSnapshot.getValue(User.class);
                 }
                 createFinishedRecipesViews();
+                setLevel((long) user.getLevel());
+                setExperience((long) user.getExp());
             }
 
             private void createFinishedRecipesViews() {
@@ -213,28 +215,7 @@ public class UserInfoActivity extends DrawerBaseActivity {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
-        userReference.child("level").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                setLevel((long) dataSnapshot.getValue());
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        userReference.child("exp").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                setExperience((long) dataSnapshot.getValue());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
     }
 
     private void setUserImage() {
