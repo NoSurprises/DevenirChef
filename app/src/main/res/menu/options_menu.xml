@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/seach"
+        android:icon="@drawable/ic_search_white_48px"
         android:title="@string/search_hint"
-        android:icon="@drawable/ic_search_black_24dp"
-        app:showAsAction="collapseActionView|ifRoom"
-        android:actionViewClass="android.widget.SearchView"/>
+        app:actionViewClass="android.widget.SearchView"
+        app:showAsAction="collapseActionView|ifRoom" />
 </menu>

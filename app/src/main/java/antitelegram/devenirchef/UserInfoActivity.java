@@ -6,12 +6,13 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -53,7 +54,8 @@ public class UserInfoActivity extends DrawerBaseActivity {
     private FirebaseUser currentUser;
     private LayoutInflater layoutInflater;
     private ImageView userAvatar;
-    private Button changeImage;
+    private ProgressBar expBar;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +63,8 @@ public class UserInfoActivity extends DrawerBaseActivity {
         setContentLayout(R.layout.activity_user_info);
         bindViews();
         setChangeImageListener();
+
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         layoutInflater = getLayoutInflater();
         currentUser = Utils.getFirebaseAuth().getCurrentUser();
@@ -72,7 +76,7 @@ public class UserInfoActivity extends DrawerBaseActivity {
     }
 
     private void setChangeImageListener() {
-        changeImage.setOnClickListener(new View.OnClickListener() {
+        userAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -182,6 +186,8 @@ public class UserInfoActivity extends DrawerBaseActivity {
                     user = dataSnapshot.getValue(User.class);
                 }
                 createFinishedRecipesViews();
+                setLevel((long) user.getLevel());
+                setExperience((long) user.getExp(), user.getLevel());
             }
 
             private void createFinishedRecipesViews() {
@@ -211,28 +217,7 @@ public class UserInfoActivity extends DrawerBaseActivity {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
-        userReference.child("level").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                setLevel((long) dataSnapshot.getValue());
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        userReference.child("exp").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                setExperience((long) dataSnapshot.getValue());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
     }
 
     private void setUserImage() {
@@ -258,7 +243,8 @@ public class UserInfoActivity extends DrawerBaseActivity {
         experience = findViewById(R.id.experience);
         finishedRecipes = findViewById(R.id.finished_recipes_container);
         userAvatar = findViewById(R.id.user_avatar);
-        changeImage = findViewById(R.id.change_image);
+        toolbar = findViewById(R.id.toolbar);
+        expBar = findViewById(R.id.expBar);
     }
 
     private void setName(String name) {
@@ -269,8 +255,13 @@ public class UserInfoActivity extends DrawerBaseActivity {
         userLevel.setText(level.toString());
     }
 
-    private void setExperience(Long exp) {
-        experience.setText(exp.toString());
+    private void setExperience(Long exp, int level) {
+        int progress = exp.intValue() - (int) Constants.EXP_LEVELS[level - 1];
+        experience.setText(progress + "");
+        expBar.setProgress(progress);
+        expBar.setMax((int) Constants.EXP_LEVELS[level]);
+
+
     }
 
     private void addFinishedRecipe(FinishedRecipe recipe) {
@@ -281,10 +272,12 @@ public class UserInfoActivity extends DrawerBaseActivity {
 
     private void setInfoToView(final FinishedRecipe recipe, View finishedRecipe) {
         TextView title = finishedRecipe.findViewById(R.id.title);
+        TextView rating = finishedRecipe.findViewById(R.id.rating);
         final ImageView image = finishedRecipe.findViewById(R.id.finished_image);
 
         setImage(recipe, image);
         title.setText(recipe.getTitle());
+        rating.setText("Rating: " + Float.toString(recipe.getAverageRating()));
 
         Log.d(TAG, "setInfoToView: set all info to views");
     }

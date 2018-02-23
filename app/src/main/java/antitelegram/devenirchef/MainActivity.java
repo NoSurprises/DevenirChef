@@ -2,10 +2,14 @@ package antitelegram.devenirchef;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,8 +40,105 @@ public class MainActivity extends DrawerBaseActivity {
     private List<Recipe> recipes;
     private ChildEventListener childEventListener;
     private ScrollView recipesScroll;
+    private RelativeLayout bottomMenuExpanded;
+    private RelativeLayout bottomMenuShrinked;
+
+    private boolean bottomExpanded = false;
+
+    public static void expand(final View v, final int fromHeight, final View hideBefore) {
+        v.measure(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        final int targetHeight = v.getMeasuredHeight();
+
+        // Older versions of android (pre API 21) cancel animations for views with a height of 0.
+
+        hideBefore.setVisibility(View.GONE);
+        v.getLayoutParams().height = fromHeight;
+        v.requestLayout();
+        v.setVisibility(View.VISIBLE);
 
 
+        Animation a = new Animation() {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                if (interpolatedTime == 1) {
+                    v.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+                } else {
+                    v.getLayoutParams().height = fromHeight + (int) ((targetHeight - fromHeight) * interpolatedTime);
+                }
+                v.requestLayout();
+            }
+
+            @Override
+            public boolean willChangeBounds() {
+                return true;
+            }
+        };
+
+        // 1dp/ms
+        a.setDuration((int) (targetHeight / v.getContext().getResources().getDisplayMetrics().density));
+        a.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                Log.d(TAG, "onAnimationEnd: expand end");
+                v.setVisibility(View.VISIBLE);
+                hideBefore.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        v.startAnimation(a);
+    }
+
+    public static void collapse(final View expanded, final int toHeight, final View showAfter) {
+        expanded.measure(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        final int initialHeight = expanded.getMeasuredHeight();
+
+        Animation a = new Animation() {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                expanded.getLayoutParams().height = initialHeight - (int) ((initialHeight - toHeight) * interpolatedTime);
+
+                expanded.requestLayout();
+
+            }
+
+            @Override
+            public boolean willChangeBounds() {
+                return true;
+            }
+        };
+
+        // 1dp/ms
+        a.setDuration((int) (initialHeight / expanded.getContext().getResources().getDisplayMetrics().density));
+        a.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                Log.d(TAG, "onAnimationEnd: collapse end");
+                expanded.setVisibility(View.GONE);
+                showAfter.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        expanded.startAnimation(a);
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +146,27 @@ public class MainActivity extends DrawerBaseActivity {
         setContentLayout(R.layout.main_content);
 
         initRecipesStorage();
-
         setToolbarClickedListener();
+        setUpBottomMenu();
+    }
+
+    private void setUpBottomMenu() {
+        bottomMenuExpanded = findViewById(R.id.bottom_menu_expanded);
+        bottomMenuShrinked = findViewById(R.id.bottom_menu_shrinked);
+        View.OnClickListener toggle = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (bottomExpanded) {
+                    collapse(bottomMenuExpanded, bottomMenuShrinked.getHeight(), bottomMenuShrinked);
+                } else {
+                    expand(bottomMenuExpanded, bottomMenuShrinked.getHeight(), bottomMenuShrinked);
+                }
+                bottomExpanded = !bottomExpanded;
+            }
+        };
+        bottomMenuShrinked.findViewById(R.id.arrow_button).setOnClickListener(toggle);
+        bottomMenuExpanded.findViewById(R.id.arrow_button).setOnClickListener(toggle);
+
     }
 
     private void initRecipesStorage() {
@@ -70,7 +190,6 @@ public class MainActivity extends DrawerBaseActivity {
         };
         setOnToolbarClickedListener(toolbarClicked);
     }
-
 
 
     @Override
