@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -53,6 +54,7 @@ public class UserInfoActivity extends DrawerBaseActivity {
     private FirebaseUser currentUser;
     private LayoutInflater layoutInflater;
     private ImageView userAvatar;
+    private ProgressBar expBar;
     private Toolbar toolbar;
 
     @Override
@@ -185,7 +187,7 @@ public class UserInfoActivity extends DrawerBaseActivity {
                 }
                 createFinishedRecipesViews();
                 setLevel((long) user.getLevel());
-                setExperience((long) user.getExp());
+                setExperience((long) user.getExp(), user.getLevel());
             }
 
             private void createFinishedRecipesViews() {
@@ -242,6 +244,7 @@ public class UserInfoActivity extends DrawerBaseActivity {
         finishedRecipes = findViewById(R.id.finished_recipes_container);
         userAvatar = findViewById(R.id.user_avatar);
         toolbar = findViewById(R.id.toolbar);
+        expBar = findViewById(R.id.expBar);
     }
 
     private void setName(String name) {
@@ -252,8 +255,13 @@ public class UserInfoActivity extends DrawerBaseActivity {
         userLevel.setText(level.toString());
     }
 
-    private void setExperience(Long exp) {
-        experience.setText(exp.toString());
+    private void setExperience(Long exp, int level) {
+        int progress = exp.intValue() - (int) Constants.EXP_LEVELS[level - 1];
+        experience.setText(progress + "");
+        expBar.setProgress(progress);
+        expBar.setMax((int) Constants.EXP_LEVELS[level]);
+
+
     }
 
     private void addFinishedRecipe(FinishedRecipe recipe) {
