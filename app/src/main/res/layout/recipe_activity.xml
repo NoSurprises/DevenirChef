@@ -104,4 +104,5 @@
         android:layout_margin="24dp"
         android:src="@drawable/ic_forbutton"
         app:backgroundTint="@color/colorPrimary" />
+
 </RelativeLayout>

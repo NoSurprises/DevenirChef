@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,6 +53,7 @@ public class UserInfoActivity extends DrawerBaseActivity {
     private FirebaseUser currentUser;
     private LayoutInflater layoutInflater;
     private ImageView userAvatar;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +61,8 @@ public class UserInfoActivity extends DrawerBaseActivity {
         setContentLayout(R.layout.activity_user_info);
         bindViews();
         setChangeImageListener();
+
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         layoutInflater = getLayoutInflater();
         currentUser = Utils.getFirebaseAuth().getCurrentUser();
@@ -180,6 +184,8 @@ public class UserInfoActivity extends DrawerBaseActivity {
                     user = dataSnapshot.getValue(User.class);
                 }
                 createFinishedRecipesViews();
+                setLevel((long) user.getLevel());
+                setExperience((long) user.getExp());
             }
 
             private void createFinishedRecipesViews() {
@@ -209,28 +215,7 @@ public class UserInfoActivity extends DrawerBaseActivity {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
-        userReference.child("level").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                setLevel((long) dataSnapshot.getValue());
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        userReference.child("exp").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                setExperience((long) dataSnapshot.getValue());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
     }
 
     private void setUserImage() {
@@ -256,6 +241,7 @@ public class UserInfoActivity extends DrawerBaseActivity {
         experience = findViewById(R.id.experience);
         finishedRecipes = findViewById(R.id.finished_recipes_container);
         userAvatar = findViewById(R.id.user_avatar);
+        toolbar = findViewById(R.id.toolbar);
     }
 
     private void setName(String name) {
@@ -278,10 +264,12 @@ public class UserInfoActivity extends DrawerBaseActivity {
 
     private void setInfoToView(final FinishedRecipe recipe, View finishedRecipe) {
         TextView title = finishedRecipe.findViewById(R.id.title);
+        TextView rating = finishedRecipe.findViewById(R.id.rating);
         final ImageView image = finishedRecipe.findViewById(R.id.finished_image);
 
         setImage(recipe, image);
         title.setText(recipe.getTitle());
+        rating.setText("Rating: " + Float.toString(recipe.getAverageRating()));
 
         Log.d(TAG, "setInfoToView: set all info to views");
     }

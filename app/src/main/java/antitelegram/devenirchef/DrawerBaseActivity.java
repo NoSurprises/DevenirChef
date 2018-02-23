@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewStub;
@@ -60,16 +61,18 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.base_drawer_layout);
 
+        if (this instanceof UserInfoActivity || this instanceof RateOthersActivity) {
+            setContentView(R.layout.base_drawer_layout_transparent_toolbar);
+        } else {
+            setContentView(R.layout.base_drawer_layout);
+        }
         setUpNavigationDrawer();
         setUpToolbar();
 
         initDatabase();
         initStorage();
         initAuth();
-
-
     }
 
     public void setOnToolbarClickedListener(View.OnClickListener listener) {
@@ -244,6 +247,7 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
     }
 
     private void setUpToolbar() {
+
         initToolbar();
         setUpDrawerToggle();
 
@@ -260,7 +264,21 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
     private void initToolbar() {
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.app_name);
-        toolbar.inflateMenu(R.menu.options_menu);
+        findViewById(R.id.appbar).bringToFront();
+        if (this instanceof UserInfoActivity || this instanceof RateOthersActivity) {
+            toolbar.setBackgroundResource(R.drawable.background_toolbar);
+        }
+
+        setSupportActionBar(toolbar);
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (this instanceof MainActivity) {
+            getMenuInflater().inflate(R.menu.options_menu, menu);
+        }
+        return super.onCreateOptionsMenu(menu);
     }
 
     private void setUpDrawerToggle() {
