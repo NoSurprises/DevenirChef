@@ -7,102 +7,6 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="antitelegram.devenirchef.MainActivity">
 
-    <RelativeLayout
-        android:id="@+id/bottom_menu"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
-
-        <LinearLayout
-            android:id="@+id/bottom_menu_buttons_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerInParent="false"
-            android:layout_centerVertical="true"
-            android:layout_marginBottom="16dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:orientation="horizontal"
-            android:weightSum="1"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.461"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent">
-
-            <LinearLayout
-                android:id="@+id/course_button"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="16dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/course_button_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Course" />
-
-                <TextView
-                    android:id="@+id/course_button_all"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="ALL"
-                    android:textAlignment="viewStart"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/complexity_button"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="16dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/complexity_button_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Complexity" />
-
-                <TextView
-                    android:id="@+id/complexity_button_all"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="ALL"
-                    android:textAlignment="viewStart"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/arrow_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="false"
-            android:layout_alignParentRight="true"
-            android:layout_centerInParent="true"
-            android:layout_marginRight="16dp"
-            android:layout_weight="1"
-            android:adjustViewBounds="false"
-            android:cropToPadding="false"
-            app:srcCompat="?attr/homeAsUpIndicator" />
-
-    </RelativeLayout>
 
     <ScrollView
         android:id="@+id/scroll_recipes_view"
@@ -130,5 +34,22 @@
 
     </ScrollView>
 
+    <FrameLayout
+        android:id="@+id/bottom_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <include
+            android:id="@+id/bottom_menu_shrinked"
+            layout="@layout/bottom_menu_shrinked" />
+
+        <include
+            android:id="@+id/bottom_menu_expanded"
+            layout="@layout/bottom_menu_expanded"
+            android:visibility="gone" />
+    </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>
