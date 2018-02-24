@@ -57,6 +57,14 @@
 
                     <include layout="@layout/recipe_star" />
 
+                    <include layout="@layout/recipe_star" />
+
+                    <include layout="@layout/recipe_star" />
+
+                    <include layout="@layout/recipe_star" />
+
+                    <include layout="@layout/recipe_star" />
+
                 </LinearLayout>
 
             </RelativeLayout>

@@ -58,10 +58,11 @@ class RecipesAdapter(val context: Context) : RecyclerView.Adapter<RecipesAdapter
             text?.setText(newRecipe?.getTitle())
             val level = newRecipe?.getLevel()
 
-            // start from 1, because 1 star is already in xml
-            starsContainer?.removeAllViews()
             for (i in 0 until level!!) {
-                LayoutInflater.from(view?.context).inflate(R.layout.recipe_star, starsContainer, true)
+                starsContainer?.getChildAt(i)?.visibility = View.VISIBLE
+            }
+            for (i in level until 5) {
+                starsContainer?.getChildAt(i)?.visibility = View.GONE
             }
 
 

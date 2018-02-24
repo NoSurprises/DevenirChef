@@ -146,6 +146,8 @@ public class MainActivity extends DrawerBaseActivity {
         initRecipesStorage();
         setToolbarClickedListener();
         setUpBottomMenu();
+
+
     }
 
     private void setUpBottomMenu() {
@@ -191,7 +193,7 @@ public class MainActivity extends DrawerBaseActivity {
         View.OnClickListener toolbarClicked = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                recipesScroll.fullScroll(ScrollView.FOCUS_UP);
+                recipesLayout.smoothScrollToPosition(0);
             }
         };
         setOnToolbarClickedListener(toolbarClicked);
