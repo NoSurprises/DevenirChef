@@ -170,7 +170,6 @@ public class MainActivity extends DrawerBaseActivity {
     }
 
     private void initRecipesStorage() {
-        recipesScroll = findViewById(R.id.scroll_recipes_view);
         recipes = new ArrayList<>();
 
         setUpRecyclerView();
