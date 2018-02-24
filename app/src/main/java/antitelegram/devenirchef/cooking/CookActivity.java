@@ -50,7 +50,6 @@ public class CookActivity extends AppCompatActivity implements StepsNavigation {
     private Recipe recipe;
     private FirebaseDatabase firebaseDatabase;
     private FirebaseAuth firebaseAuth;
-    private ValueEventListener usersValueListener;
     private DatabaseReference userReference;
     private SharedPreferencesModel cookingState;
     private boolean needToSaveState = true;
@@ -100,7 +99,7 @@ public class CookActivity extends AppCompatActivity implements StepsNavigation {
 
     public void saveImageToDatabase(final Bitmap image) {
 
-        usersValueListener = new ValueEventListener() {
+        ValueEventListener usersValueListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 try {
@@ -304,7 +303,7 @@ public class CookActivity extends AppCompatActivity implements StepsNavigation {
 
         private static final String TAG = "daywint";
 
-        public CookingPagerAdapter(FragmentManager fm) {
+        CookingPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 

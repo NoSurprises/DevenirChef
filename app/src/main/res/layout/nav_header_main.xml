@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="192dp"
     android:background="@color/colorPrimaryDark"
@@ -24,9 +25,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_drawer"
         android:layout_marginTop="8dp"
-        android:text="Sample username"
         android:textColor="@color/colorWhite"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        tools:text="Sample username" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -38,11 +39,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_drawer"
-
-            android:gravity="left"
-            android:text="sample@google.com"
+            android:gravity="start"
             android:textColor="@color/colorWhite"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            tools:text="sample@google.com" />
 
         <ImageButton
             android:id="@+id/email_options_button"

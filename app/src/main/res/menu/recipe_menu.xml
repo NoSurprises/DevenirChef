@@ -4,6 +4,6 @@
 
     <item
         android:id="@+id/cook_action"
-        android:title="cook it"
+        android:title="@string/cook_it"
         app:showAsAction="always" />
 </menu>

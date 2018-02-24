@@ -9,11 +9,9 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.ResultCodes;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -30,13 +28,11 @@ public class MainActivity extends DrawerBaseActivity {
     public static final String TAG = "daywint";
     private static final int RC_SIGN_IN = 123;
 
-    private FirebaseAuth.AuthStateListener authStateListener;
     private RecyclerView recipesLayout;
 
 
     private List<Recipe> recipes;
     private ChildEventListener childEventListener;
-    private ScrollView recipesScroll;
     private RelativeLayout bottomMenuExpanded;
     private RelativeLayout bottomMenuShrinked;
 

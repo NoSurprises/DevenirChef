@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/arrow_button"
-        android:text="Категории" />
+        android:text="@string/tags" />
 
     <HorizontalScrollView
         android:id="@+id/tags_scroll"
@@ -39,7 +39,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tags_scroll"
-        android:text="Сложность" />
+        android:text="@string/complexity" />
 
     <SeekBar
         android:id="@+id/complexity_picker"
