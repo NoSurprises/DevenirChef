@@ -37,7 +37,6 @@ public class RateOthersActivity extends DrawerBaseActivity {
 
   private FirebaseUser currentUser;
   private Query query;
-  private ValueEventListener refresher;
 
   private ImageView recipeImageBox;
   private Button nextButton;
@@ -197,7 +196,7 @@ public class RateOthersActivity extends DrawerBaseActivity {
   }
 
   private void refreshRecipes() {
-    refresher = new ValueEventListener() {
+    ValueEventListener refresher = new ValueEventListener() {
       @Override
       public void onDataChange(DataSnapshot dataSnapshot) {
         if (!recipeList.isEmpty())
@@ -209,12 +208,12 @@ public class RateOthersActivity extends DrawerBaseActivity {
 
           // TODO: Uncomment this
           //if (user.equals(currentUser.getUid()))
-           // continue;
+          // continue;
 
           for (DataSnapshot recipeSnapshot : userSnapshot.child("finishedRecipes").getChildren()) {
             FinishedRecipe recipe = recipeSnapshot.getValue(FinishedRecipe.class);
             if (!recipe.getPhotoUrl().equals("none")
-                && recipe.getUsersRated().size() < Constants.RATINGS_FOR_EXP
+                    && recipe.getUsersRated().size() < Constants.RATINGS_FOR_EXP
                 /*&& !recipe.getUsersRated().contains(currentUser.getUid())*/) { // TODO: Uncomment this
               recipeList.add(recipe);
               usersId.add(user);
@@ -230,8 +229,7 @@ public class RateOthersActivity extends DrawerBaseActivity {
           noRecipes.setVisibility(View.INVISIBLE);
           recipeImageBox.setVisibility(View.VISIBLE);
           setImage(recipeList.get(0), recipeImageBox);
-        }
-        else {
+        } else {
           noRecipes.setVisibility(View.VISIBLE);
           recipeImageBox.setVisibility(View.INVISIBLE);
         }

@@ -57,6 +57,14 @@
 
                     <include layout="@layout/recipe_star" />
 
+                    <include layout="@layout/recipe_star" />
+
+                    <include layout="@layout/recipe_star" />
+
+                    <include layout="@layout/recipe_star" />
+
+                    <include layout="@layout/recipe_star" />
+
                 </LinearLayout>
 
             </RelativeLayout>
@@ -72,11 +80,11 @@
                 android:paddingRight="16dp"
                 android:paddingStart="16dp"
                 android:paddingTop="24dp"
-                android:text="Sample title"
                 android:textColor="@color/headlineTextColor"
                 android:textSize="24sp"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@tools:sample/lorem" />
 
             <TextView
                 android:id="@+id/recipe_description"
@@ -88,9 +96,9 @@
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:paddingStart="16dp"
-                android:text="Short description with some useless information about this recipe so the user can read this shit to entertain himself "
                 android:textColor="@color/body1TextColor"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                tools:text="@tools:sample/lorem" />
 
             <LinearLayout
                 android:id="@+id/tags_container"

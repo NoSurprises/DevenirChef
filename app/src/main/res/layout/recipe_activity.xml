@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -59,11 +60,11 @@
                 android:paddingRight="16dp"
                 android:paddingStart="16dp"
                 android:paddingTop="24dp"
-                android:text="Sample title"
                 android:textColor="@color/headlineTextColor"
                 android:textSize="24sp"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@tools:sample/first_names" />
 
             <TextView
                 android:id="@+id/recipe_description"
@@ -75,9 +76,9 @@
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:paddingStart="16dp"
-                android:text="Short description with some useless information about this recipe so the user can read this shit to entertain himself "
                 android:textColor="@color/body1TextColor"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                tools:text="@tools:sample/lorem" />
 
             <TextView
                 android:id="@+id/recipe_ingredients"
@@ -89,9 +90,9 @@
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:paddingStart="16dp"
-                android:text="Dough: 2 1/2 cups all-purpose flour 4 teaspoons sugar 1/4 teaspoon fine salt 14 tablespoons cold butter, diced 1 large egg, lightly beaten with 2 tablespoons cold water Filling: 2 tablespoons freshly squeezed lemon juice 3 pounds baking apples like Golden Delicious, Cortland, or Mutsu"
                 android:textColor="@color/body1TextColor"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                tools:text="@tools:sample/lorem" />
         </LinearLayout>
     </ScrollView>
 

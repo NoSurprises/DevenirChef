@@ -27,7 +27,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,9 +35,6 @@ import antitelegram.devenirchef.utils.Utils;
 
 import static com.google.android.gms.common.ConnectionResult.SUCCESS;
 
-/**
- * Created by Nick on 1/19/2018.
- */
 
 public abstract class DrawerBaseActivity extends AppCompatActivity {
 
@@ -48,7 +44,6 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
     private DrawerLayout drawer;
     private FirebaseUser currentUser;
     private FirebaseDatabase database;
-    private FirebaseStorage storage;
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authStateListener;
     private Toolbar toolbar;
@@ -71,7 +66,6 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
         setUpToolbar();
 
         initDatabase();
-        initStorage();
         initAuth();
     }
 
@@ -339,9 +333,6 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
         };
     }
 
-    private void initStorage() {
-        storage = Utils.getFirebaseStorage();
-    }
 
 
     private void initDatabase() {

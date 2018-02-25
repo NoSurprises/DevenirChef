@@ -35,7 +35,7 @@
                 android:id="@+id/course_button_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Tags" />
+                android:text="@string/tags" />
 
             <TextView
                 android:id="@+id/course_button_all"
@@ -60,7 +60,7 @@
                 android:id="@+id/complexity_button_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Complexity" />
+                android:text="@string/complexity" />
 
             <TextView
                 android:id="@+id/complexity_button_all"

@@ -29,7 +29,7 @@ public class Recipe implements Parcelable {
     private List<RecipeStep> cookingSteps;
     private List<String> tags;
 
-    protected Recipe(Parcel in) {
+    private Recipe(Parcel in) {
         title = in.readString();
         ingredients = in.readString();
         description = in.readString();

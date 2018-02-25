@@ -277,7 +277,7 @@ public class UserInfoActivity extends DrawerBaseActivity {
 
         setImage(recipe, image);
         title.setText(recipe.getTitle());
-        rating.setText("Rating: " + Float.toString(recipe.getAverageRating()));
+        rating.setText(getString(R.string.rating_1) + Float.toString(recipe.getAverageRating()));
 
         Log.d(TAG, "setInfoToView: set all info to views");
     }

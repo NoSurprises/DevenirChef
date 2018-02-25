@@ -7,4 +7,24 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="level">Уровень:</string>
+    <string name="exp">Опыт:</string>
+    <string name="recently_finished_recipes">Последние приготовленные блюда</string>
+    <string name="tags">Категории</string>
+    <string name="complexity">Сложность</string>
+    <string name="step">Шаг</string>
+    <string name="back">Назад</string>
+    <string name="forward">Вперед</string>
+    <string name="ready">Готово!</string>
+    <string name="share">Поделиться</string>
+    <string name="take_photo">Сделать фото</string>
+    <string name="main_screen">Завершить</string>
+    <string name="no_recipes_to_rate">Не осталось рецептов для оценивания :(</string>
+    <string name="rating_1">Оценка: </string>
+    <string name="recipes">Рецепты</string>
+    <string name="level_info">О персонаже</string>
+    <string name="rate_others">Оценить других</string>
+    <string name="info">Контакты</string>
+    <string name="logout">Выйти</string>
+    <string name="cook_it">cook it</string>
 </resources>

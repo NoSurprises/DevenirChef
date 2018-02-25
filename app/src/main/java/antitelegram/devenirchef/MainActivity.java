@@ -2,21 +2,16 @@ package antitelegram.devenirchef;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.ResultCodes;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -33,17 +28,16 @@ public class MainActivity extends DrawerBaseActivity {
     public static final String TAG = "daywint";
     private static final int RC_SIGN_IN = 123;
 
-    private FirebaseAuth.AuthStateListener authStateListener;
-    private LinearLayout recipesLayout;
+    private RecyclerView recipesLayout;
 
 
     private List<Recipe> recipes;
     private ChildEventListener childEventListener;
-    private ScrollView recipesScroll;
     private RelativeLayout bottomMenuExpanded;
     private RelativeLayout bottomMenuShrinked;
 
     private boolean bottomExpanded = false;
+    private RecipesAdapter recipesAdapter;
 
     public static void expand(final View v, final int fromHeight, final View hideBefore) {
         v.measure(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -148,6 +142,8 @@ public class MainActivity extends DrawerBaseActivity {
         initRecipesStorage();
         setToolbarClickedListener();
         setUpBottomMenu();
+
+
     }
 
     private void setUpBottomMenu() {
@@ -170,10 +166,17 @@ public class MainActivity extends DrawerBaseActivity {
     }
 
     private void initRecipesStorage() {
-        recipesLayout = findViewById(R.id.recipes_linear_layout);
-        recipesScroll = findViewById(R.id.scroll_recipes_view);
         recipes = new ArrayList<>();
 
+        setUpRecyclerView();
+    }
+
+    private void setUpRecyclerView() {
+        recipesLayout = findViewById(R.id.recipes_layout);
+        recipesLayout.setLayoutManager(new LinearLayoutManager(this));
+        recipesAdapter = new RecipesAdapter(this);
+        recipesLayout.setAdapter(recipesAdapter);
+        recipesAdapter.changeDataset(recipes);
     }
 
     private void removeAllRecipes() {
@@ -185,7 +188,7 @@ public class MainActivity extends DrawerBaseActivity {
         View.OnClickListener toolbarClicked = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                recipesScroll.fullScroll(ScrollView.FOCUS_UP);
+                recipesLayout.smoothScrollToPosition(0);
             }
         };
         setOnToolbarClickedListener(toolbarClicked);
@@ -202,62 +205,11 @@ public class MainActivity extends DrawerBaseActivity {
         if (childEventListener == null) {
             childEventListener = new ChildEventListener() {
 
-
                 @Override
                 public void onChildAdded(final DataSnapshot dataSnapshot, String s) {
-                    View recipeView = createNewRecipeCard();
                     Recipe newRecipe = dataSnapshot.getValue(Recipe.class);
                     recipes.add(newRecipe);
-                    bindDataToViewFromRecipe(recipeView, newRecipe);
-                }
-
-                private void bindDataToViewFromRecipe(View view, final Recipe newRecipe) {
-
-                    View.OnClickListener openRecipeActivity = new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent intent = new Intent(MainActivity.this, RecipeActivity.class);
-                            intent.putExtra("recipe", newRecipe);
-                            startActivity(intent);
-                        }
-                    };
-
-
-                    // TODO: 1/2/2018 decompose
-
-                    // get data
-                    TextView text = view.findViewById(R.id.recipe_name);
-                    LinearLayout starsContainer = view.findViewById(R.id.recipe_star_container);
-                    ImageView recipeImage = view.findViewById(R.id.recipe_image);
-                    TextView description = view.findViewById(R.id.recipe_description);
-                    LinearLayout tags = view.findViewById(R.id.tags_container);
-
-
-                    // bind data
-                    text.setText(newRecipe.getTitle());
-                    int level = newRecipe.getLevel();
-                    LayoutInflater layoutInflater = getLayoutInflater();
-
-                    // start from 1, because 1 star is already in xml
-                    for (int i = 1; i < level; i++) {
-                        layoutInflater.inflate(R.layout.recipe_star, starsContainer, true);
-                    }
-                    setImageToView(recipeImage, newRecipe.getPhotoUrl());
-                    description.setText(newRecipe.getDescription());
-
-                    if (newRecipe.getTags() != null) {
-                        for (String tag : newRecipe.getTags()) {
-                            TextView tagView = new TextView(view.getContext());
-                            tagView.setText(tag);
-                            tags.addView(tagView);
-                        }
-
-                    }
-                    // bind listeners
-                    text.setOnClickListener(openRecipeActivity);
-                    recipeImage.setOnClickListener(openRecipeActivity);
-
-
+                    recipesAdapter.changeDataset(recipes);
                 }
 
                 @Override
@@ -301,19 +253,5 @@ public class MainActivity extends DrawerBaseActivity {
         }
     }
 
-    private View createNewRecipeCard() {
-        View newRecipe = getLayoutInflater().inflate(R.layout.recipe_main_screen, recipesLayout, false);
-        recipesLayout.addView(newRecipe);
-        return newRecipe;
-    }
 
-    private void setImageToView(ImageView image, String photoUrl) {
-        if (!isFinishing()) {
-            Glide.with(this)
-                    .load(photoUrl)
-                    .placeholder(R.drawable.ic_placeholder)
-                    .crossFade()
-                    .into(image);
-        }
-    }
 }
