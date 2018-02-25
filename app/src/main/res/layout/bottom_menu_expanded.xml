@@ -22,14 +22,11 @@
         android:layout_below="@id/tags_label">
 
         <LinearLayout
+            android:id="@+id/tags_container"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-            <include layout="@layout/tag" />
-
-            <include layout="@layout/tag" />
-
-            <include layout="@layout/tag" />
         </LinearLayout>
 
     </HorizontalScrollView>
