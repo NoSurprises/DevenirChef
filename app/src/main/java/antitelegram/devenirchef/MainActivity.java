@@ -6,9 +6,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.ResultCodes;
@@ -18,9 +21,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import antitelegram.devenirchef.data.Recipe;
+import antitelegram.devenirchef.utils.Constants;
 import antitelegram.devenirchef.utils.Utils;
 
 public class MainActivity extends DrawerBaseActivity {
@@ -32,12 +37,15 @@ public class MainActivity extends DrawerBaseActivity {
 
 
     private List<Recipe> recipes;
+    private List<String> selectedTags = new ArrayList<>();
+    private int selectedComplexity = 0;
     private ChildEventListener childEventListener;
     private RelativeLayout bottomMenuExpanded;
     private RelativeLayout bottomMenuShrinked;
 
     private boolean bottomExpanded = false;
     private RecipesAdapter recipesAdapter;
+    private ViewGroup tagsContainer;
 
     public static void expand(final View v, final int fromHeight, final View hideBefore) {
         v.measure(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -140,9 +148,8 @@ public class MainActivity extends DrawerBaseActivity {
         setContentLayout(R.layout.main_content);
 
         initRecipesStorage();
-        setToolbarClickedListener();
         setUpBottomMenu();
-
+        setToolbarClickedListener();
 
     }
 
@@ -154,6 +161,8 @@ public class MainActivity extends DrawerBaseActivity {
             public void onClick(View v) {
                 if (bottomExpanded) {
                     collapse(bottomMenuExpanded, bottomMenuShrinked.getHeight(), bottomMenuShrinked);
+                    Log.d(TAG, "collapsed bottom menu. selected tags " + selectedTags);
+                    Log.d(TAG, "collapsed bottom menu. selected complexity " + selectedComplexity);
                 } else {
                     expand(bottomMenuExpanded, bottomMenuShrinked.getHeight(), bottomMenuShrinked);
                 }
@@ -162,7 +171,54 @@ public class MainActivity extends DrawerBaseActivity {
         };
         bottomMenuShrinked.findViewById(R.id.arrow_button).setOnClickListener(toggle);
         bottomMenuExpanded.findViewById(R.id.arrow_button).setOnClickListener(toggle);
+        tagsContainer = bottomMenuExpanded.findViewById(R.id.tags_container);
 
+        setUpTags(Arrays.asList(Constants.TAGS));
+        setUpComplexitySeekbar();
+
+    }
+
+    private void setUpComplexitySeekbar() {
+        final SeekBar complexity = bottomMenuExpanded.findViewById(R.id.complexity_picker);
+        complexity.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                selectedComplexity = i;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+    }
+
+
+    private void setUpTags(List<String> tags) {
+        for (String tag : tags) {
+            View tagView = getLayoutInflater().inflate(R.layout.tag, tagsContainer, false);
+            ((TextView) tagView.findViewById(R.id.tag_name)).setText(tag);
+            tagsContainer.addView(tagView);
+            tagView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    final String tagName = ((TextView) view.findViewById(R.id.tag_name)).getText().toString();
+                    if (selectedTags.contains(tagName)) {
+                        view.setBackgroundColor(getResources().getColor(R.color.white));
+                        selectedTags.remove(tagName);
+                    } else {
+                        view.setBackgroundColor(getResources().getColor(R.color.selected_tag));
+                        selectedTags.add(tagName);
+                    }
+                }
+            });
+
+        }
     }
 
     private void initRecipesStorage() {
