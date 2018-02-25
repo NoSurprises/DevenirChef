@@ -120,14 +120,21 @@ public class RateOthersActivity extends DrawerBaseActivity {
   private void bindButtons() {
 
     starRatingBar.setRating(0);
-    starRatingBar.setStepSize(1.0f);
+    starRatingBar.setStepSize(0.5f);
 
     starRatingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
       @Override
       public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+        int intRating = (int) rating;
+        if (rating - intRating >= 0.8) {
+          intRating++;
+        }
+        ratingBar.setRating(intRating);
+
         if (recipeList.size() == 0 || !fromUser) {
           return;
         }
+
 
         // Get recipe
         FinishedRecipe recipe = recipeList.get(0);
@@ -149,7 +156,7 @@ public class RateOthersActivity extends DrawerBaseActivity {
 
         // Add current rating to the picture
         recipe.setAverageRating(
-            (recipe.getAverageRating() * recipe.getUsersRated().size() + rating) /
+            (recipe.getAverageRating() * recipe.getUsersRated().size() + intRating) /
                 (recipe.getUsersRated().size() + 1));
         recipe.addUsersRated(currentUser.getUid());
         Log.d(TAG, "onClick: recipe index" + recipe.getIndex());

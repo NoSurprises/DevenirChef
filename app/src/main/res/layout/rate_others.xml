@@ -16,7 +16,7 @@
         android:numStars="5"
         android:progressBackgroundTint="?attr/colorButtonNormal"
         android:progressTint="@color/secondaryColor"
-        android:rating="3.0"
+        android:rating="0"
         android:secondaryProgressTint="@color/secondaryLightColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -30,26 +30,25 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
 
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="8dp"
         android:scaleType="centerInside"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
     <TextView
         android:id="@+id/no_recipes"
         android:layout_width="wrap_content"
-        android:layout_height="17dp"
-        android:layout_marginBottom="8dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="152dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="196dp"
         android:text="@string/no_recipes_to_rate"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/RecipeImageBox"
         app:layout_constraintEnd_toEndOf="@+id/RecipeImageBox"
         app:layout_constraintHorizontal_bias="0.602"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>
