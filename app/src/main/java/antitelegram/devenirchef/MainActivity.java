@@ -155,7 +155,7 @@ public class MainActivity extends DrawerBaseActivity {
 
         initRecipesStorage();
         setUpBottomMenu();
-        //setToolbarClickedListener();
+        setToolbarClickedListener();
 
     }
 
