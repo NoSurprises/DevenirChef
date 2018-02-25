@@ -5,10 +5,13 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.RelativeLayout;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.ResultCodes;
@@ -38,6 +41,8 @@ public class MainActivity extends DrawerBaseActivity {
 
     private boolean bottomExpanded = false;
     private RecipesAdapter recipesAdapter;
+
+    private SearchView searchView;
 
     public static void expand(final View v, final int fromHeight, final View hideBefore) {
         v.measure(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -142,8 +147,6 @@ public class MainActivity extends DrawerBaseActivity {
         initRecipesStorage();
         setToolbarClickedListener();
         setUpBottomMenu();
-
-
     }
 
     private void setUpBottomMenu() {
@@ -194,6 +197,63 @@ public class MainActivity extends DrawerBaseActivity {
         setOnToolbarClickedListener(toolbarClicked);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.options_menu, menu);
+
+        MenuItem item = menu.findItem(R.id.search);
+        searchView = (SearchView) item.getActionView();
+        Log.d("search", "hello");
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                recipesAdapter.changeDataset(searchFilter(query));
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                recipesAdapter.changeDataset(searchFilter(newText));
+
+                return false;
+            }
+        });
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    private List<Recipe> searchFilter(final String query) {
+        List<Recipe> res = new ArrayList<>();
+        for (Recipe recipe : recipes) {
+            if (recipe.getTitle().toLowerCase().contains(query)) {
+                res.add(recipe);
+            }
+            else {
+                for (String tag : recipe.getTags()) {
+                    if (tag.toLowerCase().contains(query)) {
+                        res.add(recipe);
+                        break;
+                    }
+                }
+            }
+        }
+
+        return res;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (searchView != null) {
+            //searchView.setQuery("WHAT", true);
+            Log.d("search", searchView.getQuery().toString());
+            recipesAdapter.changeDataset(searchFilter("WHAT"));
+
+        }
+    }
 
     @Override
     protected void onPause() {
