@@ -5,9 +5,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -39,9 +39,8 @@ public class RateOthersActivity extends DrawerBaseActivity {
   private Query query;
 
   private ImageView recipeImageBox;
-  private Button nextButton;
-  private LinearLayout rateButtons;
   private TextView noRecipes;
+  private RatingBar starRatingBar;
 
   private List<FinishedRecipe> recipeList;
   private List<String> usersId;
@@ -83,56 +82,8 @@ public class RateOthersActivity extends DrawerBaseActivity {
 
   private void bindViews() {
     recipeImageBox = findViewById(R.id.RecipeImageBox);
-    nextButton = findViewById(R.id.NextButton);
-    rateButtons = findViewById(R.id.RateButtons);
     noRecipes = findViewById(R.id.no_recipes);
-  }
-
-  private View.OnClickListener getRateButtonListener(final int rateNumber) {
-    return new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        Log.d("rateOthers", "rate button pressed");
-
-        if (recipeList.size() == 0) {
-          return;
-        }
-
-        // Get recipe
-        FinishedRecipe recipe = recipeList.get(0);
-        DatabaseReference userRef = FirebaseDatabase.getInstance().
-            getReference(Constants.DATABASE_USERS).child(usersId.get(0));
-
-        // If recipe is already rated, continue
-        if (recipe.isRated()) {
-          nextImage();
-          return;
-        }
-
-        // If recipe is not rated, but already has enough ratings => rate, then continue
-        if (!recipe.isRated() && recipe.getUsersRated().size() >= Constants.RATINGS_FOR_EXP) {
-          nextImage();
-          userRef.addListenerForSingleValueEvent(getExpSetter(recipe.getIndex()));
-          return;
-        }
-
-        // Add current rating to the picture;
-        recipe.setAverageRating(
-            (recipe.getAverageRating() * recipe.getUsersRated().size() + rateNumber) /
-                (recipe.getUsersRated().size() + 1));
-        recipe.addUsersRated(currentUser.getUid());
-        Log.d(TAG, "onClick: recipe index" + recipe.getIndex());
-        userRef.child(Constants.FINISHED_RECIPES).child(recipe.getIndex()).setValue(recipe);
-
-        // Rate if needed
-        if (recipe.getUsersRated().size() >= Constants.RATINGS_FOR_EXP) {
-          userRef.addListenerForSingleValueEvent(getExpSetter(recipe.getIndex()));
-        }
-
-        // Continue
-        nextImage();
-      }
-    };
+    starRatingBar = findViewById(R.id.ratingBar);
   }
 
   private ValueEventListener getExpSetter(final String index) {
@@ -167,13 +118,48 @@ public class RateOthersActivity extends DrawerBaseActivity {
   }
 
   private void bindButtons() {
-    for (int i = 0; i < 5; ++i) {
-      rateButtons.getChildAt(i).setOnClickListener(getRateButtonListener(i + 1));
-    }
 
-    nextButton.setOnClickListener(new View.OnClickListener() {
+    starRatingBar.setRating(0);
+    starRatingBar.setStepSize(1.0f);
+
+    starRatingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
       @Override
-      public void onClick(View view) {
+      public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+        if (recipeList.size() == 0 || !fromUser) {
+          return;
+        }
+
+        // Get recipe
+        FinishedRecipe recipe = recipeList.get(0);
+        DatabaseReference userRef = FirebaseDatabase.getInstance().
+            getReference(Constants.DATABASE_USERS).child(usersId.get(0));
+
+        // If recipe is already rated, continue
+        if (recipe.isRated()) {
+          nextImage();
+          return;
+        }
+
+        // If recipe is not rated, but already has enough ratings => rate, then continue
+        if (!recipe.isRated() && recipe.getUsersRated().size() >= Constants.RATINGS_FOR_EXP) {
+          nextImage();
+          userRef.addListenerForSingleValueEvent(getExpSetter(recipe.getIndex()));
+          return;
+        }
+
+        // Add current rating to the picture
+        recipe.setAverageRating(
+            (recipe.getAverageRating() * recipe.getUsersRated().size() + rating) /
+                (recipe.getUsersRated().size() + 1));
+        recipe.addUsersRated(currentUser.getUid());
+        Log.d(TAG, "onClick: recipe index" + recipe.getIndex());
+        userRef.child(Constants.FINISHED_RECIPES).child(recipe.getIndex()).setValue(recipe);
+
+        // Rate if needed
+        if (recipe.getUsersRated().size() >= Constants.RATINGS_FOR_EXP) {
+          userRef.addListenerForSingleValueEvent(getExpSetter(recipe.getIndex()));
+        }
+        // Continue
         nextImage();
       }
     });
@@ -269,6 +255,8 @@ public class RateOthersActivity extends DrawerBaseActivity {
               .into(image);
 
         }
+
+        starRatingBar.setRating(0);
       }
     });
   }
