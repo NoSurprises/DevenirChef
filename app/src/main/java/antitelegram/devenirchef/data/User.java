@@ -2,17 +2,16 @@ package antitelegram.devenirchef.data;
 
 import java.util.List;
 
-/**
- * Created by Nick on 1/16/2018.
- */
+
 
 public class User {
-    int level;
-    int exp;
+    private int level;
+    private int exp;
     private List<FinishedRecipe> finishedRecipes;
 
     public User() {
         level = 1;
+        exp = 0;
     }
 
     public List<FinishedRecipe> getFinishedRecipes() {

@@ -1,15 +1,22 @@
 package antitelegram.devenirchef.data;
 
-/**
- * Created by Nick on 1/16/2018.
- */
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class FinishedRecipe {
     private String title;
     private String photoUrl;
+    private List<String> usersRated;
+    private int level;
+    private float averageRating;
+    private String index;
+    private boolean isRated;
 
     public FinishedRecipe() {
-
+        usersRated = new ArrayList<>();
+        averageRating = 0;
+        isRated = false;
     }
 
     public String getTitle() {
@@ -27,4 +34,26 @@ public class FinishedRecipe {
     public void setPhotoUrl(String photoUrl) {
         this.photoUrl = photoUrl;
     }
+
+    public int getLevel() { return level; }
+
+    public void setLevel(int level) { this.level = level; }
+
+    public float getAverageRating() { return averageRating; }
+
+    public void setAverageRating(float averageRating) { this.averageRating = averageRating; }
+
+    public List<String> getUsersRated() { return usersRated; }
+
+    public void addUsersRated(String user) { usersRated.add(user); }
+
+    public String getIndex() { return index; }
+
+    //public void setIndex(int index) { this.index = Integer.toString(index); }
+
+    public void setIndex(String index) { this.index = index; }
+
+    public boolean isRated() { return isRated; }
+
+    public void setRated() { isRated = true; }
 }

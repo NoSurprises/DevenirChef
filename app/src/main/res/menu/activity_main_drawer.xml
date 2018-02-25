@@ -4,24 +4,18 @@
     <group android:checkableBehavior="none">
         <item
             android:id="@+id/nav_recipes"
-            android:title="Recipes" />
+            android:title="@string/recipes" />
         <item
             android:id="@+id/nav_level_info"
-            android:title="Level info" />
+            android:title="@string/level_info" />
 
         <item
             android:id="@+id/nav_rate_others"
-            android:title="Rate others" />
+            android:title="@string/rate_others" />
+        <item
+            android:id="@+id/nav_info"
+            android:title="@string/info" />
 
     </group>
-
-    <item android:title="Info">
-        <menu>
-            <item
-                android:id="@+id/nav_info"
-                android:title="Info" />
-
-        </menu>
-    </item>
 
 </menu>

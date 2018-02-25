@@ -100,4 +100,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
+
+
+    <TextView
+        android:id="@+id/no_recipes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:text="@string/no_recipes_to_rate"
+        app:layout_constraintBottom_toBottomOf="@+id/RateButtons"
+        app:layout_constraintEnd_toEndOf="@+id/RecipeImageBox"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/TopButton" />
 </android.support.constraint.ConstraintLayout>

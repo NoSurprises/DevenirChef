@@ -3,7 +3,7 @@
     <color name="colorPrimary">#2e7d32</color>
     <color name="primaryLightColor">#60ad5e</color>
     <color name="colorPrimaryDark">#005005</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#ff4081</color>
     <color name="colorWhite">#ffffff</color>
     <color name="whiteHeadline">#d9ffffff</color>
     <color name="secondaryColor">#ffcc00</color>
@@ -14,4 +14,6 @@
     <color name="body1TextColor">#e0000000</color>
     <color name="transparent">#00000000</color>
     <color name="black_alpha_40">#66000000</color>
+    <color name="white">#ffffff</color>
+    <color name="selected_tag">#8b39716d</color>
 </resources>

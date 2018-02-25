@@ -3,7 +3,6 @@ package antitelegram.devenirchef.cooking;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -150,7 +149,7 @@ public class FinishRecipeStepFragment extends Fragment {
 
     private boolean isInstagramInstalled() {
         try {
-            ApplicationInfo info = getActivity().getPackageManager().getApplicationInfo("com.instagram.android", 0);
+            getActivity().getPackageManager().getApplicationInfo("com.instagram.android", 0);
             return true;
         } catch (PackageManager.NameNotFoundException e) {
             return false;
