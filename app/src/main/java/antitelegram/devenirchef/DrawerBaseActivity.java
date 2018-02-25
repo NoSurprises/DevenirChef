@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewStub;
@@ -248,7 +247,7 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                Toast.makeText(DrawerBaseActivity.this, "toolbar menu item clicked", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(DrawerBaseActivity.this, "toolbar menu item clicked", Toast.LENGTH_SHORT).show();
 
                 return true;
             }
@@ -265,14 +264,6 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        if (this instanceof MainActivity) {
-            getMenuInflater().inflate(R.menu.options_menu, menu);
-        }
-        return super.onCreateOptionsMenu(menu);
     }
 
     private void setUpDrawerToggle() {
