@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseError;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import antitelegram.devenirchef.data.Recipe;
@@ -38,7 +39,7 @@ public class MainActivity extends DrawerBaseActivity {
 
     private List<Recipe> recipes;
     private List<String> selectedTags = new ArrayList<>();
-    private int selectedComplexity = 0;
+    private int selectedComplexity = 1;
     private ChildEventListener childEventListener;
     private RelativeLayout bottomMenuExpanded;
     private RelativeLayout bottomMenuShrinked;
@@ -161,8 +162,10 @@ public class MainActivity extends DrawerBaseActivity {
             public void onClick(View v) {
                 if (bottomExpanded) {
                     collapse(bottomMenuExpanded, bottomMenuShrinked.getHeight(), bottomMenuShrinked);
-                    Log.d(TAG, "collapsed bottom menu. selected tags " + selectedTags);
-                    Log.d(TAG, "collapsed bottom menu. selected complexity " + selectedComplexity);
+                    setShrinkedComplexity();
+                    setShrinkedTags();
+                    selectRecipesComplexityAndTags();
+
                 } else {
                     expand(bottomMenuExpanded, bottomMenuShrinked.getHeight(), bottomMenuShrinked);
                 }
@@ -175,6 +178,33 @@ public class MainActivity extends DrawerBaseActivity {
 
         setUpTags(Arrays.asList(Constants.TAGS));
         setUpComplexitySeekbar();
+
+    }
+
+    private void selectRecipesComplexityAndTags() {
+        if (selectedTags.size() == 0) {
+            recipesAdapter.changeDataset(recipes);
+            return;
+        }
+        List<Recipe> newDataset = new ArrayList<>();
+        for (Recipe recipe : recipes) {
+            if (recipe.getLevel() <= selectedComplexity &&
+                    !Collections.disjoint(selectedTags, recipe.getTags())) {
+                newDataset.add(recipe);
+            }
+        }
+        recipesAdapter.changeDataset(newDataset);
+    }
+
+    private void setShrinkedComplexity() {
+        ((TextView) bottomMenuShrinked.findViewById(R.id.complexity_button_all)).setText(selectedComplexity + "");
+    }
+
+    private void setShrinkedTags() {
+        if (selectedTags.size() > 0)
+            ((TextView) bottomMenuShrinked.findViewById(R.id.course_button_all)).setText(selectedTags.get(0) + "...");
+        else
+            ((TextView) bottomMenuShrinked.findViewById(R.id.course_button_all)).setText(Constants.ALL);
 
     }
 
@@ -209,7 +239,7 @@ public class MainActivity extends DrawerBaseActivity {
                 public void onClick(View view) {
                     final String tagName = ((TextView) view.findViewById(R.id.tag_name)).getText().toString();
                     if (selectedTags.contains(tagName)) {
-                        view.setBackgroundColor(getResources().getColor(R.color.white));
+                        view.setBackgroundColor(getResources().getColor(R.color.transparent));
                         selectedTags.remove(tagName);
                     } else {
                         view.setBackgroundColor(getResources().getColor(R.color.selected_tag));
