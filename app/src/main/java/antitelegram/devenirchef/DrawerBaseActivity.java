@@ -15,16 +15,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,9 +34,6 @@ import antitelegram.devenirchef.utils.Utils;
 
 import static com.google.android.gms.common.ConnectionResult.SUCCESS;
 
-/**
- * Created by Nick on 1/19/2018.
- */
 
 public abstract class DrawerBaseActivity extends AppCompatActivity {
 
@@ -45,7 +43,6 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
     private DrawerLayout drawer;
     private FirebaseUser currentUser;
     private FirebaseDatabase database;
-    private FirebaseStorage storage;
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authStateListener;
     private Toolbar toolbar;
@@ -53,20 +50,22 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
     private View navigationHeader;
     private TextView drawerUsername;
     private TextView drawerEmail;
+    private ImageView userImage;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.base_drawer_layout);
 
+        if (this instanceof UserInfoActivity || this instanceof RateOthersActivity) {
+            setContentView(R.layout.base_drawer_layout_transparent_toolbar);
+        } else {
+            setContentView(R.layout.base_drawer_layout);
+        }
         setUpNavigationDrawer();
         setUpToolbar();
 
         initDatabase();
-        initStorage();
         initAuth();
-
-
     }
 
     public void setOnToolbarClickedListener(View.OnClickListener listener) {
@@ -103,6 +102,13 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
     public void initDataInNavigationDrawer() {
         drawerUsername.setText(currentUser.getDisplayName());
         drawerEmail.setText(currentUser.getEmail());
+
+        if (!isFinishing()) {
+            Glide.with(this)
+                    .load(currentUser.getPhotoUrl())
+                    .crossFade()
+                    .into(userImage);
+        }
     }
 
     private void onSignedInInitialize(FirebaseUser user) {
@@ -125,59 +131,79 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
     private void initDrawerDataFields() {
         drawerUsername = navigationHeader.findViewById(R.id.username);
         drawerEmail = navigationHeader.findViewById(R.id.user_email);
+        userImage = navigationHeader.findViewById(R.id.header_navigation_image);
     }
 
     private void setNavigationMenuClickListener() {
+
+        userImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawer.closeDrawers();
+                openLevelInfo();
+            }
+        });
+
         navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 drawer.closeDrawers();
                 switch (item.getItemId()) {
-                    case R.id.nav_recipes: {
-                        if (DrawerBaseActivity.this instanceof MainActivity) {
-                            break;
-                        }
-                        Intent recipesIntent = new Intent(DrawerBaseActivity.this, MainActivity.class);
-                        startActivityFromDrawer(recipesIntent);
+                    case R.id.nav_recipes:
+                        openRecipesMainScreen();
                         break;
-                    }
-                    case R.id.nav_level_info: {
-                        if (DrawerBaseActivity.this instanceof UserInfoActivity) {
-                            break;
-                        }
-                        Intent infoIntent = new Intent(DrawerBaseActivity.this, UserInfoActivity.class);
-                        startActivityFromDrawer(infoIntent);
+
+                    case R.id.nav_level_info:
+                        openLevelInfo();
                         break;
-                    }
 
-                    case R.id.nav_rate_others: {
-                        if (DrawerBaseActivity.this instanceof RateOthersActivity) {
-                            break;
-                        }
-
-                        Intent rateOthersIntent = new Intent(DrawerBaseActivity.this, RateOthersActivity.class);
-                        startActivityFromDrawer(rateOthersIntent);
+                    case R.id.nav_rate_others:
+                        openRateOthers();
                         break;
-                    }
 
-                    default: {
+                    default:
                         Toast.makeText(DrawerBaseActivity.this,
                                 item.getTitle() + " not implemented by Alex yet", Toast.LENGTH_SHORT).show();
                         break;
-                    }
+
                 }
                 return true;
             }
-
-            private void startActivityFromDrawer(Intent recipesIntent) {
-                if (DrawerBaseActivity.this instanceof MainActivity) {
-                    startActivity(recipesIntent);
-                    return;
-                }
-                DrawerBaseActivity.this.finish();
-                startActivity(recipesIntent);
-            }
         });
+    }
+
+    private void openRateOthers() {
+        if (DrawerBaseActivity.this instanceof RateOthersActivity) {
+            return;
+        }
+
+        Intent rateOthersIntent = new Intent(DrawerBaseActivity.this, RateOthersActivity.class);
+        startActivityFromDrawer(rateOthersIntent);
+    }
+
+    private void openRecipesMainScreen() {
+        if (DrawerBaseActivity.this instanceof MainActivity) {
+            return;
+        }
+        Intent recipesIntent = new Intent(DrawerBaseActivity.this, MainActivity.class);
+        startActivityFromDrawer(recipesIntent);
+    }
+
+    private void openLevelInfo() {
+        if (DrawerBaseActivity.this instanceof UserInfoActivity) {
+            return;
+        }
+        Intent infoIntent = new Intent(DrawerBaseActivity.this, UserInfoActivity.class);
+        startActivityFromDrawer(infoIntent);
+    }
+
+    private void startActivityFromDrawer(Intent recipesIntent) {
+        if (DrawerBaseActivity.this instanceof MainActivity) {
+            startActivity(recipesIntent);
+            return;
+        }
+        DrawerBaseActivity.this.finish();
+        startActivity(recipesIntent);
     }
 
     private void setUpEmailOptionsButton() {
@@ -214,13 +240,14 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
     }
 
     private void setUpToolbar() {
+
         initToolbar();
         setUpDrawerToggle();
 
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                Toast.makeText(DrawerBaseActivity.this, "toolbar menu item clicked", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(DrawerBaseActivity.this, "toolbar menu item clicked", Toast.LENGTH_SHORT).show();
 
                 return true;
             }
@@ -230,7 +257,13 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
     private void initToolbar() {
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.app_name);
-        toolbar.inflateMenu(R.menu.options_menu);
+        findViewById(R.id.appbar).bringToFront();
+        if (this instanceof UserInfoActivity || this instanceof RateOthersActivity) {
+            toolbar.setBackgroundResource(R.drawable.background_toolbar);
+        }
+
+        setSupportActionBar(toolbar);
+
     }
 
     private void setUpDrawerToggle() {
@@ -291,9 +324,6 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
         };
     }
 
-    private void initStorage() {
-        storage = Utils.getFirebaseStorage();
-    }
 
 
     private void initDatabase() {

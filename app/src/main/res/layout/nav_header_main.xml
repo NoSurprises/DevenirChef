@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="192dp"
     android:background="@color/colorPrimaryDark"
@@ -12,8 +13,9 @@
         android:id="@+id/header_navigation_image"
         android:layout_width="104dp"
         android:layout_height="40dp"
-        android:layout_marginLeft="@dimen/margin_drawer"
+        android:layout_marginStart="@dimen/margin_drawer"
         android:layout_weight="0.54"
+        android:adjustViewBounds="false"
         android:src="@android:drawable/sym_def_app_icon" />
 
 
@@ -21,11 +23,11 @@
         android:id="@+id/username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_drawer"
+        android:layout_marginStart="@dimen/margin_drawer"
         android:layout_marginTop="8dp"
-        android:text="Sample username"
         android:textColor="@color/colorWhite"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        tools:text="Sample username" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -36,20 +38,22 @@
             android:id="@+id/user_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_drawer"
-            android:gravity="left"
-
-            android:text="sample@google.com"
+            android:layout_marginStart="@dimen/margin_drawer"
+            android:gravity="start"
             android:textColor="@color/colorWhite"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            tools:text="sample@google.com" />
 
         <ImageButton
             android:id="@+id/email_options_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/margin_drawer"
-            app:srcCompat="@android:drawable/arrow_down_float" />
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:background="@null"
+            android:paddingBottom="16dp"
+            android:paddingEnd="16dp"
+            app:srcCompat="@drawable/ic_exit_to_app_white_48px" />
 
     </RelativeLayout>
 

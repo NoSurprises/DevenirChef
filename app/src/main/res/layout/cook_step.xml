@@ -2,13 +2,9 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginEnd="16dp"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
-    android:layout_marginStart="16dp"
-    android:layout_marginTop="8dp"
     android:orientation="vertical">
 
     <ImageView
@@ -20,20 +16,33 @@
         android:scaleType="fitXY"
         app:srcCompat="@drawable/ic_placeholder" />
 
-    <TextView
-        android:id="@+id/step_number"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/roboto_regular"
-        android:paddingBottom="16dp"
-        android:paddingEnd="16dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingStart="16dp"
-        android:paddingTop="24dp"
-        android:text="Шаг n"
-        android:textColor="@color/headlineTextColor"
-        android:textSize="24sp" />
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/step_number_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_regular"
+            android:paddingBottom="16dp"
+            android:paddingEnd="8dp"
+            android:paddingStart="16dp"
+            android:paddingTop="24dp"
+            android:text="@string/step"
+            android:textColor="@color/headlineTextColor"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/step_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_regular"
+            android:textColor="@color/headlineTextColor"
+            android:textSize="24sp"
+            tools:text="n" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/cooking_step_text"
@@ -45,28 +54,36 @@
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingStart="16dp"
-        android:text="cooking step"
         android:textColor="@color/body1TextColor"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        tools:text="cooking step" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:baselineAligned="false"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/back_button"
+            style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Button" />
+            android:text="@string/back"
+            android:textColor="@color/colorPrimary" />
 
         <Button
             android:id="@+id/forward_button"
+            style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Button" />
+            android:text="@string/forward"
+            android:textColor="@color/colorPrimary" />
     </LinearLayout>
 
 </LinearLayout>
