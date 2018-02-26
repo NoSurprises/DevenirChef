@@ -187,14 +187,10 @@ public class MainActivity extends DrawerBaseActivity {
     }
 
     private void selectRecipesComplexityAndTags() {
-        if (selectedTags.size() == 0) {
-            recipesAdapter.changeDataset(recipes);
-            return;
-        }
         List<Recipe> newDataset = new ArrayList<>();
         for (Recipe recipe : recipes) {
             if (recipe.getLevel() <= selectedComplexity &&
-                    !Collections.disjoint(selectedTags, recipe.getTags())) {
+                    (!Collections.disjoint(selectedTags, recipe.getTags()) || selectedTags.size() == 0)) {
                 newDataset.add(recipe);
             }
         }
