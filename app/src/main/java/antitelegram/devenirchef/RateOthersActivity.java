@@ -240,7 +240,7 @@ public class RateOthersActivity extends DrawerBaseActivity {
       public void onSuccess(Uri uri) {
         if (!isFinishing()) {
 
-          Glide.with(image.getContext())
+          Glide.with(RateOthersActivity.this)
               .load(uri)
                   .error(R.drawable.ic_search_black_24dp)
                   .placeholder(R.drawable.ic_placeholder_transparent)
