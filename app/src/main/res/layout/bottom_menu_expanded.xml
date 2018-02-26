@@ -13,6 +13,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/arrow_button"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:text="@string/tags" />
 
     <HorizontalScrollView
@@ -36,6 +38,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tags_scroll"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:text="@string/complexity" />
 
     <SeekBar
@@ -45,7 +50,11 @@
         android:layout_below="@id/complexity_label"
         android:max="5"
         android:min="1"
-        android:progress="2" />
+        android:paddingTop="8dp"
+        android:progress="2"
+        android:progressTint="@color/colorPrimary"
+        android:secondaryProgressTint="@color/colorPrimaryDark"
+        android:thumbTint="@color/colorPrimary" />
 
     <ImageView
         android:id="@+id/arrow_button"
@@ -57,8 +66,7 @@
         android:layout_marginTop="16dp"
         android:layout_weight="1"
         android:adjustViewBounds="false"
-        android:background="@color/colorPrimary"
         android:cropToPadding="false"
-        app:srcCompat="?attr/homeAsUpIndicator" />
+        app:srcCompat="@drawable/ic_arrow_downward_black_24dp" />
 
 </RelativeLayout>

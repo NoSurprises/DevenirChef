@@ -28,23 +28,26 @@
             android:id="@+id/course_button"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/course_button_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/tags" />
+                android:fontFamily="@font/roboto_regular"
+                android:text="@string/tags"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/course_button_all"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="ALL"
+                android:fontFamily="@font/roboto_medium"
+                android:text="ВСЕ"
                 android:textAlignment="viewStart"
-                android:textSize="18sp"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -53,23 +56,26 @@
             android:id="@+id/complexity_button"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/complexity_button_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/complexity" />
+                android:fontFamily="@font/roboto_regular"
+                android:text="@string/complexity"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/complexity_button_all"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="ALL"
+                android:fontFamily="@font/roboto_medium"
+                android:text="ВСЕ"
                 android:textAlignment="viewStart"
-                android:textSize="18sp"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -86,8 +92,7 @@
         android:layout_marginRight="16dp"
         android:layout_weight="1"
         android:adjustViewBounds="false"
-        android:background="@color/colorPrimary"
         android:cropToPadding="false"
-        app:srcCompat="?attr/homeAsUpIndicator" />
+        app:srcCompat="@drawable/ic_arrow_upward_black_24dp" />
 
 </RelativeLayout>
