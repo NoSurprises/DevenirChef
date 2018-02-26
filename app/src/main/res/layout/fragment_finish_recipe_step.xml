@@ -73,6 +73,8 @@
             android:id="@+id/finish_take_photo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
             android:backgroundTint="@color/colorPrimary"
             android:fontFamily="@font/roboto_medium"
             android:padding="8dp"
@@ -90,7 +92,7 @@
             android:id="@+id/main_screen_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorWhite"
+            android:backgroundTint="@color/transparent"
             android:src="@drawable/fui_done_check_mark"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -99,7 +101,7 @@
             android:id="@+id/share"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorWhite"
+            android:backgroundTint="@color/transparent"
             android:src="@drawable/ic_share_black_24px"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
