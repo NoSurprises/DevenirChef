@@ -16,102 +16,39 @@
         android:numStars="5"
         android:progressBackgroundTint="?attr/colorButtonNormal"
         android:progressTint="@color/secondaryColor"
-        android:rating="3.5"
+        android:rating="0"
         android:secondaryProgressTint="@color/secondaryLightColor"
-        app:layout_constraintBottom_toTopOf="@+id/NextButton"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/RecipeImageBox"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <Button
-        android:id="@+id/NextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_weight="1"
-        android:text="Next"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/RateButtons"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <Button
-            android:id="@+id/Rate1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="1" />
-
-        <Button
-            android:id="@+id/Rate2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="2" />
-
-        <Button
-            android:id="@+id/Rate3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="3" />
-
-        <Button
-            android:id="@+id/Rate4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="4" />
-
-        <Button
-            android:id="@+id/Rate5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="5" />
-    </LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/RecipeImageBox" />
 
     <ImageView
         android:id="@+id/RecipeImageBox"
         android:layout_width="0dp"
         android:layout_height="300dp"
-        android:layout_marginBottom="152dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
 
+        android:layout_marginTop="8dp"
         android:scaleType="centerInside"
-        app:layout_constraintBottom_toTopOf="@+id/RateButtons"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <TextView
         android:id="@+id/no_recipes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="152dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:text="@string/no_recipes_to_rate"
-        app:layout_constraintBottom_toBottomOf="@+id/RateButtons"
+        app:layout_constraintBottom_toBottomOf="@+id/RecipeImageBox"
         app:layout_constraintEnd_toEndOf="@+id/RecipeImageBox"
+        app:layout_constraintHorizontal_bias="0.602"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/TopButton" />
+        app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>
