@@ -48,7 +48,6 @@ public class RateOthersActivity extends DrawerBaseActivity {
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentLayout(R.layout.rate_others);
-    getSupportActionBar().setDisplayShowTitleEnabled(false);
     bindViews();
     bindButtons();
 
