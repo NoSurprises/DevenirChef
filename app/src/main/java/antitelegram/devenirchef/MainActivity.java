@@ -168,8 +168,6 @@ public class MainActivity extends DrawerBaseActivity {
                     collapse(bottomMenuExpanded, bottomMenuShrinked.getHeight(), bottomMenuShrinked);
                     setShrinkedComplexity();
                     setShrinkedTags();
-                    selectRecipesComplexityAndTags();
-
                 } else {
                     expand(bottomMenuExpanded, bottomMenuShrinked.getHeight(), bottomMenuShrinked);
                 }
@@ -287,8 +285,6 @@ public class MainActivity extends DrawerBaseActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                recipesAdapter.changeDataset(searchFilter(query));
-
                 return false;
             }
 
