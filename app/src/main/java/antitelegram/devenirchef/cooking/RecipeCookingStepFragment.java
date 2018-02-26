@@ -3,11 +3,15 @@ package antitelegram.devenirchef.cooking;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import antitelegram.devenirchef.R;
 import antitelegram.devenirchef.data.RecipeStep;
@@ -22,6 +26,7 @@ public class RecipeCookingStepFragment extends Fragment {
     private TextView stepNumber;
     private Button forward;
     private Button back;
+    private ImageView image;
 
     public RecipeCookingStepFragment() {
         // Required empty public constructor
@@ -85,6 +90,7 @@ public class RecipeCookingStepFragment extends Fragment {
         stepNumber = cookingStep.findViewById(R.id.step_number);
         forward = cookingStep.findViewById(R.id.forward_button);
         back = cookingStep.findViewById(R.id.back_button);
+        image = cookingStep.findViewById(R.id.step_image);
 
     }
 
@@ -96,6 +102,14 @@ public class RecipeCookingStepFragment extends Fragment {
     private void bindCookingStepDataToViews() {
         stepText.setText(recipeStep.getDescriptionOfStep());
         stepNumber.setText(String.valueOf(recipeStep.getStepNumber() + 1));
+        Log.d("daywint", "bindCookingStepDataToViews: photo " + recipeStep.getPhotoUrl());
+        if (!getActivity().isFinishing() && recipeStep.getPhotoUrl() != null) {
+            Glide.with(getActivity())
+                    .load(recipeStep.getPhotoUrl())
+                    .placeholder(R.drawable.ic_placeholder)
+                    .into(image);
+        }
+
     }
 
 
