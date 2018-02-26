@@ -17,6 +17,7 @@ public class RecipeStep implements Parcelable {
     };
     private int stepNumber;
     private String descriptionOfStep;
+    private String photoUrl;
 
     public RecipeStep() {
 
@@ -25,6 +26,7 @@ public class RecipeStep implements Parcelable {
     private RecipeStep(Parcel in) {
         stepNumber = in.readInt();
         descriptionOfStep = in.readString();
+        photoUrl = in.readString();
     }
 
     public int getStepNumber() {
@@ -34,6 +36,7 @@ public class RecipeStep implements Parcelable {
     public void setStepNumber(int value) {
         stepNumber = value;
     }
+
     // TODO: 12/30/2017 add image
 
     public String getDescriptionOfStep() {
@@ -49,5 +52,11 @@ public class RecipeStep implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(stepNumber);
         dest.writeString(descriptionOfStep);
+        dest.writeString(photoUrl);
     }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
 }
