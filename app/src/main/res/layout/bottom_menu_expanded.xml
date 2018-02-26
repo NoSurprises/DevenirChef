@@ -43,18 +43,24 @@
         android:layout_marginTop="8dp"
         android:text="@string/complexity" />
 
-    <SeekBar
+    <RatingBar
         android:id="@+id/complexity_picker"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/complexity_label"
-        android:max="5"
-        android:min="1"
-        android:paddingTop="8dp"
-        android:progress="2"
-        android:progressTint="@color/colorPrimary"
-        android:secondaryProgressTint="@color/colorPrimaryDark"
-        android:thumbTint="@color/colorPrimary" />
+        android:layout_width="wrap_content"
+        android:layout_height="59dp"
+        android:layout_alignParentTop="false"
+        android:layout_alignTop="@+id/complexity_label"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:numStars="5"
+        android:progressBackgroundTint="?attr/colorButtonNormal"
+        android:progressTint="@color/secondaryColor"
+        android:rating="5"
+        android:secondaryProgressTint="@color/secondaryLightColor"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/RecipeImageBox"
+        app:layout_constraintVertical_bias="1.0" />
 
     <ImageView
         android:id="@+id/arrow_button"
