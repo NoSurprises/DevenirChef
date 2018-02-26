@@ -25,7 +25,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import antitelegram.devenirchef.data.Recipe;
@@ -190,7 +189,7 @@ public class MainActivity extends DrawerBaseActivity {
         List<Recipe> newDataset = new ArrayList<>();
         for (Recipe recipe : recipes) {
             if (recipe.getLevel() == selectedComplexity &&
-                    (!Collections.disjoint(selectedTags, recipe.getTags()) || selectedTags.size() == 0)) {
+                    (recipe.getTags().containsAll(selectedTags) || selectedTags.size() == 0)) {
                 newDataset.add(recipe);
             }
         }
