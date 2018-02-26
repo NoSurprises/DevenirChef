@@ -189,7 +189,7 @@ public class MainActivity extends DrawerBaseActivity {
     private void selectRecipesComplexityAndTags() {
         List<Recipe> newDataset = new ArrayList<>();
         for (Recipe recipe : recipes) {
-            if (recipe.getLevel() <= selectedComplexity &&
+            if (recipe.getLevel() == selectedComplexity &&
                     (!Collections.disjoint(selectedTags, recipe.getTags()) || selectedTags.size() == 0)) {
                 newDataset.add(recipe);
             }
