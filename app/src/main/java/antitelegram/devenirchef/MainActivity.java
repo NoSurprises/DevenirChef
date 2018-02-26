@@ -214,7 +214,13 @@ public class MainActivity extends DrawerBaseActivity {
         complexity.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
-                selectedComplexity = (int) v;
+                int intRating = (int) v;
+                if (v - intRating >= 0.8) {
+                    intRating++;
+                }
+                Log.d(TAG, "onRatingChanged: v +" + v);
+                selectedComplexity = intRating;
+                ratingBar.setRating(intRating);
             }
         });
     }
