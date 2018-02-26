@@ -12,10 +12,6 @@
         <item
             android:id="@+id/nav_rate_others"
             android:title="@string/rate_others" />
-        <item
-            android:id="@+id/nav_info"
-            android:title="@string/info" />
-
     </group>
 
 </menu>

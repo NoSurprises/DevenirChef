@@ -41,11 +41,11 @@ public class FinishRecipeStepFragment extends Fragment {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private Button takePhoto;
-    private Button mainScreen;
+    private View mainScreen;
     private ImageView imageView;
     private Bitmap finishImage;
     private String takenImagePath;
-    private Button share;
+    private View share;
     private Uri photoUri;
     private PhotoRedactor redactor;
 

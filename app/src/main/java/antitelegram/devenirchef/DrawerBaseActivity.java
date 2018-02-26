@@ -56,7 +56,7 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (this instanceof UserInfoActivity || this instanceof RateOthersActivity) {
+        if (this instanceof UserInfoActivity) {
             setContentView(R.layout.base_drawer_layout_transparent_toolbar);
         } else {
             setContentView(R.layout.base_drawer_layout);
@@ -258,7 +258,7 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.app_name);
         findViewById(R.id.appbar).bringToFront();
-        if (this instanceof UserInfoActivity || this instanceof RateOthersActivity) {
+        if (this instanceof UserInfoActivity) {
             toolbar.setBackgroundResource(R.drawable.background_toolbar);
         }
 

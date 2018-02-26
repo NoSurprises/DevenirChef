@@ -10,9 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -210,21 +210,17 @@ public class MainActivity extends DrawerBaseActivity {
     }
 
     private void setUpComplexitySeekbar() {
-        final SeekBar complexity = bottomMenuExpanded.findViewById(R.id.complexity_picker);
-        complexity.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        final RatingBar complexity = bottomMenuExpanded.findViewById(R.id.complexity_picker);
+        complexity.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                selectedComplexity = i;
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
+            public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
+                int intRating = (int) v;
+                if (v - intRating >= 0.8) {
+                    intRating++;
+                }
+                Log.d(TAG, "onRatingChanged: v +" + v);
+                selectedComplexity = intRating;
+                ratingBar.setRating(intRating);
             }
         });
     }
