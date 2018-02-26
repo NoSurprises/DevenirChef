@@ -22,6 +22,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,6 +30,7 @@ import java.util.Collections;
 import java.util.List;
 
 import antitelegram.devenirchef.data.Recipe;
+import antitelegram.devenirchef.data.User;
 import antitelegram.devenirchef.utils.Constants;
 import antitelegram.devenirchef.utils.Utils;
 
@@ -46,12 +48,14 @@ public class MainActivity extends DrawerBaseActivity {
     private ChildEventListener childEventListener;
     private RelativeLayout bottomMenuExpanded;
     private RelativeLayout bottomMenuShrinked;
+    private User user;
 
     private boolean bottomExpanded = false;
     private RecipesAdapter recipesAdapter;
     private ViewGroup tagsContainer;
 
     private SearchView searchView;
+    private ValueEventListener getUser;
 
     public static void expand(final View v, final int fromHeight, final View hideBefore) {
         v.measure(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -313,8 +317,7 @@ public class MainActivity extends DrawerBaseActivity {
         for (Recipe recipe : recipes) {
             if (recipe.getTitle().toLowerCase().contains(query)) {
                 res.add(recipe);
-            }
-            else {
+            } else {
                 for (String tag : recipe.getTags()) {
                     if (tag.toLowerCase().contains(query)) {
                         res.add(recipe);
@@ -352,6 +355,8 @@ public class MainActivity extends DrawerBaseActivity {
                 @Override
                 public void onChildAdded(final DataSnapshot dataSnapshot, String s) {
                     Recipe newRecipe = dataSnapshot.getValue(Recipe.class);
+                    if (newRecipe == null || newRecipe.getLevel() > user.getLevel())
+                        return;
                     recipes.add(newRecipe);
                     recipesAdapter.changeDataset(recipes);
                 }
@@ -373,7 +378,40 @@ public class MainActivity extends DrawerBaseActivity {
                 }
             };
         }
-        Utils.getFirebaseDatabase().getReference("recipes").addChildEventListener(childEventListener);
+
+        if (user == null) {
+            final FirebaseUser currentUser = Utils.getFirebaseAuth().getCurrentUser();
+            if (currentUser == null) {
+                return;
+            }
+            initUserFromDatabase(currentUser);
+
+        } else {
+            attachRecipesListener();
+        }
+    }
+
+    private void initUserFromDatabase(FirebaseUser currentUser) {
+        final ValueEventListener getUser = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                user = dataSnapshot.getValue(User.class);
+                attachRecipesListener();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        Utils.getFirebaseDatabase()
+                .getReference(Constants.DATABASE_USERS)
+                .child(currentUser.getUid())
+                .addValueEventListener(getUser);
+    }
+
+    private void attachRecipesListener() {
+        Utils.getFirebaseDatabase().getReference(Constants.DATABASE_RECIPES).addChildEventListener(childEventListener);
     }
 
 
