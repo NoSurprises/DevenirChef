@@ -179,6 +179,7 @@ public class RateOthersActivity extends DrawerBaseActivity {
     Log.d("rateOthers", "Recipe list size " + recipeList.size());
 
     if (recipeList.isEmpty()) {
+      starRatingBar.setRating(0);
       refreshRecipes();
     }
     else {
@@ -189,25 +190,26 @@ public class RateOthersActivity extends DrawerBaseActivity {
   }
 
   private void refreshRecipes() {
+
     ValueEventListener refresher = new ValueEventListener() {
       @Override
       public void onDataChange(DataSnapshot dataSnapshot) {
-        if (!recipeList.isEmpty())
+        if (!recipeList.isEmpty()) {
           return;
+        }
 
         for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
 
           String user = userSnapshot.getKey();
 
-          // TODO: Uncomment this
-          //if (user.equals(currentUser.getUid()))
-          // continue;
+          if (user.equals(currentUser.getUid()))
+           continue;
 
           for (DataSnapshot recipeSnapshot : userSnapshot.child("finishedRecipes").getChildren()) {
             FinishedRecipe recipe = recipeSnapshot.getValue(FinishedRecipe.class);
             if (!recipe.getPhotoUrl().equals("none")
                     && recipe.getUsersRated().size() < Constants.RATINGS_FOR_EXP
-                /*&& !recipe.getUsersRated().contains(currentUser.getUid())*/) { // TODO: Uncomment this
+                && !recipe.getUsersRated().contains(currentUser.getUid())) {
               recipeList.add(recipe);
               usersId.add(user);
             }
