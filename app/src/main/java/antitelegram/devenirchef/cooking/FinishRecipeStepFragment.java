@@ -13,7 +13,6 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,9 +39,7 @@ import static android.app.Activity.RESULT_OK;
  */
 public class FinishRecipeStepFragment extends Fragment {
 
-
     static final int REQUEST_IMAGE_CAPTURE = 1;
-    private static final String TAG = "daywint";
     private Button takePhoto;
     private Button mainScreen;
     private ImageView imageView;
@@ -73,7 +70,6 @@ public class FinishRecipeStepFragment extends Fragment {
                 setPic(finishImage);
                 photoUri = FileProvider.getUriForFile(getActivity(), "devenirchef.fileprovider", new File(takenImagePath));
             }
-            Log.d(TAG, "onCreateView: restored image " + takenImagePath);
         }
         return finishScreen;
     }
@@ -164,7 +160,6 @@ public class FinishRecipeStepFragment extends Fragment {
                 photo = createImageFile();
             } catch (IOException e) {
                 Toast.makeText(context, "Can't create picture", Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "dispatchTakePictureIntent: " + e);
             }
             if (photo != null) {
                 photoUri = FileProvider.getUriForFile(getActivity(), "devenirchef.fileprovider", photo);
@@ -195,13 +190,11 @@ public class FinishRecipeStepFragment extends Fragment {
             try {
                 in = getActivity().getContentResolver().openInputStream(photoUri);
             } catch (FileNotFoundException e) {
-                Log.d(TAG, "onActivityResult: can't get input steam " + e);
                 return;
             }
             redactPhoto(in);
             updateImageInStorage();
 
-            Log.d(TAG, "onActivityResult: change image " + finishImage);
             if (finishImage != null) {
                 setPic(finishImage);
             }
@@ -214,12 +207,10 @@ public class FinishRecipeStepFragment extends Fragment {
             out = new FileOutputStream(takenImagePath);
             finishImage.compress(Bitmap.CompressFormat.JPEG, 100, out);
         } catch (FileNotFoundException e) {
-            Log.d(TAG, "onActivityResult: " + e);
         } finally {
             try {
                 out.close();
             } catch (IOException e) {
-                Log.d(TAG, "onActivityResult: " + e);
             }
         }
     }

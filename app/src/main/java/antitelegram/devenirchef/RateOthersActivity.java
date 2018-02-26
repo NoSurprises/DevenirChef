@@ -3,10 +3,8 @@ package antitelegram.devenirchef;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -30,8 +28,6 @@ import java.util.Random;
 import antitelegram.devenirchef.data.FinishedRecipe;
 import antitelegram.devenirchef.utils.Constants;
 import antitelegram.devenirchef.utils.Utils;
-
-import static antitelegram.devenirchef.MainActivity.TAG;
 
 public class RateOthersActivity extends DrawerBaseActivity {
 
@@ -68,8 +64,6 @@ public class RateOthersActivity extends DrawerBaseActivity {
     query = Utils.getFirebaseDatabase().getReference().child(Constants.DATABASE_USERS);
 
     refreshRecipes();
-
-    Log.d("rateOthers", "Recipe list size " + recipeList.size());
   }
 
   @Override
@@ -90,7 +84,6 @@ public class RateOthersActivity extends DrawerBaseActivity {
     return new ValueEventListener() {
       @Override
       public void onDataChange(DataSnapshot dataSnapshot) {
-        // dataSnapshot is user
 
         FinishedRecipe recipe = dataSnapshot.child(Constants.FINISHED_RECIPES)
             .child(index).getValue(FinishedRecipe.class);
@@ -159,7 +152,6 @@ public class RateOthersActivity extends DrawerBaseActivity {
             (recipe.getAverageRating() * recipe.getUsersRated().size() + intRating) /
                 (recipe.getUsersRated().size() + 1));
         recipe.addUsersRated(currentUser.getUid());
-        Log.d(TAG, "onClick: recipe index" + recipe.getIndex());
         userRef.child(Constants.FINISHED_RECIPES).child(recipe.getIndex()).setValue(recipe);
 
         // Rate if needed
@@ -176,8 +168,6 @@ public class RateOthersActivity extends DrawerBaseActivity {
     recipeList.remove(0);
     usersId.remove(0);
 
-    Log.d("rateOthers", "Recipe list size " + recipeList.size());
-
     if (recipeList.isEmpty()) {
       starRatingBar.setRating(0);
       refreshRecipes();
@@ -185,8 +175,6 @@ public class RateOthersActivity extends DrawerBaseActivity {
     else {
       setImage(recipeList.get(0), recipeImageBox);
     }
-
-    // TODO: Do something if there are no recipes left
   }
 
   private void refreshRecipes() {
@@ -215,7 +203,6 @@ public class RateOthersActivity extends DrawerBaseActivity {
             }
           }
         }
-        Log.d("rateOthers", "Recipe list size " + recipeList.size());
         if (recipeList.size() != 0) {
           long seed = System.nanoTime();
           Collections.shuffle(recipeList, new Random(seed));
@@ -241,7 +228,6 @@ public class RateOthersActivity extends DrawerBaseActivity {
   private void setImage(final FinishedRecipe recipe, final ImageView image) {
 
     image.setImageResource(R.drawable.ic_placeholder_transparent);
-    Log.d(TAG, "setImage: " + recipe.getTitle());
 
     String photoUrl = recipe.getPhotoUrl();
     if (photoUrl.equals(Constants.NO_FILE_ADDED))
@@ -249,11 +235,9 @@ public class RateOthersActivity extends DrawerBaseActivity {
 
     StorageReference imageRef = Utils.getFirebaseStorage().getReference(photoUrl);
     Task<Uri> imageTask = imageRef.getDownloadUrl();
-    Log.d(TAG, "setImage: start getting url from firebase");
     imageTask.addOnSuccessListener(new OnSuccessListener<Uri>() {
       @Override
       public void onSuccess(Uri uri) {
-          Log.d(TAG, "start glide downloading ");
         if (!isFinishing()) {
 
           Glide.with(image.getContext())

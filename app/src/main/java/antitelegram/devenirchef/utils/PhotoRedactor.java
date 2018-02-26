@@ -4,19 +4,15 @@ package antitelegram.devenirchef.utils;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.support.media.ExifInterface;
-import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 public class PhotoRedactor {
-    private static final String TAG = "daywint";
-
 
     public Bitmap getScaledPhoto(Bitmap image) {
         int width = 1080;
         int height = 1080;
-        Log.d(TAG, "getScaledPhoto: change image " + image);
         return Bitmap.createScaledBitmap(image, width, height, false);
     }
 
@@ -45,10 +41,8 @@ public class PhotoRedactor {
 
         try {
             int rotation = getImageRotation(new ExifInterface(in));
-            Log.d(TAG, "getRotatedPhoto: " + rotation);
             return getRotatedBitmap(image, rotation);
         } catch (IOException e) {
-            Log.d(TAG, "onActivityResult:" + e);
         } finally {
             if (in != null) {
                 try {

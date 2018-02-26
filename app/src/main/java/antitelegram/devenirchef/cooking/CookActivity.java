@@ -12,7 +12,6 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,7 +26,6 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Map;
 
 import antitelegram.devenirchef.R;
 import antitelegram.devenirchef.data.CookingStepPreference;
@@ -41,8 +39,6 @@ import antitelegram.devenirchef.utils.Utils;
 
 public class CookActivity extends AppCompatActivity implements StepsNavigation {
 
-
-    public static final String TAG = "daywint";
     private int numSteps;
     private ViewPager allStepsViewPager;
     private PagerAdapter pagerAdapter;
@@ -63,10 +59,7 @@ public class CookActivity extends AppCompatActivity implements StepsNavigation {
         initDatabase();
         initAuth();
         cookingState = new CookingStepPreference(getSharedPreferences("cooking", MODE_PRIVATE));
-        Log.d(TAG, "onCreate: all in SP: ");
-        for (Map.Entry<String, ?> entry : cookingState.all().entrySet()) {
-            Log.d(TAG, entry.getKey() + " --- " + entry.getValue());
-        }
+
         setUpRecipe();
         setUpViewPager();
         setUpToolbar();
@@ -91,7 +84,6 @@ public class CookActivity extends AppCompatActivity implements StepsNavigation {
     protected void onPause() {
         if (needToSaveState) {
             cookingState.saveStep(recipe.getTitle(), allStepsViewPager.getCurrentItem());
-            Log.d(TAG, "saved state " + recipe.getTitle() + " " + allStepsViewPager.getCurrentItem());
         }
         super.onPause();
     }
@@ -103,15 +95,11 @@ public class CookActivity extends AppCompatActivity implements StepsNavigation {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 try {
-                    Log.d(TAG, "onDataChange: value in snapshot " + dataSnapshot.getValue());
-
                     User user = getUser(dataSnapshot);
                     initUserFinishedRecipesIfNull(user);
 
                     addRecipeToUserInDatabase(user);
-                    Log.d(TAG, "onDataChange: updated user info");
                 } catch (Exception e) {
-                    Log.d(TAG, "onDataChange: can't add finished recipe to database " + e);
                     e.printStackTrace();
                 }
             }
@@ -119,7 +107,6 @@ public class CookActivity extends AppCompatActivity implements StepsNavigation {
             private User getUser(DataSnapshot dataSnapshot) {
 
                 if (!dataSnapshot.exists()) {
-                    Log.d(TAG, "onDataChange: created new user");
                     return new User();
                 }
                 return dataSnapshot.getValue(User.class);
@@ -185,7 +172,6 @@ public class CookActivity extends AppCompatActivity implements StepsNavigation {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                Log.d(TAG, "onMenuItemClick: homeasup pressed");
                 setResult(RESULT_CANCELED);
                 cookingState.removeSavedState(recipe.getTitle());
                 needToSaveState = false;
@@ -268,7 +254,6 @@ public class CookActivity extends AppCompatActivity implements StepsNavigation {
     }
 
     private void restoreCookingStep() {
-        Log.d(TAG, "restore state " + cookingState.getSavedStep(recipe.getTitle()));
         allStepsViewPager.setCurrentItem(cookingState.getSavedStep(recipe.getTitle()));
     }
 

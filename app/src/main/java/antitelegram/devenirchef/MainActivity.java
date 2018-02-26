@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,7 +35,6 @@ import antitelegram.devenirchef.utils.Utils;
 
 public class MainActivity extends DrawerBaseActivity {
 
-    public static final String TAG = "daywint";
     private static final int RC_SIGN_IN = 123;
 
     private RecyclerView recipesLayout;
@@ -96,7 +94,6 @@ public class MainActivity extends DrawerBaseActivity {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                Log.d(TAG, "onAnimationEnd: expand end");
                 v.setVisibility(View.VISIBLE);
                 hideBefore.setVisibility(View.GONE);
             }
@@ -138,7 +135,6 @@ public class MainActivity extends DrawerBaseActivity {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                Log.d(TAG, "onAnimationEnd: collapse end");
                 expanded.setVisibility(View.GONE);
                 showAfter.setVisibility(View.VISIBLE);
             }
@@ -291,7 +287,6 @@ public class MainActivity extends DrawerBaseActivity {
 
         MenuItem item = menu.findItem(R.id.search);
         searchView = (SearchView) item.getActionView();
-        Log.d("search", "hello");
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

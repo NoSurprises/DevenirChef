@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -39,8 +38,6 @@ import antitelegram.devenirchef.data.User;
 import antitelegram.devenirchef.utils.Constants;
 import antitelegram.devenirchef.utils.PhotoRedactor;
 import antitelegram.devenirchef.utils.Utils;
-
-import static antitelegram.devenirchef.MainActivity.TAG;
 
 public class UserInfoActivity extends DrawerBaseActivity {
 
@@ -96,14 +93,12 @@ public class UserInfoActivity extends DrawerBaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
-            Log.d(TAG, "onActivityResult: user picked image");
 
             final Uri chosenImage = data.getData();
 
             try {
                 changeImage(chosenImage);
             } catch (IOException e) {
-                Log.d(TAG, "onActivityResult: can't change image " + e);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -120,8 +115,6 @@ public class UserInfoActivity extends DrawerBaseActivity {
         upload.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                Log.d(TAG, "onComplete: image uploaded");
-
                 final Uri downloadUrl = task.getResult().getDownloadUrl();
                 updateFirebaseUserImage(downloadUrl);
             }
@@ -156,7 +149,6 @@ public class UserInfoActivity extends DrawerBaseActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "onSuccess: user profile updated");
                     }
                 });
     }
@@ -179,7 +171,6 @@ public class UserInfoActivity extends DrawerBaseActivity {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d(TAG, "onDataChange in user info activity: received " + dataSnapshot);
                 if (dataSnapshot == null || dataSnapshot.getValue() == null) {
                     createNewUser();
                 } else {
@@ -205,7 +196,6 @@ public class UserInfoActivity extends DrawerBaseActivity {
 
             private void createNewUser() {
                 user = new User();
-                Log.d(TAG, "createNewUser: created new user");
                 writeUserToDatabase();
             }
 
@@ -278,8 +268,6 @@ public class UserInfoActivity extends DrawerBaseActivity {
         setImage(recipe, image);
         title.setText(recipe.getTitle());
         rating.setText(getString(R.string.rating_1) + Float.toString(recipe.getAverageRating()));
-
-        Log.d(TAG, "setInfoToView: set all info to views");
     }
 
     private void setImage(final FinishedRecipe recipe, final ImageView image) {
@@ -301,7 +289,6 @@ public class UserInfoActivity extends DrawerBaseActivity {
                             .crossFade()
                             .into(image);
 
-                    Log.d(TAG, "setInfoToView: set image " + recipe.getPhotoUrl());
                 }
             }
         });
