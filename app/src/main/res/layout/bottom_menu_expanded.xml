@@ -13,6 +13,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/arrow_button"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:text="@string/tags" />
 
     <HorizontalScrollView
@@ -36,16 +38,30 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tags_scroll"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:text="@string/complexity" />
 
-    <SeekBar
+    <RatingBar
         android:id="@+id/complexity_picker"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/complexity_label"
-        android:max="5"
-        android:min="1"
-        android:progress="2" />
+        android:layout_width="wrap_content"
+        android:layout_height="59dp"
+        android:layout_alignParentTop="false"
+        android:layout_alignTop="@+id/complexity_label"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:numStars="5"
+        android:progressBackgroundTint="?attr/colorButtonNormal"
+        android:progressTint="@color/secondaryColor"
+        android:rating="5"
+        android:secondaryProgressTint="@color/secondaryLightColor"
+        android:stepSize="0.5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/RecipeImageBox"
+        app:layout_constraintVertical_bias="1.0" />
 
     <ImageView
         android:id="@+id/arrow_button"
@@ -57,8 +73,7 @@
         android:layout_marginTop="16dp"
         android:layout_weight="1"
         android:adjustViewBounds="false"
-        android:background="@color/colorPrimary"
         android:cropToPadding="false"
-        app:srcCompat="?attr/homeAsUpIndicator" />
+        app:srcCompat="@drawable/ic_arrow_downward_black_24dp" />
 
 </RelativeLayout>

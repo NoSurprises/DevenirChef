@@ -4,16 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +21,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,12 +29,12 @@ import java.util.Collections;
 import java.util.List;
 
 import antitelegram.devenirchef.data.Recipe;
+import antitelegram.devenirchef.data.User;
 import antitelegram.devenirchef.utils.Constants;
 import antitelegram.devenirchef.utils.Utils;
 
 public class MainActivity extends DrawerBaseActivity {
 
-    public static final String TAG = "daywint";
     private static final int RC_SIGN_IN = 123;
 
     private RecyclerView recipesLayout;
@@ -46,12 +46,14 @@ public class MainActivity extends DrawerBaseActivity {
     private ChildEventListener childEventListener;
     private RelativeLayout bottomMenuExpanded;
     private RelativeLayout bottomMenuShrinked;
+    private User user;
 
     private boolean bottomExpanded = false;
     private RecipesAdapter recipesAdapter;
     private ViewGroup tagsContainer;
 
     private SearchView searchView;
+    private ValueEventListener getUser;
 
     public static void expand(final View v, final int fromHeight, final View hideBefore) {
         v.measure(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -92,7 +94,6 @@ public class MainActivity extends DrawerBaseActivity {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                Log.d(TAG, "onAnimationEnd: expand end");
                 v.setVisibility(View.VISIBLE);
                 hideBefore.setVisibility(View.GONE);
             }
@@ -134,7 +135,6 @@ public class MainActivity extends DrawerBaseActivity {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                Log.d(TAG, "onAnimationEnd: collapse end");
                 expanded.setVisibility(View.GONE);
                 showAfter.setVisibility(View.VISIBLE);
             }
@@ -187,14 +187,10 @@ public class MainActivity extends DrawerBaseActivity {
     }
 
     private void selectRecipesComplexityAndTags() {
-        if (selectedTags.size() == 0) {
-            recipesAdapter.changeDataset(recipes);
-            return;
-        }
         List<Recipe> newDataset = new ArrayList<>();
         for (Recipe recipe : recipes) {
             if (recipe.getLevel() <= selectedComplexity &&
-                    !Collections.disjoint(selectedTags, recipe.getTags())) {
+                    (!Collections.disjoint(selectedTags, recipe.getTags()) || selectedTags.size() == 0)) {
                 newDataset.add(recipe);
             }
         }
@@ -214,21 +210,17 @@ public class MainActivity extends DrawerBaseActivity {
     }
 
     private void setUpComplexitySeekbar() {
-        final SeekBar complexity = bottomMenuExpanded.findViewById(R.id.complexity_picker);
-        complexity.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        final RatingBar complexity = bottomMenuExpanded.findViewById(R.id.complexity_picker);
+        complexity.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                selectedComplexity = i;
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
+            public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
+                int intRating = (int) v;
+                if (v - intRating >= 0.8) {
+                    intRating++;
+                }
+                Log.d(TAG, "onRatingChanged: v +" + v);
+                selectedComplexity = intRating;
+                ratingBar.setRating(intRating);
             }
         });
     }
@@ -291,7 +283,6 @@ public class MainActivity extends DrawerBaseActivity {
 
         MenuItem item = menu.findItem(R.id.search);
         searchView = (SearchView) item.getActionView();
-        Log.d("search", "hello");
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -313,14 +304,14 @@ public class MainActivity extends DrawerBaseActivity {
     }
 
     private List<Recipe> searchFilter(final String query) {
+        String queryTrimmed = query.trim();
         List<Recipe> res = new ArrayList<>();
         for (Recipe recipe : recipes) {
-            if (recipe.getTitle().toLowerCase().contains(query)) {
+            if (recipe.getTitle().toLowerCase().contains(queryTrimmed)) {
                 res.add(recipe);
-            }
-            else {
+            } else {
                 for (String tag : recipe.getTags()) {
-                    if (tag.toLowerCase().contains(query)) {
+                    if (tag.toLowerCase().contains(queryTrimmed)) {
                         res.add(recipe);
                         break;
                     }
@@ -329,18 +320,6 @@ public class MainActivity extends DrawerBaseActivity {
         }
 
         return res;
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        if (searchView != null) {
-            //searchView.setQuery("WHAT", true);
-            Log.d("search", searchView.getQuery().toString());
-            recipesAdapter.changeDataset(searchFilter("WHAT"));
-
-        }
     }
 
     @Override
@@ -356,8 +335,11 @@ public class MainActivity extends DrawerBaseActivity {
                 @Override
                 public void onChildAdded(final DataSnapshot dataSnapshot, String s) {
                     Recipe newRecipe = dataSnapshot.getValue(Recipe.class);
+                    if (newRecipe == null || newRecipe.getLevel() > user.getLevel())
+                        return;
                     recipes.add(newRecipe);
                     recipesAdapter.changeDataset(recipes);
+                    searchView.setQuery(searchView.getQuery().toString(), true);
                 }
 
                 @Override
@@ -377,7 +359,40 @@ public class MainActivity extends DrawerBaseActivity {
                 }
             };
         }
-        Utils.getFirebaseDatabase().getReference("recipes").addChildEventListener(childEventListener);
+
+        if (user == null) {
+            final FirebaseUser currentUser = Utils.getFirebaseAuth().getCurrentUser();
+            if (currentUser == null) {
+                return;
+            }
+            initUserFromDatabase(currentUser);
+
+        } else {
+            attachRecipesListener();
+        }
+    }
+
+    private void initUserFromDatabase(FirebaseUser currentUser) {
+        final ValueEventListener getUser = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                user = dataSnapshot.getValue(User.class);
+                attachRecipesListener();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        Utils.getFirebaseDatabase()
+                .getReference(Constants.DATABASE_USERS)
+                .child(currentUser.getUid())
+                .addValueEventListener(getUser);
+    }
+
+    private void attachRecipesListener() {
+        Utils.getFirebaseDatabase().getReference(Constants.DATABASE_RECIPES).addChildEventListener(childEventListener);
     }
 
 
