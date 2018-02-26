@@ -21,8 +21,8 @@ android {
         applicationId "antitelegram.devenirchef"
         minSdkVersion 17
         targetSdkVersion 27
-        versionCode 6
-        versionName '1.0'
+        versionCode 8
+        versionName '1.0.2'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
