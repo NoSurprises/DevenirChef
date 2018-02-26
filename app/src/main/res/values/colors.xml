@@ -12,6 +12,9 @@
     <color name="primaryTextColor">#ffffff</color>
     <color name="headlineTextColor">#d9000000</color>
     <color name="body1TextColor">#e0000000</color>
+    <color name="captionColor">#80000000</color>
     <color name="transparent">#00000000</color>
     <color name="black_alpha_40">#66000000</color>
+    <color name="white">#ffffff</color>
+    <color name="selected_tag">#8b39716d</color>
 </resources>

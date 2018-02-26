@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewStub;
@@ -27,7 +26,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,9 +34,6 @@ import antitelegram.devenirchef.utils.Utils;
 
 import static com.google.android.gms.common.ConnectionResult.SUCCESS;
 
-/**
- * Created by Nick on 1/19/2018.
- */
 
 public abstract class DrawerBaseActivity extends AppCompatActivity {
 
@@ -48,7 +43,6 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
     private DrawerLayout drawer;
     private FirebaseUser currentUser;
     private FirebaseDatabase database;
-    private FirebaseStorage storage;
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authStateListener;
     private Toolbar toolbar;
@@ -62,7 +56,7 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (this instanceof UserInfoActivity || this instanceof RateOthersActivity) {
+        if (this instanceof UserInfoActivity) {
             setContentView(R.layout.base_drawer_layout_transparent_toolbar);
         } else {
             setContentView(R.layout.base_drawer_layout);
@@ -71,7 +65,6 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
         setUpToolbar();
 
         initDatabase();
-        initStorage();
         initAuth();
     }
 
@@ -254,7 +247,7 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                Toast.makeText(DrawerBaseActivity.this, "toolbar menu item clicked", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(DrawerBaseActivity.this, "toolbar menu item clicked", Toast.LENGTH_SHORT).show();
 
                 return true;
             }
@@ -265,20 +258,12 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.app_name);
         findViewById(R.id.appbar).bringToFront();
-        if (this instanceof UserInfoActivity || this instanceof RateOthersActivity) {
+        if (this instanceof UserInfoActivity) {
             toolbar.setBackgroundResource(R.drawable.background_toolbar);
         }
 
         setSupportActionBar(toolbar);
 
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        if (this instanceof MainActivity) {
-            getMenuInflater().inflate(R.menu.options_menu, menu);
-        }
-        return super.onCreateOptionsMenu(menu);
     }
 
     private void setUpDrawerToggle() {
@@ -339,9 +324,6 @@ public abstract class DrawerBaseActivity extends AppCompatActivity {
         };
     }
 
-    private void initStorage() {
-        storage = Utils.getFirebaseStorage();
-    }
 
 
     private void initDatabase() {
