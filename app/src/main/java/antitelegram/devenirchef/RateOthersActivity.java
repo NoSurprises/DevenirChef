@@ -99,7 +99,7 @@ public class RateOthersActivity extends DrawerBaseActivity {
         dataSnapshot.getRef().child(Constants.FINISHED_RECIPES).child(recipe.getIndex()).setValue(recipe);
 
         long newExp = dataSnapshot.child(Constants.EXP).getValue(Long.class) +
-            (long) recipe.getAverageRating() * Constants.RATING_MULTIPLIER;
+            (long) recipe.getAverageRating() * Constants.RATING_MULTIPLIER * recipe.getLevel();
 
         dataSnapshot.getRef().child(Constants.EXP).setValue(newExp);
 
