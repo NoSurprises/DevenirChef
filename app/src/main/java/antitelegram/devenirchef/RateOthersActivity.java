@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -49,6 +48,7 @@ public class RateOthersActivity extends DrawerBaseActivity {
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentLayout(R.layout.rate_others);
+    getSupportActionBar().setDisplayShowTitleEnabled(false);
     bindViews();
     bindButtons();
 
