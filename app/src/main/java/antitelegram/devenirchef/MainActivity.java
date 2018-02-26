@@ -218,7 +218,6 @@ public class MainActivity extends DrawerBaseActivity {
                 if (v - intRating >= 0.8) {
                     intRating++;
                 }
-                Log.d(TAG, "onRatingChanged: v +" + v);
                 selectedComplexity = intRating;
                 ratingBar.setRating(intRating);
             }
