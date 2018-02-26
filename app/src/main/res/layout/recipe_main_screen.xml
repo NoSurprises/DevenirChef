@@ -100,13 +100,18 @@
                 android:textSize="14sp"
                 tools:text="@tools:sample/lorem" />
 
-            <LinearLayout
-                android:id="@+id/tags_container"
+            <HorizontalScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content">
 
-            </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/tags_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                </LinearLayout>
+            </HorizontalScrollView>
         </LinearLayout>
 
     </android.support.v7.widget.CardView>

@@ -71,10 +71,10 @@ class RecipesAdapter(val context: Context) : RecyclerView.Adapter<RecipesAdapter
 
 
             tags?.removeAllViews()
-            if (newRecipe.getTags() != null) {
-                for (tag in newRecipe.getTags()) {
-                    val tagView = TextView(view?.getContext())
-                    tagView.setText(tag)
+            if (newRecipe.tags != null) {
+                for (tag in newRecipe.tags) {
+                    val tagView = LayoutInflater.from(view?.context).inflate(R.layout.tag, tags, false);
+                    tagView.findViewById<TextView>(R.id.tag_name).text = tag
                     tags?.addView(tagView)
                 }
 
