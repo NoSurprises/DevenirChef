@@ -313,13 +313,14 @@ public class MainActivity extends DrawerBaseActivity {
     }
 
     private List<Recipe> searchFilter(final String query) {
+        String queryTrimmed = query.trim();
         List<Recipe> res = new ArrayList<>();
         for (Recipe recipe : recipes) {
-            if (recipe.getTitle().toLowerCase().contains(query)) {
+            if (recipe.getTitle().toLowerCase().contains(queryTrimmed)) {
                 res.add(recipe);
             } else {
                 for (String tag : recipe.getTags()) {
-                    if (tag.toLowerCase().contains(query)) {
+                    if (tag.toLowerCase().contains(queryTrimmed)) {
                         res.add(recipe);
                         break;
                     }
@@ -328,18 +329,6 @@ public class MainActivity extends DrawerBaseActivity {
         }
 
         return res;
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        if (searchView != null) {
-            //searchView.setQuery("WHAT", true);
-            Log.d("search", searchView.getQuery().toString());
-            recipesAdapter.changeDataset(searchFilter("WHAT"));
-
-        }
     }
 
     @Override
@@ -359,6 +348,7 @@ public class MainActivity extends DrawerBaseActivity {
                         return;
                     recipes.add(newRecipe);
                     recipesAdapter.changeDataset(recipes);
+                    searchView.setQuery(searchView.getQuery().toString(), true);
                 }
 
                 @Override
