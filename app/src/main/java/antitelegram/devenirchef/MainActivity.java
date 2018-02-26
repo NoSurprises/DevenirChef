@@ -220,6 +220,7 @@ public class MainActivity extends DrawerBaseActivity {
                 }
                 selectedComplexity = intRating;
                 ratingBar.setRating(intRating);
+                selectRecipesComplexityAndTags();
             }
         });
     }
@@ -241,6 +242,7 @@ public class MainActivity extends DrawerBaseActivity {
                         view.setBackgroundColor(getResources().getColor(R.color.selected_tag));
                         selectedTags.add(tagName);
                     }
+                    selectRecipesComplexityAndTags();
                 }
             });
 
