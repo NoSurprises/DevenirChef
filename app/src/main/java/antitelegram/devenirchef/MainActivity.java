@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +22,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -325,12 +327,57 @@ public class MainActivity extends DrawerBaseActivity {
     }
 
     void addDatabaseReadListener() {
+        Log.d("daywint", "addDatabaseReadListener: ");
+
+        if (user == null) {
+            final FirebaseUser currentUser = Utils.getFirebaseAuth().getCurrentUser();
+            if (currentUser == null) {
+                return;
+            }
+            initUserFromDatabase(currentUser);
+            return;
+        }
+
+        attachRecipesListener();
+
+    }
+
+    private void initUserFromDatabase(FirebaseUser currentUser) {
+        Log.d("daywint", "initUserFromDatabase: ");
+        final DatabaseReference child = Utils.getFirebaseDatabase()
+                .getReference(Constants.DATABASE_USERS)
+                .child(currentUser.getUid());
+
+        final ValueEventListener getUser = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                user = dataSnapshot.getValue(User.class);
+                if (user == null) {
+                    Log.d("daywint", "onDataChange: creating new user");
+                    user = new User();
+                    child.setValue(user);
+                }
+                attachRecipesListener();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+        child.addListenerForSingleValueEvent(getUser);
+    }
+
+    private void attachRecipesListener() {
+        Log.d("daywint", "attachRecipesListener: ");
         if (childEventListener == null) {
             childEventListener = new ChildEventListener() {
 
                 @Override
                 public void onChildAdded(final DataSnapshot dataSnapshot, String s) {
                     Recipe newRecipe = dataSnapshot.getValue(Recipe.class);
+                    Log.d("daywint", "onChildAdded: user " + user);
                     if (newRecipe == null || newRecipe.getLevel() > user.getLevel())
                         return;
                     recipes.add(newRecipe);
@@ -355,39 +402,6 @@ public class MainActivity extends DrawerBaseActivity {
                 }
             };
         }
-
-        if (user == null) {
-            final FirebaseUser currentUser = Utils.getFirebaseAuth().getCurrentUser();
-            if (currentUser == null) {
-                return;
-            }
-            initUserFromDatabase(currentUser);
-
-        } else {
-            attachRecipesListener();
-        }
-    }
-
-    private void initUserFromDatabase(FirebaseUser currentUser) {
-        final ValueEventListener getUser = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                user = dataSnapshot.getValue(User.class);
-                attachRecipesListener();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-        Utils.getFirebaseDatabase()
-                .getReference(Constants.DATABASE_USERS)
-                .child(currentUser.getUid())
-                .addValueEventListener(getUser);
-    }
-
-    private void attachRecipesListener() {
         Utils.getFirebaseDatabase().getReference(Constants.DATABASE_RECIPES).addChildEventListener(childEventListener);
     }
 

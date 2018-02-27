@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Devenir Chef! Beta</string>
+    <string name="app_name">Devenir Chef!</string>
     <string name="search_hint">Search for recipes</string>
     <string name="open_drawer">Open</string>
     <string name="close_drawer">Close</string>
