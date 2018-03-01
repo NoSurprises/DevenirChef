@@ -43,7 +43,8 @@ public class MainActivity extends DrawerBaseActivity {
 
     private List<Recipe> recipes;
     private List<String> selectedTags = new ArrayList<>();
-    private int selectedComplexity = 1;
+    private List<Recipe> currRecipes;
+    private int selectedComplexity = 0;
     private ChildEventListener childEventListener;
     private RelativeLayout bottomMenuExpanded;
     private RelativeLayout bottomMenuShrinked;
@@ -190,12 +191,14 @@ public class MainActivity extends DrawerBaseActivity {
     private void selectRecipesComplexityAndTags() {
         List<Recipe> newDataset = new ArrayList<>();
         for (Recipe recipe : recipes) {
-            if (recipe.getLevel() == selectedComplexity &&
+            if ((selectedComplexity == 0 || recipe.getLevel() == selectedComplexity) &&
                     (recipe.getTags().containsAll(selectedTags) || selectedTags.size() == 0)) {
                 newDataset.add(recipe);
             }
         }
         recipesAdapter.changeDataset(newDataset);
+        currRecipes = newDataset;
+        recipesAdapter.changeDataset(searchFilter(searchView.getQuery().toString(), currRecipes));
     }
 
     private void setShrinkedComplexity() {
@@ -236,7 +239,6 @@ public class MainActivity extends DrawerBaseActivity {
             complexity.getChildAt(i).setOnClickListener(getRateButtonListener(i));
         }
     }
-
 
     private void setUpTags(List<String> tags) {
         for (String tag : tags) {
@@ -305,7 +307,7 @@ public class MainActivity extends DrawerBaseActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                recipesAdapter.changeDataset(searchFilter(newText));
+                recipesAdapter.changeDataset(searchFilter(newText, currRecipes));
 
                 return false;
             }
@@ -314,10 +316,10 @@ public class MainActivity extends DrawerBaseActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    private List<Recipe> searchFilter(final String query) {
+    private List<Recipe> searchFilter(final String query, List<Recipe> recipeList) {
         String queryTrimmed = query.trim();
         List<Recipe> res = new ArrayList<>();
-        for (Recipe recipe : recipes) {
+        for (Recipe recipe : recipeList) {
             if (recipe.getTitle().toLowerCase().contains(queryTrimmed)) {
                 res.add(recipe);
             } else {
@@ -389,8 +391,11 @@ public class MainActivity extends DrawerBaseActivity {
                     if (newRecipe == null || user == null || newRecipe.getLevel() > user.getLevel())
                         return;
                     recipes.add(newRecipe);
-                    recipesAdapter.changeDataset(recipes);
-                    searchView.setQuery(searchView.getQuery().toString(), true);
+                    currRecipes = recipes;
+                    recipesAdapter.changeDataset(currRecipes);
+                    //searchView.setQuery(searchView.getQuery().toString(), true);
+                    selectRecipesComplexityAndTags();
+                    recipesAdapter.changeDataset(searchFilter(searchView.getQuery().toString(), currRecipes));
                 }
 
                 @Override
