@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -116,6 +115,11 @@ public class RateOthersActivity extends DrawerBaseActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (recipeList.size() == 0) {
+                    return;
+                }
+
                 for (int i = 0; i <= rateNumber; ++i) {
                     ImageView tmpImageView = (ImageView) ratingButtons.getChildAt(i);
                     tmpImageView.setImageResource(R.drawable.filled_star);
@@ -125,11 +129,6 @@ public class RateOthersActivity extends DrawerBaseActivity {
                     ImageView tmpImageView = (ImageView) ratingButtons.getChildAt(i);
                     tmpImageView.setImageResource(R.drawable.unfilled_star);
                 }
-
-                if (recipeList.size() == 0) {
-                    return;
-                }
-
 
                 // Get recipe
                 FinishedRecipe recipe = recipeList.get(0);

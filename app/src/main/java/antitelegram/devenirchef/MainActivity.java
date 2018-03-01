@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,7 +12,6 @@ import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -216,8 +214,6 @@ public class MainActivity extends DrawerBaseActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("rateClick", "Clicked " + rateNumber);
-
                 for (int i = 0; i <= rateNumber; ++i) {
                     ImageView tmpImageView = (ImageView) complexity.getChildAt(i);
                     tmpImageView.setImageResource(R.drawable.filled_star);
