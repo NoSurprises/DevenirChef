@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -36,7 +37,7 @@ public class RateOthersActivity extends DrawerBaseActivity {
 
     private ImageView recipeImageBox;
     private TextView noRecipes;
-    private RatingBar starRatingBar;
+    private LinearLayout ratingButtons;
 
     private List<FinishedRecipe> recipeList;
     private List<String> usersId;
@@ -77,7 +78,7 @@ public class RateOthersActivity extends DrawerBaseActivity {
     private void bindViews() {
         recipeImageBox = findViewById(R.id.RecipeImageBox);
         noRecipes = findViewById(R.id.no_recipes);
-        starRatingBar = findViewById(R.id.ratingBar);
+        ratingButtons = findViewById(R.id.rate_buttons);
     }
 
     private ValueEventListener getExpSetter(final String index) {
@@ -110,21 +111,22 @@ public class RateOthersActivity extends DrawerBaseActivity {
         };
     }
 
-    private void bindButtons() {
+    private View.OnClickListener getRateButtonListener(final int rateNumber) {
 
-        starRatingBar.setRating(0);
-        starRatingBar.setStepSize(0.5f);
-
-        starRatingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+        return new View.OnClickListener() {
             @Override
-            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                int intRating = (int) rating;
-                if (rating - intRating >= 0.8) {
-                    intRating++;
+            public void onClick(View v) {
+                for (int i = 0; i <= rateNumber; ++i) {
+                    ImageView tmpImageView = (ImageView) ratingButtons.getChildAt(i);
+                    tmpImageView.setImageResource(R.drawable.filled_star);
                 }
-                ratingBar.setRating(intRating);
 
-                if (recipeList.size() == 0 || !fromUser) {
+                for (int i = rateNumber + 1; i < 5; ++i) {
+                    ImageView tmpImageView = (ImageView) ratingButtons.getChildAt(i);
+                    tmpImageView.setImageResource(R.drawable.unfilled_star);
+                }
+
+                if (recipeList.size() == 0) {
                     return;
                 }
 
@@ -132,7 +134,7 @@ public class RateOthersActivity extends DrawerBaseActivity {
                 // Get recipe
                 FinishedRecipe recipe = recipeList.get(0);
                 DatabaseReference userRef = FirebaseDatabase.getInstance().
-                        getReference(Constants.DATABASE_USERS).child(usersId.get(0));
+                    getReference(Constants.DATABASE_USERS).child(usersId.get(0));
 
                 // If recipe is already rated, continue
                 if (recipe.isRated()) {
@@ -149,8 +151,8 @@ public class RateOthersActivity extends DrawerBaseActivity {
 
                 // Add current rating to the picture
                 recipe.setAverageRating(
-                        (recipe.getAverageRating() * recipe.getUsersRated().size() + intRating) /
-                                (recipe.getUsersRated().size() + 1));
+                    (recipe.getAverageRating() * recipe.getUsersRated().size() + (rateNumber + 1)) /
+                        (recipe.getUsersRated().size() + 1));
                 recipe.addUsersRated(currentUser.getUid());
                 userRef.child(Constants.FINISHED_RECIPES).child(recipe.getIndex()).setValue(recipe);
 
@@ -161,7 +163,16 @@ public class RateOthersActivity extends DrawerBaseActivity {
                 // Continue
                 nextImage();
             }
-        });
+        };
+
+    }
+
+    private void bindButtons() {
+        for (int i = 0; i < 5; ++i) {
+            ratingButtons.getChildAt(i).setOnClickListener(getRateButtonListener(i));
+        }
+
+
     }
 
     private void nextImage() {
@@ -169,7 +180,11 @@ public class RateOthersActivity extends DrawerBaseActivity {
         usersId.remove(0);
 
         if (recipeList.isEmpty()) {
-            starRatingBar.setRating(0);
+            for (int i = 0; i < 5; ++i) {
+                ImageView tmpImageView = (ImageView) ratingButtons.getChildAt(i);
+                tmpImageView.setImageResource(R.drawable.unfilled_star);
+            }
+
             refreshRecipes();
         } else {
             setImage(recipeList.get(0), recipeImageBox);
@@ -252,7 +267,10 @@ public class RateOthersActivity extends DrawerBaseActivity {
 
                 }
 
-                starRatingBar.setRating(0);
+                for (int i = 0; i < 5; ++i) {
+                    ImageView tmpImageView = (ImageView) ratingButtons.getChildAt(i);
+                    tmpImageView.setImageResource(R.drawable.unfilled_star);
+                }
             }
         });
     }

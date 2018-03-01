@@ -4,12 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
@@ -47,6 +50,8 @@ public class MainActivity extends DrawerBaseActivity {
     private RelativeLayout bottomMenuExpanded;
     private RelativeLayout bottomMenuShrinked;
     private User user;
+
+    private LinearLayout complexity;
 
     private boolean bottomExpanded = false;
     private RecipesAdapter recipesAdapter;
@@ -207,20 +212,33 @@ public class MainActivity extends DrawerBaseActivity {
 
     }
 
-    private void setUpComplexitySeekbar() {
-        final RatingBar complexity = bottomMenuExpanded.findViewById(R.id.complexity_picker);
-        complexity.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+    private View.OnClickListener getRateButtonListener(final int rateNumber) {
+        return new View.OnClickListener() {
             @Override
-            public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
-                int intRating = (int) v;
-                if (v - intRating >= 0.8) {
-                    intRating++;
+            public void onClick(View view) {
+                Log.d("rateClick", "Clicked " + rateNumber);
+
+                for (int i = 0; i <= rateNumber; ++i) {
+                    ImageView tmpImageView = (ImageView) complexity.getChildAt(i);
+                    tmpImageView.setImageResource(R.drawable.filled_star);
                 }
-                selectedComplexity = intRating;
-                ratingBar.setRating(intRating);
+
+                for (int i = rateNumber + 1; i < 5; ++i) {
+                    ImageView tmpImageView = (ImageView) complexity.getChildAt(i);
+                    tmpImageView.setImageResource(R.drawable.unfilled_star);
+                }
+
+                selectedComplexity = rateNumber + 1;
                 selectRecipesComplexityAndTags();
             }
-        });
+        };
+    }
+
+    private void setUpComplexitySeekbar() {
+        complexity = bottomMenuExpanded.findViewById(R.id.rate_stars);
+        for (int i = 0; i < 5; ++i) {
+            complexity.getChildAt(i).setOnClickListener(getRateButtonListener(i));
+        }
     }
 
 
