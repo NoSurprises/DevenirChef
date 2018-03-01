@@ -127,6 +127,7 @@
         android:layout_alignStart="@+id/tags_label"
         android:clickable="true"
         android:focusable="true"
-        app:srcCompat="@drawable/ic_clear_black_24px" />
+        app:srcCompat="@drawable/ic_clear_black_24px"
+        tools:ignore="VectorDrawableCompat" />
 
 </RelativeLayout>
