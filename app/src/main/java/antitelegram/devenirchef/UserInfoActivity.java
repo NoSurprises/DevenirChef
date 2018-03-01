@@ -259,7 +259,8 @@ public class UserInfoActivity extends DrawerBaseActivity {
 
         setImage(recipe, image);
         title.setText(recipe.getTitle());
-        rating.setText(getString(R.string.rating_1) + Float.toString(recipe.getAverageRating()));
+        rating.setText(getString(R.string.rating_1) +
+            String.format("%.2f", recipe.getAverageRating()));
     }
 
     private void setImage(final FinishedRecipe recipe, final ImageView image) {

@@ -44,25 +44,6 @@
         android:layout_marginTop="8dp"
         android:text="@string/complexity" />
 
-    <RatingBar
-        android:id="@+id/complexity_picker"
-        style="?android:attr/ratingBarStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_alignParentTop="false"
-        android:layout_alignTop="@+id/complexity_label"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp"
-        android:isIndicator="false"
-        android:maxHeight="40dp"
-        android:minHeight="16dp"
-        android:numStars="5"
-        android:progressBackgroundTint="?attr/colorButtonNormal"
-        android:progressTint="@color/secondaryColor"
-        android:rating="5"
-        android:secondaryProgressTint="@color/secondaryLightColor"
-        android:stepSize="0.5" />
-
     <ImageView
         android:id="@+id/arrow_button"
         android:layout_width="wrap_content"
@@ -75,6 +56,78 @@
         android:adjustViewBounds="false"
         android:cropToPadding="false"
         app:srcCompat="@drawable/ic_arrow_downward_black_24dp"
+        tools:ignore="VectorDrawableCompat" />
+
+    <LinearLayout
+        android:id="@+id/rate_stars"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="false"
+        android:layout_alignTop="@+id/complexity_label"
+        android:layout_centerHorizontal="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:maxHeight="40dp"
+        android:minHeight="16dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/rate_star_1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            app:srcCompat="@drawable/unfilled_star"
+            android:focusable="true" />
+
+        <ImageView
+            android:id="@+id/rate_star_2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            app:srcCompat="@drawable/unfilled_star"
+            android:focusable="true" />
+
+        <ImageView
+            android:id="@+id/rate_star_3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            app:srcCompat="@drawable/unfilled_star"
+            android:focusable="true" />
+
+        <ImageView
+            android:id="@+id/rate_star_4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            app:srcCompat="@drawable/unfilled_star"
+            android:focusable="true" />
+
+        <ImageView
+            android:id="@+id/rate_star_5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            app:srcCompat="@drawable/unfilled_star"
+            android:focusable="true" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/reset_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tags_label"
+        android:layout_alignStart="@+id/tags_label"
+        android:clickable="true"
+        android:focusable="true"
+        app:srcCompat="@drawable/ic_clear_black_24px"
         tools:ignore="VectorDrawableCompat" />
 
 </RelativeLayout>

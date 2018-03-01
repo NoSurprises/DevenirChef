@@ -10,7 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
-import android.widget.RatingBar;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -42,11 +43,14 @@ public class MainActivity extends DrawerBaseActivity {
 
     private List<Recipe> recipes;
     private List<String> selectedTags = new ArrayList<>();
-    private int selectedComplexity = 1;
+    private List<Recipe> currRecipes;
+    private int selectedComplexity = 0;
     private ChildEventListener childEventListener;
     private RelativeLayout bottomMenuExpanded;
     private RelativeLayout bottomMenuShrinked;
     private User user;
+
+    private LinearLayout complexity;
 
     private boolean bottomExpanded = false;
     private RecipesAdapter recipesAdapter;
@@ -179,20 +183,62 @@ public class MainActivity extends DrawerBaseActivity {
         bottomMenuExpanded.findViewById(R.id.arrow_button).setOnClickListener(toggle);
         tagsContainer = bottomMenuExpanded.findViewById(R.id.tags_container);
 
+        bottomMenuExpanded.findViewById(R.id.reset_button)
+            .setOnClickListener(getResetButtonListener());
+
         setUpTags(Arrays.asList(Constants.TAGS));
         setUpComplexitySeekbar();
 
     }
 
+    private View.OnClickListener getResetButtonListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectedComplexity = 0;
+
+                setComplexityBarStars(0);
+
+                currRecipes = recipes;
+
+                for (int i = 0; i < Constants.TAGS.length; ++i) {
+                    View tmp = tagsContainer.getChildAt(i);
+                    if (selectedTags.contains(((TextView) tmp.findViewById(R.id.tag_name)).getText())) {
+                        tmp.setBackgroundColor(getResources().getColor(R.color.transparent));
+                    }
+                }
+
+                selectedTags.clear();
+
+                recipesAdapter.changeDataset(searchFilter(searchView.getQuery().toString(), currRecipes));
+
+            }
+        };
+    }
+
+    private void setComplexityBarStars(int stars) {
+        for (int i = 0; i < stars; ++i) {
+            ImageView tmpImageView = (ImageView) complexity.getChildAt(i);
+            tmpImageView.setImageResource(R.drawable.filled_star);
+        }
+
+        for (int i = stars; i < 5; ++i) {
+            ImageView tmpImageView = (ImageView) complexity.getChildAt(i);
+            tmpImageView.setImageResource(R.drawable.unfilled_star);
+        }
+    }
+
     private void selectRecipesComplexityAndTags() {
         List<Recipe> newDataset = new ArrayList<>();
         for (Recipe recipe : recipes) {
-            if (recipe.getLevel() == selectedComplexity &&
+            if ((selectedComplexity == 0 || recipe.getLevel() == selectedComplexity) &&
                     (recipe.getTags().containsAll(selectedTags) || selectedTags.size() == 0)) {
                 newDataset.add(recipe);
             }
         }
         recipesAdapter.changeDataset(newDataset);
+        currRecipes = newDataset;
+        recipesAdapter.changeDataset(searchFilter(searchView.getQuery().toString(), currRecipes));
     }
 
     private void setShrinkedComplexity() {
@@ -207,22 +253,25 @@ public class MainActivity extends DrawerBaseActivity {
 
     }
 
-    private void setUpComplexitySeekbar() {
-        final RatingBar complexity = bottomMenuExpanded.findViewById(R.id.complexity_picker);
-        complexity.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+    private View.OnClickListener getRateButtonListener(final int rateNumber) {
+        return new View.OnClickListener() {
             @Override
-            public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
-                int intRating = (int) v;
-                if (v - intRating >= 0.8) {
-                    intRating++;
-                }
-                selectedComplexity = intRating;
-                ratingBar.setRating(intRating);
+            public void onClick(View view) {
+
+                setComplexityBarStars(rateNumber + 1);
+
+                selectedComplexity = rateNumber + 1;
                 selectRecipesComplexityAndTags();
             }
-        });
+        };
     }
 
+    private void setUpComplexitySeekbar() {
+        complexity = bottomMenuExpanded.findViewById(R.id.rate_stars);
+        for (int i = 0; i < 5; ++i) {
+            complexity.getChildAt(i).setOnClickListener(getRateButtonListener(i));
+        }
+    }
 
     private void setUpTags(List<String> tags) {
         for (String tag : tags) {
@@ -291,7 +340,7 @@ public class MainActivity extends DrawerBaseActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                recipesAdapter.changeDataset(searchFilter(newText));
+                recipesAdapter.changeDataset(searchFilter(newText, currRecipes));
 
                 return false;
             }
@@ -300,10 +349,10 @@ public class MainActivity extends DrawerBaseActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    private List<Recipe> searchFilter(final String query) {
+    private List<Recipe> searchFilter(final String query, List<Recipe> recipeList) {
         String queryTrimmed = query.trim();
         List<Recipe> res = new ArrayList<>();
-        for (Recipe recipe : recipes) {
+        for (Recipe recipe : recipeList) {
             if (recipe.getTitle().toLowerCase().contains(queryTrimmed)) {
                 res.add(recipe);
             } else {
@@ -375,8 +424,11 @@ public class MainActivity extends DrawerBaseActivity {
                     if (newRecipe == null || user == null || newRecipe.getLevel() > user.getLevel())
                         return;
                     recipes.add(newRecipe);
-                    recipesAdapter.changeDataset(recipes);
-                    searchView.setQuery(searchView.getQuery().toString(), true);
+                    currRecipes = recipes;
+                    recipesAdapter.changeDataset(currRecipes);
+                    //searchView.setQuery(searchView.getQuery().toString(), true);
+                    selectRecipesComplexityAndTags();
+                    recipesAdapter.changeDataset(searchFilter(searchView.getQuery().toString(), currRecipes));
                 }
 
                 @Override
