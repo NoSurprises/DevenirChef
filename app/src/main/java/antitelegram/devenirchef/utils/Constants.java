@@ -12,8 +12,8 @@ public class Constants {
   public final static String EXP = "exp";
   public final static String LEVEL = "level";
 
-  public final static String[] TAGS = {"Завтрак", "Без мяса", "Грибы", "Французская кухня",
-          "Обед", "Ужин", "Идеально для праздников", "Закуска", "Гарнир", "Суп", "Курица", "Салат", "Дессерты"};
+    public final static String[] TAGS = {"Закуска", "Дессерт", "Без мяса", "Курица", "Салат", "Завтрак", "Гарнир",
+            "Суп", "Мучное", "Грибы", "Французская кухня", "Обед", "Идеально для праздников", "Ужин", "Ягоды", "Морепродукты"};
 
   // Level constants
   public final static long RATINGS_FOR_EXP = 5;

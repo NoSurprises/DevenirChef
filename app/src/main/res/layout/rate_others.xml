@@ -7,16 +7,22 @@
 
     <RatingBar
         android:id="@+id/ratingBar"
+        style="?android:attr/ratingBarStyleSmall"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="70dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="40dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:isIndicator="false"
+        android:maxHeight="60dp"
+        android:minHeight="40dp"
         android:numStars="5"
+        android:paddingBottom="8dp"
         android:progressBackgroundTint="?attr/colorButtonNormal"
         android:progressTint="@color/secondaryColor"
-        android:rating="0"
+        android:rating="5"
         android:secondaryProgressTint="@color/secondaryLightColor"
+        android:stepSize="0.5"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -25,7 +31,6 @@
         android:id="@+id/RecipeImageBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
