@@ -172,10 +172,10 @@ public class UserInfoActivity extends DrawerBaseActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot == null || dataSnapshot.getValue() == null) {
-                    createNewUser();
-                } else {
-                    user = dataSnapshot.getValue(User.class);
+                    return;
                 }
+                user = dataSnapshot.getValue(User.class);
+
                 createFinishedRecipesViews();
                 setLevel((long) user.getLevel());
                 setExperience((long) user.getExp(), user.getLevel());
@@ -194,14 +194,6 @@ public class UserInfoActivity extends DrawerBaseActivity {
                 }
             }
 
-            private void createNewUser() {
-                user = new User();
-                writeUserToDatabase();
-            }
-
-            private void writeUserToDatabase() {
-                userReference.setValue(user);
-            }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bottom_menu"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -45,23 +46,22 @@
 
     <RatingBar
         android:id="@+id/complexity_picker"
+        style="?android:attr/ratingBarStyleSmall"
         android:layout_width="wrap_content"
-        android:layout_height="59dp"
+        android:layout_height="40dp"
         android:layout_alignParentTop="false"
         android:layout_alignTop="@+id/complexity_label"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="24dp"
+        android:isIndicator="false"
+        android:maxHeight="40dp"
+        android:minHeight="16dp"
         android:numStars="5"
         android:progressBackgroundTint="?attr/colorButtonNormal"
         android:progressTint="@color/secondaryColor"
         android:rating="5"
         android:secondaryProgressTint="@color/secondaryLightColor"
-        android:stepSize="0.5"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/RecipeImageBox"
-        app:layout_constraintVertical_bias="1.0" />
+        android:stepSize="0.5" />
 
     <ImageView
         android:id="@+id/arrow_button"
@@ -74,6 +74,7 @@
         android:layout_weight="1"
         android:adjustViewBounds="false"
         android:cropToPadding="false"
-        app:srcCompat="@drawable/ic_arrow_downward_black_24dp" />
+        app:srcCompat="@drawable/ic_arrow_downward_black_24dp"
+        tools:ignore="VectorDrawableCompat" />
 
 </RelativeLayout>

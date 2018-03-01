@@ -239,12 +239,16 @@ public class RateOthersActivity extends DrawerBaseActivity {
             public void onSuccess(Uri uri) {
                 if (!isFinishing()) {
 
-                    Glide.with(RateOthersActivity.this)
-                            .load(uri)
-                            .error(R.drawable.ic_search_black_24dp)
-                            .placeholder(R.drawable.ic_placeholder_transparent)
-                            .dontAnimate()
-                            .into(image);
+                    try {
+                        Glide.with(RateOthersActivity.this)
+                                .load(uri)
+                                .error(R.drawable.ic_search_black_24dp)
+                                .placeholder(R.drawable.ic_placeholder_transparent)
+                                .dontAnimate()
+                                .into(image);
+                    } catch (Exception ignored) {
+
+                    }
 
                 }
 

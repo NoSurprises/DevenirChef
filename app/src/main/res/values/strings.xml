@@ -20,7 +20,7 @@
     <string name="take_photo">Сделать фото</string>
     <string name="main_screen">Завершить</string>
     <string name="no_recipes_to_rate">Не осталось рецептов для оценивания :(</string>
-    <string name="rating_1">Оценка: </string>
+    <string name="rating_1"></string>
     <string name="recipes">Рецепты</string>
     <string name="level_info">О персонаже</string>
     <string name="rate_others">Оценить других</string>
