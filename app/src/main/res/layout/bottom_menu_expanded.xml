@@ -119,13 +119,14 @@
             android:focusable="true" />
     </LinearLayout>
 
-    <Button
+    <ImageView
         android:id="@+id/reset_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/rate_stars"
-        android:layout_marginStart="24dp"
-        android:text="Резет" />
+        android:layout_above="@+id/tags_label"
+        android:layout_alignParentStart="true"
+        app:srcCompat="@drawable/ic_clear_black_24px"
+        android:clickable="true"
+        android:focusable="true"/>
 
 </RelativeLayout>

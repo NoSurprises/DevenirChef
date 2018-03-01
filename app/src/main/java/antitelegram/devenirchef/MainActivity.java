@@ -200,7 +200,6 @@ public class MainActivity extends DrawerBaseActivity {
                 setComplexityBarStars(0);
 
                 currRecipes = recipes;
-                searchView.setQuery("", false);
 
                 for (int i = 0; i < Constants.TAGS.length; ++i) {
                     View tmp = tagsContainer.getChildAt(i);
@@ -210,6 +209,9 @@ public class MainActivity extends DrawerBaseActivity {
                 }
 
                 selectedTags.clear();
+
+                recipesAdapter.changeDataset(searchFilter(searchView.getQuery().toString(), currRecipes));
+
             }
         };
     }
