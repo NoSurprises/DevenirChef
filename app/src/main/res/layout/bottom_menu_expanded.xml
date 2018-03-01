@@ -119,4 +119,13 @@
             android:focusable="true" />
     </LinearLayout>
 
+    <Button
+        android:id="@+id/reset_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/rate_stars"
+        android:layout_marginStart="24dp"
+        android:text="Резет" />
+
 </RelativeLayout>

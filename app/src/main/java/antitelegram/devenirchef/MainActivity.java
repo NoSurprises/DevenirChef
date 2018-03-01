@@ -183,9 +183,47 @@ public class MainActivity extends DrawerBaseActivity {
         bottomMenuExpanded.findViewById(R.id.arrow_button).setOnClickListener(toggle);
         tagsContainer = bottomMenuExpanded.findViewById(R.id.tags_container);
 
+        bottomMenuExpanded.findViewById(R.id.reset_button)
+            .setOnClickListener(getResetButtonListener());
+
         setUpTags(Arrays.asList(Constants.TAGS));
         setUpComplexitySeekbar();
 
+    }
+
+    private View.OnClickListener getResetButtonListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectedComplexity = 0;
+
+                setComplexityBarStars(0);
+
+                currRecipes = recipes;
+                searchView.setQuery("", false);
+
+                for (int i = 0; i < Constants.TAGS.length; ++i) {
+                    View tmp = tagsContainer.getChildAt(i);
+                    if (selectedTags.contains(((TextView) tmp.findViewById(R.id.tag_name)).getText())) {
+                        tmp.setBackgroundColor(getResources().getColor(R.color.transparent));
+                    }
+                }
+
+                selectedTags.clear();
+            }
+        };
+    }
+
+    private void setComplexityBarStars(int stars) {
+        for (int i = 0; i < stars; ++i) {
+            ImageView tmpImageView = (ImageView) complexity.getChildAt(i);
+            tmpImageView.setImageResource(R.drawable.filled_star);
+        }
+
+        for (int i = stars; i < 5; ++i) {
+            ImageView tmpImageView = (ImageView) complexity.getChildAt(i);
+            tmpImageView.setImageResource(R.drawable.unfilled_star);
+        }
     }
 
     private void selectRecipesComplexityAndTags() {
@@ -217,15 +255,8 @@ public class MainActivity extends DrawerBaseActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                for (int i = 0; i <= rateNumber; ++i) {
-                    ImageView tmpImageView = (ImageView) complexity.getChildAt(i);
-                    tmpImageView.setImageResource(R.drawable.filled_star);
-                }
 
-                for (int i = rateNumber + 1; i < 5; ++i) {
-                    ImageView tmpImageView = (ImageView) complexity.getChildAt(i);
-                    tmpImageView.setImageResource(R.drawable.unfilled_star);
-                }
+                setComplexityBarStars(rateNumber + 1);
 
                 selectedComplexity = rateNumber + 1;
                 selectRecipesComplexityAndTags();
